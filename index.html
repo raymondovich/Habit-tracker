@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Habit</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0b0b0f;
+      --card: #15151c;
+      --card-light: #1b1b24;
+      --text: #f5f5f7;
+      --muted: #858592;
+      --purple: #8b5cf6;
+      --purple-light: #a78bfa;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(
+          circle at 80% 0%,
+          rgba(139, 92, 246, 0.16),
+          transparent 32%
+        ),
+        var(--bg);
+      color: var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "Segoe UI",
+        sans-serif;
+      padding: 24px 18px 110px;
+    }
+
+    .app {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .greeting {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      font-size: 32px;
+      letter-spacing: -1.2px;
+      font-weight: 700;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(
+        135deg,
+        var(--purple),
+        #4c1d95
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      box-shadow:
+        0 8px 30px rgba(139,92,246,.25);
+    }
+
+    .date {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .progress-card {
+      background:
+        linear-gradient(
+          145deg,
+          rgba(139,92,246,.18),
+          rgba(21,21,28,.96)
+        );
+      border: 1px solid rgba(139,92,246,.20);
+      border-radius: 24px;
+      padding: 22px;
+      margin-bottom: 28px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.25);
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .progress-title {
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .progress-percent {
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: rgba(255,255,255,.07);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 50%;
+      border-radius: inherit;
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple),
+          var(--purple-light)
+        );
+      box-shadow: 0 0 18px rgba(139,92,246,.5);
+      transition: width .35s ease;
+    }
+
+    .progress-bottom {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .streak {
+      color: #fff;
+    }
+
+    .streak span {
+      color: var(--purple-light);
+      font-weight: 700;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 19px;
+      font-weight: 650;
+    }
+
+    .add-btn {
+      border: none;
+      background: rgba(139,92,246,.14);
+      color: var(--purple-light);
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .habit {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      margin-bottom: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 19px;
+      transition:
+        transform .2s ease,
+        background .2s ease,
+        border .2s ease;
+    }
+
+    .habit:active {
+      transform: scale(.985);
+    }
+
+    .habit.done {
+      background: rgba(139,92,246,.09);
+      border-color: rgba(139,92,246,.22);
+    }
+
+    .habit-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+      background: var(--card-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      flex-shrink: 0;
+    }
+
+    .habit-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .habit-name {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .habit-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .check {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1.5px solid #555562;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+      transition: all .25s ease;
+    }
+
+    .check.checked {
+      background: var(--purple);
+      border-color: var(--purple);
+      box-shadow: 0 0 18px rgba(139,92,246,.45);
+    }
+
+    .check.checked::after {
+      content: "✓";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      display: none;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      width: calc(100% - 30px);
+      max-width: 500px;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px;
+      background: rgba(21,21,28,.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.45);
+    }
+
+    .nav-item {
+      border: none;
+      background: none;
+      color: var(--muted);
+      padding: 9px 14px;
+      border-radius: 14px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .nav-item.active {
+      color: var(--purple-light);
+      background: rgba(139,92,246,.10);
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 3px;
+    }
+
+    @media (max-width: 380px) {
+      h1 {
+        font-size: 28px;
+      }
+
+      body {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <header class="top">
+      <div>
+        <div class="greeting">Добрый вечер</div>
+        <h1>Сегодня</h1>
+        <div class="date" id="date"></div>
+      </div>
+
+      <div class="avatar">B</div>
+    </header>
+
+    <section class="progress-card">
+
+      <div class="progress-top">
+        <div class="progress-title">
+          Прогресс дня
+        </div>
+
+        <div class="progress-percent" id="percent">
+          50%
+        </div>
+      </div>
+
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          id="progressFill"
+        ></div>
+      </div>
+
+      <div class="progress-bottom">
+
+        <div id="count">
+          2 из 4 выполнено
+        </div>
+
+        <div class="streak">
+          🔥 <span>6 дней</span>
+        </div>
+
+      </div>
+
+    </section>
+
+    <div class="section-header">
+
+      <div class="section-title">
+        Мои привычки
+      </div>
+
+      <button class="add-btn">
+        + Добавить
+      </button>
+
+    </div>
+
+    <section id="habits">
+
+      <div class="habit done">
+
+        <div class="habit-icon">💧</div>
+
+        <div class="habit-info">
+          <div class="habit-name">
+            Выпить воду
+          </div>
+
+          <div class="habit-meta">
+            8 стаканов
+          </div>
+        </div>
+
+        <button class="check checked"></button>
+
+      </div>
+
+
+      <div class="habit">
+
+        <div class="habit-icon">🏋️</div>
+
+        <div class="habit-info">
+          <div class="habit-name">
+            Тренировка
+          </div>
+
+          <div class="habit-meta">
+            30 минут
+          </div>
+        </div>
+
+        <button class="check"></button>
+
+      </div>
+
+
+      <div class="habit done">
+
+        <div class="habit-icon">📚</div>
+
+        <div class="habit-info">
+          <div class="habit-name">
+            Читать
+          </div>
+
+          <div class="habit-meta">
+            20 минут
+          </div>
+        </div>
+
+        <button class="check checked"></button>
+
+      </div>
+
+
+      <div class="habit">
+
+        <div class="habit-icon">📵</div>
+
+        <div class="habit-info">
+          <div class="habit-name">
+            Без телефона
+          </div>
+
+          <div class="habit-meta">
+            После 23:00
+          </div>
+        </div>
+
+        <button class="check"></button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <nav class="bottom-nav">
+
+    <button class="nav-item active">
+      <span class="nav-icon">✓</span>
+      Сегодня
+    </button>
+
+    <button class="nav-item">
+      <span class="nav-icon">◉</span>
+      Привычки
+    </button>
+
+    <button class="nav-item">
+      <span class="nav-icon">▥</span>
+      Статистика
+    </button>
+
+    <button class="nav-item">
+      <span class="nav-icon">○</span>
+      Профиль
+    </button>
+
+  </nav>
+
+
+  <script>
+
+    const dateElement =
+      document.getElementById("date");
+
+    const today =
+      new Date();
+
+    dateElement.textContent =
+      today.toLocaleDateString(
+        "ru-RU",
+        {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }
+      );
+
+
+    const checks =
+      document.querySelectorAll(".check");
+
+    const percent =
+      document.getElementById("percent");
+
+    const count =
+      document.getElementById("count");
+
+    const progressFill =
+      document.getElementById("progressFill");
+
+
+    function updateProgress() {
+
+      const total =
+        checks.length;
+
+      const completed =
+        document.querySelectorAll(
+          ".check.checked"
+        ).length;
+
+      const value =
+        Math.round(
+          (completed / total) * 100
+        );
+
+      percent.textContent =
+        value + "%";
+
+      count.textContent =
+        completed +
+        " из " +
+        total +
+        " выполнено";
+
+      progressFill.style.width =
+        value + "%";
+    }
+
+
+    checks.forEach(check => {
+
+      check.addEventListener(
+        "click",
+        () => {
+
+          check.classList.toggle(
+            "checked"
+          );
+
+          const habit =
+            check.closest(".habit");
+
+          habit.classList.toggle(
+            "done"
+          );
+
+          updateProgress();
+
+        }
+      );
+
+    });
+
+
+    updateProgress();
+
+  </script>
+
+</body>
+</html>
