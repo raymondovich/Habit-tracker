@@ -1051,7 +1051,6 @@ a {
 
 /* =========================================================
    STATISTICS SCREEN
-   LIFE GAME 2.0 STYLE
    ========================================================= */
 
 .statistics-screen {
@@ -1306,7 +1305,7 @@ a {
 
 
 /* =========================================================
-   CHART CARD
+   CHART
    ========================================================= */
 
 .statistics-chart-card,
@@ -1331,7 +1330,7 @@ a {
             #080808
         );
 
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
 
     border-radius: var(--radius-xl);
 
@@ -1436,7 +1435,8 @@ a {
 
 
 /* =========================================================
-   PERFORMANCE CARD
+   PERFORMANCE
+   OUTER BLOCK
    ========================================================= */
 
 .statistics-performance,
@@ -1452,19 +1452,14 @@ a {
     background:
         radial-gradient(
             circle at 92% 0%,
-            rgba(216, 177, 90, 0.065),
-            transparent 32%
-        ),
-        radial-gradient(
-            circle at 5% 100%,
-            rgba(255, 255, 255, 0.018),
-            transparent 38%
+            rgba(216, 177, 90, 0.055),
+            transparent 34%
         ),
         linear-gradient(
             145deg,
-            #11110f 0%,
-            #0b0b0a 50%,
-            #070707 100%
+            #10100f 0%,
+            #0b0b0a 52%,
+            #080808 100%
         );
 
     border: 1px solid var(--border-strong);
@@ -1472,8 +1467,7 @@ a {
     border-radius: var(--radius-xl);
 
     box-shadow:
-        var(--shadow-medium),
-        0 0 34px rgba(216, 177, 90, 0.03);
+        var(--shadow-medium);
 }
 
 .statistics-performance::before,
@@ -1490,10 +1484,10 @@ a {
 
     border-radius: 50%;
 
-    border: 1px solid rgba(216, 177, 90, 0.07);
+    border: 1px solid rgba(216, 177, 90, 0.065);
 
     box-shadow:
-        0 0 0 20px rgba(216, 177, 90, 0.011),
+        0 0 0 20px rgba(216, 177, 90, 0.010),
         0 0 0 40px rgba(216, 177, 90, 0.006);
 }
 
@@ -1513,7 +1507,7 @@ a {
         linear-gradient(
             90deg,
             transparent,
-            rgba(216, 177, 90, 0.19),
+            rgba(216, 177, 90, 0.17),
             transparent
         );
 }
@@ -1524,13 +1518,18 @@ a {
     z-index: 1;
 }
 
+
+/* =========================================================
+   PERFORMANCE HEADER
+   ========================================================= */
+
 .performance-header {
     display: flex;
 
     align-items: center;
     justify-content: space-between;
 
-    margin-bottom: 16px;
+    margin-bottom: 15px;
 }
 
 .performance-header h2 {
@@ -1540,24 +1539,23 @@ a {
     color: var(--text);
 }
 
+
+/* =========================================================
+   PERFORMANCE CURRENT / PREVIOUS
+   ========================================================= */
+
 .performance-main {
     display: flex;
 
     align-items: stretch;
     justify-content: space-between;
 
-    gap: 10px;
+    gap: 9px;
 
     padding-bottom: 16px;
 
-    border-bottom:
-        1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border-soft);
 }
-
-
-/* =========================================================
-   PERFORMANCE CURRENT / PREVIOUS
-   ========================================================= */
 
 .current-performance-value,
 .previous-performance-value {
@@ -1572,8 +1570,8 @@ a {
     background:
         linear-gradient(
             145deg,
-            rgba(216, 177, 90, 0.055),
-            rgba(255, 255, 255, 0.018) 48%,
+            rgba(216, 177, 90, 0.052),
+            rgba(255, 255, 255, 0.018) 52%,
             rgba(255, 255, 255, 0.006)
         );
 
@@ -1612,7 +1610,7 @@ a {
 
     border-radius: 50%;
 
-    border: 1px solid rgba(216, 177, 90, 0.055);
+    border: 1px solid rgba(216, 177, 90, 0.05);
 }
 
 .previous-performance-value {
@@ -1622,7 +1620,7 @@ a {
 
     padding: 12px 12px 11px;
 
-    align-self: flex-end;
+    align-self: stretch;
 
     color: var(--text-tertiary);
 
@@ -1674,6 +1672,12 @@ a {
     text-transform: uppercase;
 }
 
+
+/* =========================================================
+   PERFORMANCE DETAILS
+   UNIFIED INNER CONTAINER
+   ========================================================= */
+
 .performance-details {
     display: grid;
 
@@ -1681,11 +1685,40 @@ a {
 
     gap: 0;
 
-    padding-top: 15px;
+    margin-top: 14px;
+
+    padding: 4px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(216, 177, 90, 0.035),
+            transparent 65%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.022),
+            rgba(255, 255, 255, 0.007)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.065);
+
+    border-radius: 14px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.025);
 }
 
 .performance-detail {
     position: relative;
+
+    min-width: 0;
+
+    padding: 13px 7px 12px;
 
     text-align: center;
 }
@@ -1696,13 +1729,18 @@ a {
     position: absolute;
 
     left: 0;
-    top: 10%;
-    bottom: 10%;
+    top: 20%;
+    bottom: 20%;
 
     width: 1px;
 
     background:
-        rgba(255, 255, 255, 0.055);
+        linear-gradient(
+            180deg,
+            transparent,
+            rgba(255, 255, 255, 0.075),
+            transparent
+        );
 }
 
 .performance-detail-value {
@@ -1710,10 +1748,12 @@ a {
 
     font-size: 14px;
     font-weight: 500;
+
+    line-height: 1;
 }
 
 .performance-detail-label {
-    margin-top: 5px;
+    margin-top: 6px;
 
     color: var(--text-tertiary);
 
@@ -1741,18 +1781,13 @@ a {
     background:
         radial-gradient(
             circle at 88% 0%,
-            rgba(216, 177, 90, 0.052),
-            transparent 32%
-        ),
-        radial-gradient(
-            circle at 8% 100%,
-            rgba(255, 255, 255, 0.017),
-            transparent 42%
+            rgba(216, 177, 90, 0.045),
+            transparent 34%
         ),
         linear-gradient(
             145deg,
-            #10100f 0%,
-            #0b0b0a 50%,
+            #0f0f0e 0%,
+            #0b0b0a 52%,
             #080808 100%
         );
 
@@ -1761,8 +1796,7 @@ a {
     border-radius: var(--radius-xl);
 
     box-shadow:
-        var(--shadow-medium),
-        0 0 30px rgba(216, 177, 90, 0.025);
+        var(--shadow-medium);
 }
 
 .best-performance::before {
@@ -1778,11 +1812,11 @@ a {
 
     border-radius: 50%;
 
-    border: 1px solid rgba(216, 177, 90, 0.065);
+    border: 1px solid rgba(216, 177, 90, 0.06);
 
     box-shadow:
-        0 0 0 18px rgba(216, 177, 90, 0.01),
-        0 0 0 36px rgba(216, 177, 90, 0.006);
+        0 0 0 18px rgba(216, 177, 90, 0.009),
+        0 0 0 36px rgba(216, 177, 90, 0.005);
 }
 
 .best-performance::after {
@@ -1800,7 +1834,7 @@ a {
         linear-gradient(
             90deg,
             transparent,
-            rgba(216, 177, 90, 0.17),
+            rgba(216, 177, 90, 0.15),
             transparent
         );
 }
@@ -1882,13 +1916,13 @@ a {
     background:
         radial-gradient(
             circle at 8% 0%,
-            rgba(216, 177, 90, 0.048),
-            transparent 34%
+            rgba(216, 177, 90, 0.06),
+            transparent 35%
         ),
         radial-gradient(
             circle at 100% 100%,
-            rgba(255, 255, 255, 0.018),
-            transparent 38%
+            rgba(255, 255, 255, 0.016),
+            transparent 40%
         ),
         linear-gradient(
             145deg,
@@ -1902,8 +1936,7 @@ a {
     border-radius: var(--radius-xl);
 
     box-shadow:
-        var(--shadow-medium),
-        0 0 34px rgba(216, 177, 90, 0.028);
+        var(--shadow-medium);
 }
 
 .all-time::before,
@@ -1920,11 +1953,11 @@ a {
 
     border-radius: 50%;
 
-    border: 1px solid rgba(216, 177, 90, 0.07);
+    border: 1px solid rgba(216, 177, 90, 0.065);
 
     box-shadow:
-        0 0 0 21px rgba(216, 177, 90, 0.01),
-        0 0 0 42px rgba(216, 177, 90, 0.006);
+        0 0 0 21px rgba(216, 177, 90, 0.009),
+        0 0 0 42px rgba(216, 177, 90, 0.005);
 }
 
 .all-time::after,
@@ -1979,11 +2012,11 @@ a {
     background:
         linear-gradient(
             145deg,
-            rgba(216, 177, 90, 0.035),
+            rgba(216, 177, 90, 0.04),
             rgba(255, 255, 255, 0.012)
         );
 
-    border: 1px solid rgba(216, 177, 90, 0.08);
+    border: 1px solid rgba(216, 177, 90, 0.085);
 
     border-radius: 12px;
 }
@@ -2269,6 +2302,22 @@ a:focus-visible {
         min-width: 58px;
     }
 
+    .performance-details {
+        margin-top: 13px;
+        padding: 3px;
+    }
+
+    .performance-detail {
+        padding: 12px 5px 11px;
+    }
+
+    .performance-detail-value {
+        font-size: 13px;
+    }
+
+    .performance-detail-label {
+        font-size: 7px;
+    }
 }
 
 
@@ -2316,10 +2365,17 @@ a:focus-visible {
         font-size: 8px;
     }
 
+    .performance-detail-value {
+        font-size: 12px;
+    }
+
+    .performance-detail-label {
+        font-size: 7px;
+    }
+
     .all-time-grid {
         grid-template-columns: 1fr 1fr;
     }
-
 }
 
 
