@@ -1779,7 +1779,144 @@
         init();
 
     }
+    
+                                        </button>
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
+    }
 
 
+    /* =====================================================
+       SHIFT ACTIONS
+       ===================================================== */
+
+    function handleShiftAction(event) {
+
+        const button =
+            event.target.closest(
+                "[data-action]"
+            );
+
+        if (!button) {
+            return;
+        }
+
+        const action =
+            button.dataset.action;
+
+        const id =
+            button.dataset.id;
+
+        if (action === "edit") {
+
+            openEditModal(id);
+
+            return;
+
+        }
+
+        if (action === "delete") {
+
+            deleteShift(id);
+
+        }
+
+    }
+
+
+    /* =====================================================
+       PUBLIC API
+       ===================================================== */
+
+    window.JobCashShifts = {
+
+        getShifts: function () {
+
+            return shifts.slice();
+
+        },
+
+        reload: function () {
+
+            loadShifts();
+
+            render();
+
+        }
+
+    };
+
+
+    /* =====================================================
+       INITIALIZATION
+       ===================================================== */
+
+    function init() {
+
+        initDOM();
+
+        loadShifts();
+
+        render();
+
+
+        if (shiftsList) {
+
+            shiftsList.addEventListener(
+                "click",
+                handleShiftAction
+            );
+
+        }
+
+
+        if (addButton) {
+
+            addButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+                    openModal();
+
+                }
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       START
+       ===================================================== */
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            init
+        );
+
+    } else {
+
+        init();
+
+    }
+    
+    
 })();
                                        
