@@ -2,23 +2,32 @@
 
     "use strict";
 
+
     /* =====================================================
        JOB & CASH — SHIFTS MODULE
        ===================================================== */
 
+
     const STORAGE_KEY = "job_cash_shifts";
 
+
     let shifts = [];
+
+
+    /* =====================================================
+       DOM
+       ===================================================== */
 
     let addButton = null;
     let shiftsList = null;
     let emptyState = null;
 
+
     let editingShiftId = null;
 
 
     /* =====================================================
-       DOM
+       INIT DOM
        ===================================================== */
 
     function initDOM() {
@@ -37,6 +46,7 @@
             document.getElementById(
                 "emptyShifts"
             );
+
 
         if (!addButton) {
 
@@ -62,6 +72,7 @@
                     STORAGE_KEY
                 );
 
+
             if (!saved) {
 
                 shifts = [];
@@ -70,8 +81,10 @@
 
             }
 
+
             const parsed =
                 JSON.parse(saved);
+
 
             if (Array.isArray(parsed)) {
 
@@ -127,18 +140,22 @@
         const date =
             new Date();
 
+
         const year =
             date.getFullYear();
+
 
         const month =
             String(
                 date.getMonth() + 1
             ).padStart(2, "0");
 
+
         const day =
             String(
                 date.getDate()
             ).padStart(2, "0");
+
 
         return (
             year +
@@ -159,20 +176,25 @@
         const startParts =
             start.split(":");
 
+
         const endParts =
             end.split(":");
+
 
         const startMinutes =
             Number(startParts[0]) * 60 +
             Number(startParts[1]);
 
+
         const endMinutes =
             Number(endParts[0]) * 60 +
             Number(endParts[1]);
 
+
         let difference =
             endMinutes -
             startMinutes;
+
 
         /*
          Overnight shift.
@@ -185,6 +207,7 @@
             difference += 24 * 60;
 
         }
+
 
         return difference / 60;
 
@@ -207,11 +230,13 @@
         const parts =
             dateString.split("-");
 
+
         if (parts.length !== 3) {
 
             return dateString;
 
         }
+
 
         return (
             parts[2] +
@@ -226,27 +251,24 @@
 
     function getCurrentRate() {
 
-        let rate = 0;
-
         if (
             window.JobCashRate &&
             typeof window.JobCashRate.getRate ===
                 "function"
         ) {
 
-            rate =
-                Number(
-                    window.JobCashRate.getRate()
-                ) || 0;
+            return Number(
+                window.JobCashRate.getRate()
+            ) || 0;
 
         }
 
-        return rate;
+        return 0;
 
     }
 
 
-    function dispatchShiftsChange(
+    function notifyShiftsChange(
         shift = null
     ) {
 
@@ -275,17 +297,21 @@
                 "jobCashShiftModal"
             );
 
+
         if (oldModal) {
 
             oldModal.remove();
 
         }
 
+
         const modal =
             document.createElement("div");
 
+
         modal.id =
             "jobCashShiftModal";
+
 
         modal.innerHTML = `
 
@@ -444,11 +470,14 @@
 
         `;
 
+
         document.body.appendChild(
             modal
         );
 
+
         injectModalStyles();
+
 
         return modal;
 
@@ -471,409 +500,219 @@
 
         }
 
+
         const style =
             document.createElement("style");
+
 
         style.id =
             "jobCashShiftStyles";
 
+
         style.textContent = `
 
             #jobCashShiftModal {
-
                 position: fixed;
                 inset: 0;
                 z-index: 99999;
+            }
 
+            .jc-modal-backdrop {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                background: rgba(0,0,0,.82);
+                backdrop-filter: blur(12px);
+            }
+
+            .jc-modal {
+                width: 100%;
+                max-width: 430px;
+                background: #0b0b0b;
+                border: 1px solid rgba(214,166,58,.42);
+                border-radius: 18px;
+                padding: 22px;
+                box-sizing: border-box;
+                box-shadow:
+                    0 25px 80px rgba(0,0,0,.75),
+                    0 0 35px rgba(214,166,58,.08);
+            }
+
+            .jc-modal-header {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                margin-bottom: 24px;
+            }
+
+            .jc-modal-title {
+                color: #f4f1e9;
+                font-size: 22px;
+                font-weight: 700;
+                letter-spacing: .02em;
+            }
+
+            .jc-modal-subtitle {
+                margin-top: 5px;
+                color: #74716b;
+                font-size: 13px;
+            }
+
+            .jc-modal-close {
+                width: 34px;
+                height: 34px;
+                border: 1px solid rgba(255,255,255,.1);
+                border-radius: 50%;
+                background: #111;
+                color: #b4b0a7;
+                font-size: 24px;
+                line-height: 1;
+                cursor: pointer;
+            }
+
+            .jc-label {
+                display: block;
+                margin-bottom: 7px;
+                color: #b4b0a7;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: .08em;
+            }
+
+            .jc-input {
+                width: 100%;
+                min-height: 48px;
+                box-sizing: border-box;
+                margin-bottom: 16px;
+                padding: 0 14px;
+                border: 1px solid rgba(214,166,58,.18);
+                border-radius: 10px;
+                outline: none;
+                background: #101010;
+                color: #f4f1e9;
+                font-size: 16px;
+            }
+
+            .jc-input:focus {
+                border-color: rgba(214,166,58,.55);
+            }
+
+            .jc-time-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .jc-preview {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                margin: 5px 0 20px;
+                padding: 14px 8px;
+                border: 1px solid rgba(214,166,58,.14);
+                border-radius: 12px;
+                background: #080808;
+            }
+
+            .jc-preview div {
+                text-align: center;
+            }
+
+            .jc-preview span {
+                display: block;
+                margin-bottom: 6px;
+                color: #74716b;
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: .05em;
+            }
+
+            .jc-preview strong {
+                color: #d6a63a;
+                font-size: 15px;
+            }
+
+            .jc-save-button {
+                width: 100%;
+                min-height: 50px;
+                border: 1px solid #d6a63a;
+                border-radius: 11px;
+                background: #d6a63a;
+                color: #050505;
+                font-size: 15px;
+                font-weight: 700;
+                cursor: pointer;
+            }
+
+            .jc-save-button:active {
+                transform: scale(.98);
             }
 
 
-            .jc-modal-backdrop {
+            /* ================================
+               SHIFT ACTIONS
+               ================================ */
 
-                position: absolute;
-                inset: 0;
+            .jc-shift-actions {
 
                 display: flex;
 
                 align-items: center;
-                justify-content: center;
 
-                padding: 20px;
+                gap: 6px;
 
-                background:
-                    rgba(0,0,0,.82);
+                margin-left: 8px;
 
-                backdrop-filter:
-                    blur(12px);
-
-            }
-
-
-            .jc-modal {
-
-                width: 100%;
-                max-width: 430px;
-
-                background:
-                    #0b0b0b;
-
-                border:
-                    1px solid
-                    rgba(214,166,58,.42);
-
-                border-radius:
-                    18px;
-
-                padding:
-                    22px;
-
-                box-sizing:
-                    border-box;
-
-                box-shadow:
-                    0 25px 80px
-                    rgba(0,0,0,.75),
-
-                    0 0 35px
-                    rgba(214,166,58,.08);
-
-            }
-
-
-            .jc-modal-header {
-
-                display: flex;
-
-                align-items:
-                    flex-start;
-
-                justify-content:
-                    space-between;
-
-                margin-bottom:
-                    24px;
-
-            }
-
-
-            .jc-modal-title {
-
-                color:
-                    #f4f1e9;
-
-                font-size:
-                    22px;
-
-                font-weight:
-                    700;
-
-                letter-spacing:
-                    .02em;
-
-            }
-
-
-            .jc-modal-subtitle {
-
-                margin-top:
-                    5px;
-
-                color:
-                    #74716b;
-
-                font-size:
-                    13px;
-
-            }
-
-
-            .jc-modal-close {
-
-                width:
-                    34px;
-
-                height:
-                    34px;
-
-                border:
-                    1px solid
-                    rgba(255,255,255,.1);
-
-                border-radius:
-                    50%;
-
-                background:
-                    #111;
-
-                color:
-                    #b4b0a7;
-
-                font-size:
-                    24px;
-
-                line-height:
-                    1;
-
-                cursor:
-                    pointer;
-
-            }
-
-
-            .jc-label {
-
-                display:
-                    block;
-
-                margin-bottom:
-                    7px;
-
-                color:
-                    #b4b0a7;
-
-                font-size:
-                    12px;
-
-                text-transform:
-                    uppercase;
-
-                letter-spacing:
-                    .08em;
-
-            }
-
-
-            .jc-input {
-
-                width:
-                    100%;
-
-                min-height:
-                    48px;
-
-                box-sizing:
-                    border-box;
-
-                margin-bottom:
-                    16px;
-
-                padding:
-                    0 14px;
-
-                border:
-                    1px solid
-                    rgba(214,166,58,.18);
-
-                border-radius:
-                    10px;
-
-                outline:
-                    none;
-
-                background:
-                    #101010;
-
-                color:
-                    #f4f1e9;
-
-                font-size:
-                    16px;
-
-            }
-
-
-            .jc-input:focus {
-
-                border-color:
-                    rgba(214,166,58,.55);
-
-            }
-
-
-            .jc-time-row {
-
-                display:
-                    grid;
-
-                grid-template-columns:
-                    1fr 1fr;
-
-                gap:
-                    12px;
-
-            }
-
-
-            .jc-preview {
-
-                display:
-                    grid;
-
-                grid-template-columns:
-                    repeat(3, 1fr);
-
-                gap:
-                    8px;
-
-                margin:
-                    5px 0 20px;
-
-                padding:
-                    14px 8px;
-
-                border:
-                    1px solid
-                    rgba(214,166,58,.14);
-
-                border-radius:
-                    12px;
-
-                background:
-                    #080808;
-
-            }
-
-
-            .jc-preview div {
-
-                text-align:
-                    center;
-
-            }
-
-
-            .jc-preview span {
-
-                display:
-                    block;
-
-                margin-bottom:
-                    6px;
-
-                color:
-                    #74716b;
-
-                font-size:
-                    10px;
-
-                text-transform:
-                    uppercase;
-
-                letter-spacing:
-                    .05em;
-
-            }
-
-
-            .jc-preview strong {
-
-                color:
-                    #d6a63a;
-
-                font-size:
-                    15px;
-
-            }
-
-
-            .jc-save-button {
-
-                width:
-                    100%;
-
-                min-height:
-                    50px;
-
-                border:
-                    1px solid
-                    #d6a63a;
-
-                border-radius:
-                    11px;
-
-                background:
-                    #d6a63a;
-
-                color:
-                    #050505;
-
-                font-size:
-                    15px;
-
-                font-weight:
-                    700;
-
-                cursor:
-                    pointer;
-
-            }
-
-
-            .jc-save-button:active {
-
-                transform:
-                    scale(.98);
-
-            }
-
-
-            .jc-shift-actions {
-
-                display:
-                    flex;
-
-                align-items:
-                    center;
-
-                gap:
-                    7px;
-
-                margin-left:
-                    8px;
-
-                flex-shrink:
-                    0;
+                flex-shrink: 0;
 
             }
 
 
             .jc-shift-action {
 
-                width:
-                    32px;
+                width: 32px;
 
-                height:
-                    32px;
+                height: 32px;
 
-                padding:
-                    0;
+                display: flex;
+
+                align-items: center;
+
+                justify-content: center;
+
+                padding: 0;
 
                 border:
                     1px solid
                     rgba(255,255,255,.10);
 
-                border-radius:
-                    8px;
+                border-radius: 8px;
 
-                background:
-                    #111;
+                background: #111;
 
-                color:
-                    #b4b0a7;
+                color: #aaa;
 
-                font-size:
-                    15px;
+                font-size: 16px;
 
-                cursor:
-                    pointer;
+                line-height: 1;
+
+                cursor: pointer;
+
+                transition:
+                    border-color .15s ease,
+                    color .15s ease,
+                    background .15s ease;
 
             }
 
 
-            .jc-shift-action:hover {
+            .jc-shift-action-edit:hover {
 
                 border-color:
-                    rgba(214,166,58,.45);
+                    rgba(214,166,58,.55);
 
                 color:
                     #d6a63a;
@@ -884,14 +723,23 @@
             .jc-shift-action-delete:hover {
 
                 border-color:
-                    rgba(255,80,80,.45);
+                    rgba(255,80,80,.50);
 
                 color:
                     #ff7777;
 
             }
 
+
+            .jc-shift-action:active {
+
+                transform:
+                    scale(.94);
+
+            }
+
         `;
+
 
         document.head.appendChild(
             style
@@ -911,25 +759,30 @@
                 "jcShiftStart"
             );
 
+
         const end =
             document.getElementById(
                 "jcShiftEnd"
             );
+
 
         const hoursElement =
             document.getElementById(
                 "jcPreviewHours"
             );
 
+
         const rateElement =
             document.getElementById(
                 "jcPreviewRate"
             );
 
+
         const earningsElement =
             document.getElementById(
                 "jcPreviewEarnings"
             );
+
 
         if (
             !start ||
@@ -943,6 +796,7 @@
 
         }
 
+
         if (
             !start.value ||
             !end.value
@@ -952,23 +806,29 @@
 
         }
 
+
         const hours =
             calculateHours(
                 start.value,
                 end.value
             );
 
+
         const rate =
             getCurrentRate();
+
 
         const earnings =
             hours * rate;
 
+
         hoursElement.textContent =
             hours.toFixed(2);
 
+
         rateElement.textContent =
             formatMoney(rate);
+
 
         earningsElement.textContent =
             formatMoney(earnings);
@@ -985,6 +845,7 @@
         const rate =
             getCurrentRate();
 
+
         if (rate <= 0) {
 
             window.alert(
@@ -995,36 +856,44 @@
 
         }
 
+
         editingShiftId =
             null;
 
+
         const modal =
             createModal();
+
 
         const closeButton =
             document.getElementById(
                 "jcCloseModal"
             );
 
+
         const saveButton =
             document.getElementById(
                 "jcSaveShift"
             );
+
 
         const startInput =
             document.getElementById(
                 "jcShiftStart"
             );
 
+
         const endInput =
             document.getElementById(
                 "jcShiftEnd"
             );
 
+
         closeButton.addEventListener(
             "click",
             closeModal
         );
+
 
         modal
             .querySelector(
@@ -1046,20 +915,24 @@
                 }
             );
 
+
         startInput.addEventListener(
             "input",
             updatePreview
         );
+
 
         endInput.addEventListener(
             "input",
             updatePreview
         );
 
+
         saveButton.addEventListener(
             "click",
             saveShift
         );
+
 
         updatePreview();
 
@@ -1074,8 +947,27 @@
         shiftId
     ) {
 
+        const shift =
+            shifts.find(
+                function (item) {
+
+                    return String(item.id) ===
+                        String(shiftId);
+
+                }
+            );
+
+
+        if (!shift) {
+
+            return;
+
+        }
+
+
         const rate =
             getCurrentRate();
+
 
         if (rate <= 0) {
 
@@ -1087,85 +979,86 @@
 
         }
 
-        const shift =
-            shifts.find(
-                function (item) {
-
-                    return String(item.id) ===
-                        String(shiftId);
-
-                }
-            );
-
-        if (!shift) {
-
-            return;
-
-        }
 
         editingShiftId =
             shift.id;
 
+
         const modal =
             createModal();
+
 
         const title =
             document.getElementById(
                 "jcModalTitle"
             );
 
+
         const subtitle =
             document.getElementById(
                 "jcModalSubtitle"
             );
+
 
         const dateInput =
             document.getElementById(
                 "jcShiftDate"
             );
 
+
         const startInput =
             document.getElementById(
                 "jcShiftStart"
             );
+
 
         const endInput =
             document.getElementById(
                 "jcShiftEnd"
             );
 
+
         const saveButton =
             document.getElementById(
                 "jcSaveShift"
             );
 
+
         title.textContent =
             "Редактировать смену";
+
 
         subtitle.textContent =
             "Измени данные рабочей смены";
 
+
         saveButton.textContent =
             "Сохранить изменения";
+
 
         dateInput.value =
             shift.date;
 
+
         startInput.value =
             shift.start;
 
+
         endInput.value =
             shift.end;
+
 
         const closeButton =
             document.getElementById(
                 "jcCloseModal"
             );
 
+
         closeButton.addEventListener(
             "click",
             closeModal
         );
+
 
         modal
             .querySelector(
@@ -1187,20 +1080,24 @@
                 }
             );
 
+
         startInput.addEventListener(
             "input",
             updatePreview
         );
+
 
         endInput.addEventListener(
             "input",
             updatePreview
         );
 
+
         saveButton.addEventListener(
             "click",
             saveShift
         );
+
 
         updatePreview();
 
@@ -1218,11 +1115,13 @@
                 "jobCashShiftModal"
             );
 
+
         if (modal) {
 
             modal.remove();
 
         }
+
 
         editingShiftId =
             null;
@@ -1241,15 +1140,18 @@
                 "jcShiftDate"
             );
 
+
         const startInput =
             document.getElementById(
                 "jcShiftStart"
             );
 
+
         const endInput =
             document.getElementById(
                 "jcShiftEnd"
             );
+
 
         if (
             !dateInput ||
@@ -1261,14 +1163,18 @@
 
         }
 
+
         const date =
             dateInput.value;
+
 
         const start =
             startInput.value;
 
+
         const end =
             endInput.value;
+
 
         if (!date) {
 
@@ -1280,7 +1186,11 @@
 
         }
 
-        if (!start || !end) {
+
+        if (
+            !start ||
+            !end
+        ) {
 
             window.alert(
                 "Укажите время начала и окончания."
@@ -1289,6 +1199,7 @@
             return;
 
         }
+
 
         if (start === end) {
 
@@ -1300,11 +1211,13 @@
 
         }
 
+
         const hours =
             calculateHours(
                 start,
                 end
             );
+
 
         if (hours <= 0) {
 
@@ -1316,8 +1229,10 @@
 
         }
 
+
         const rate =
             getCurrentRate();
+
 
         if (rate <= 0) {
 
@@ -1329,18 +1244,22 @@
 
         }
 
+
         const earnings =
             hours * rate;
+
 
         const normalizedHours =
             Math.round(
                 hours * 100
             ) / 100;
 
+
         const normalizedRate =
             Math.round(
                 rate * 100
             ) / 100;
+
 
         const normalizedEarnings =
             Math.round(
@@ -1366,6 +1285,7 @@
                     }
                 );
 
+
             if (index === -1) {
 
                 closeModal();
@@ -1373,6 +1293,7 @@
                 return;
 
             }
+
 
             const updatedShift = {
 
@@ -1399,18 +1320,24 @@
 
             };
 
+
             shifts[index] =
                 updatedShift;
 
+
             saveShifts();
+
 
             render();
 
+
             closeModal();
 
-            dispatchShiftsChange(
+
+            notifyShiftsChange(
                 updatedShift
             );
+
 
             return;
 
@@ -1446,17 +1373,22 @@
 
         };
 
+
         shifts.unshift(
             shift
         );
 
+
         saveShifts();
+
 
         render();
 
+
         closeModal();
 
-        dispatchShiftsChange(
+
+        notifyShiftsChange(
             shift
         );
 
@@ -1481,19 +1413,23 @@
                 }
             );
 
+
         if (index === -1) {
 
             return;
 
         }
 
+
         const shift =
             shifts[index];
+
 
         const confirmed =
             window.confirm(
                 "Удалить эту смену?"
             );
+
 
         if (!confirmed) {
 
@@ -1501,16 +1437,20 @@
 
         }
 
+
         shifts.splice(
             index,
             1
         );
 
+
         saveShifts();
+
 
         render();
 
-        dispatchShiftsChange(
+
+        notifyShiftsChange(
             shift
         );
 
@@ -1532,6 +1472,7 @@
 
         }
 
+
         if (shifts.length === 0) {
 
             shiftsList.innerHTML =
@@ -1540,18 +1481,22 @@
             emptyState.style.display =
                 "";
 
+
             return;
 
         }
 
+
         emptyState.style.display =
             "none";
+
 
         const recent =
             shifts.slice(
                 0,
                 5
             );
+
 
         shiftsList.innerHTML =
             recent
@@ -1565,40 +1510,40 @@
                                 data-shift-id="${shift.id}"
                             >
 
-                                <div
-                                    class="shift-date"
-                                >
+                                <div class="shift-date">
+
                                     ${formatDate(
                                         shift.date
                                     )}
+
                                 </div>
 
 
-                                <div
-                                    class="shift-time"
-                                >
+                                <div class="shift-time">
+
                                     ${shift.start}
                                     –
                                     ${shift.end}
+
                                 </div>
 
 
-                                <div
-                                    class="shift-hours"
-                                >
+                                <div class="shift-hours">
+
                                     ${Number(
                                         shift.hours
                                     ).toFixed(2)}
                                     ч.
+
                                 </div>
 
 
-                                <div
-                                    class="shift-earnings"
-                                >
+                                <div class="shift-earnings">
+
                                     ${formatMoney(
                                         shift.earnings
                                     )}
+
                                 </div>
 
 
@@ -1619,9 +1564,6 @@
 
 
                                     <button
-                                        type="button"
-                                        
-                                                                            <button
                                         type="button"
                                         class="jc-shift-action jc-shift-action-delete"
                                         data-action="delete"
@@ -1658,17 +1600,21 @@
                 "[data-action]"
             );
 
+
         if (!button) {
 
             return;
 
         }
 
+
         const action =
             button.dataset.action;
 
+
         const id =
             button.dataset.id;
+
 
         if (
             action ===
@@ -1680,6 +1626,7 @@
             return;
 
         }
+
 
         if (
             action ===
@@ -1727,7 +1674,9 @@
 
         initDOM();
 
+
         loadShifts();
+
 
         render();
 
@@ -1779,144 +1728,6 @@
         init();
 
     }
-    
-                                        </button>
-
-                                </div>
-
-                            </div>
-
-                        `;
-
-                    }
-                )
-                .join("");
-
-    }
 
 
-    /* =====================================================
-       SHIFT ACTIONS
-       ===================================================== */
-
-    function handleShiftAction(event) {
-
-        const button =
-            event.target.closest(
-                "[data-action]"
-            );
-
-        if (!button) {
-            return;
-        }
-
-        const action =
-            button.dataset.action;
-
-        const id =
-            button.dataset.id;
-
-        if (action === "edit") {
-
-            openEditModal(id);
-
-            return;
-
-        }
-
-        if (action === "delete") {
-
-            deleteShift(id);
-
-        }
-
-    }
-
-
-    /* =====================================================
-       PUBLIC API
-       ===================================================== */
-
-    window.JobCashShifts = {
-
-        getShifts: function () {
-
-            return shifts.slice();
-
-        },
-
-        reload: function () {
-
-            loadShifts();
-
-            render();
-
-        }
-
-    };
-
-
-    /* =====================================================
-       INITIALIZATION
-       ===================================================== */
-
-    function init() {
-
-        initDOM();
-
-        loadShifts();
-
-        render();
-
-
-        if (shiftsList) {
-
-            shiftsList.addEventListener(
-                "click",
-                handleShiftAction
-            );
-
-        }
-
-
-        if (addButton) {
-
-            addButton.addEventListener(
-                "click",
-                function (event) {
-
-                    event.preventDefault();
-
-                    openModal();
-
-                }
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       START
-       ===================================================== */
-
-    if (
-        document.readyState ===
-        "loading"
-    ) {
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            init
-        );
-
-    } else {
-
-        init();
-
-    }
-    
-    
 })();
-                                       
