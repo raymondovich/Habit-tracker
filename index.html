@@ -1,201 +1,379 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#09090b">
-<title>Habit.</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#09090b;color:#f4f4f1;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif}
-.app{max-width:620px;margin:auto;padding:28px 18px 40px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
-.logo{font-size:27px;font-weight:750;letter-spacing:-1px}.date{color:#85858d;font-size:13px;margin-top:4px}
-button{font:inherit;border:0}.round{width:44px;height:44px;border-radius:50%;background:#151519;color:#eee;border:1px solid #29292f;font-size:22px}
-.hero{background:linear-gradient(145deg,#17171b,#101012);border:1px solid #29292f;border-radius:30px;padding:24px 21px;margin-bottom:25px;box-shadow:0 20px 60px #0008}
-.row{display:flex;justify-content:space-between;align-items:end}.eyebrow{text-transform:uppercase;letter-spacing:1.5px;color:#77777f;font-size:11px}
-.percent{font-size:42px;font-weight:750;letter-spacing:-2px}.subtitle{color:#92929a;font-size:14px;margin-top:7px}
-.track{height:6px;background:#29292e;border-radius:9px;margin-top:20px;overflow:hidden}.fill{height:100%;width:0;background:#eee;transition:.3s}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}.stat{background:#0c0c0f;border:1px solid #24242a;border-radius:16px;padding:11px}.stat b{font-size:18px}.stat small{display:block;color:#77777f;font-size:10px;margin-top:3px}
-.head{display:flex;justify-content:space-between;align-items:center;margin:0 2px 12px}.head b{font-size:18px}.head span{font-size:11px;color:#77777f}
-.list{display:flex;flex-direction:column;gap:10px}.habit{display:flex;align-items:center;gap:12px;background:#111114;border:1px solid #25252b;border-radius:21px;padding:14px}
-.check{width:32px;height:32px;border-radius:10px;background:#0b0b0d;border:1px solid #3b3b42;color:#111;font-size:18px}.done .check{background:#e8e8e1;border-color:#e8e8e1}.main{flex:1}.name{font-size:15px;font-weight:650}.done .name{text-decoration:line-through;opacity:.55}.streak{font-size:11px;color:#77777f;margin-top:4px}.delete{background:none;color:#55555d;font-size:20px;padding:7px}
-.add{width:100%;margin-top:13px;padding:15px;border-radius:20px;background:#e7e7e0;color:#101012;font-weight:700}.empty{text-align:center;color:#77777f;padding:25px;border:1px dashed #29292f;border-radius:20px}
-.modal{position:fixed;inset:0;background:#000b;display:none;align-items:end;padding:14px}.modal.show{display:flex}.sheet{width:100%;max-width:620px;margin:auto;background:#17171b;border:1px solid #29292f;border-radius:28px;padding:20px}.sheet h2{margin:0 0 15px}
-input{width:100%;padding:15px;border-radius:16px;border:1px solid #29292f;background:#0c0c0f;color:#fff;outline:none}.actions{display:flex;gap:10px;margin-top:12px}.actions button{flex:1;padding:14px;border-radius:16px}.cancel{background:#28282d;color:#fff}.save{background:#e7e7e0;color:#111;font-weight:700}
-.footer{text-align:center;color:#45454c;font-size:9px;letter-spacing:1.5px;margin-top:28px;text-transform:uppercase}
-</style>
+    <meta charset="UTF-8">
+
+```
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<meta name="theme-color" content="#050505">
+
+<meta
+    name="description"
+    content="Job & Cash — приложение для учёта рабочих смен, часов и заработка."
+>
+
+<title>Job & Cash</title>
+
+<link rel="stylesheet" href="design/style.css">
+```
+
 </head>
+
 <body>
-<main class="app">
-<header class="top"><div><div class="logo">Habit.</div><div class="date" id="date"></div></div><button class="round" id="reset">↻</button></header>
-<section class="hero"><div class="row"><div><div class="eyebrow">Сегодня</div><div class="subtitle">Маленькие действия. Большой результат.</div></div><div class="percent" id="pct">0%</div></div>
-<div class="track"><div class="fill" id="fill"></div></div>
-<div class="stats"><div class="stat"><b id="done">0</b><small>выполнено</small></div><div class="stat"><b id="total">0</b><small>привычек</small></div><div class="stat"><b id="best">0</b><small>лучшая серия</small></div></div></section>
-<div class="head"><b>Мои привычки</b><span id="today"></span></div>
-<section class="list" id="list"></section>
-<button class="add" id="add">＋ Добавить привычку</button><div class="footer">dark premium • habit tracker</div>
-</main>
-<div class="modal" id="modal"><div class="sheet"><h2>Новая привычка</h2><input id="input" maxlength="50" placeholder="Например: 10 минут чтения"><div class="actions"><button class="cancel" id="cancel">Отмена</button><button class="save" id="save">Добавить</button></div></div></div>
-<script>
-const K = "habit_premium_v2";
-const $ = id => document.getElementById(id);
-const els = {
-  date: $("date"),
-  today: $("today"),
-  list: $("list"),
-  pct: $("pct"),
-  fill: $("fill"),
-  done: $("done"),
-  total: $("total"),
-  best: $("best"),
-  add: $("add"),
-  modal: $("modal"),
-  input: $("input"),
-  cancel: $("cancel"),
-  save: $("save"),
-  reset: $("reset")
-};
 
-const dayKey = () => {
-  const d = new Date();
-  return d.getFullYear() + "-" +
-    String(d.getMonth()+1).padStart(2,"0") + "-" +
-    String(d.getDate()).padStart(2,"0");
-};
+```
+<div class="app">
 
-let state = JSON.parse(localStorage.getItem(K) || "null") || {
-  last: dayKey(),
-  habits: [
-    {id:1,name:"Стакан воды",streak:0,done:false},
-    {id:2,name:"10 минут чтения",streak:0,done:false},
-    {id:3,name:"Тренировка",streak:0,done:false}
-  ]
-};
+    <!-- =========================================
+         HEADER
+    ========================================== -->
 
-function save(){ localStorage.setItem(K, JSON.stringify(state)); }
+    <header class="app-header">
 
-if(state.last !== dayKey()){
-  state.habits.forEach(h => h.done = false);
-  state.last = dayKey();
-  save();
-}
+        <div class="brand">
+            <div class="brand-title">JOB & CASH</div>
+            <div class="brand-subtitle" id="currentDate">
+                —
+            </div>
+        </div>
 
-els.date.textContent = new Date().toLocaleDateString("ru-RU", {
-  weekday:"long", day:"numeric", month:"long"
-});
-els.today.textContent = new Date().toLocaleDateString("ru-RU", {
-  day:"2-digit", month:"2-digit"
-});
+    </header>
 
-function render(){
-  els.list.innerHTML = "";
 
-  if(!state.habits.length){
-    els.list.innerHTML = '<div class="empty">Пока нет привычек.<br>Добавь первую ниже.</div>';
-  }
+    <!-- =========================================
+         MAIN
+    ========================================== -->
 
-  state.habits.forEach(h => {
-    const item = document.createElement("div");
-    item.className = "habit" + (h.done ? " done" : "");
+    <main class="main-content">
 
-    const check = document.createElement("button");
-    check.className = "check";
-    check.textContent = h.done ? "✓" : "";
-    check.setAttribute("aria-label","Отметить привычку");
-    
-    const main = document.createElement("div");
-    main.className = "main";
 
-    const name = document.createElement("div");
-    name.className = "name";
-    name.textContent = h.name;
+        <!-- =====================================
+             PERIOD SELECTOR
+        ====================================== -->
 
-    const streak = document.createElement("div");
-    streak.className = "streak";
-    streak.textContent = "🔥 Серия: " + h.streak + " дн.";
+        <section class="period-section">
 
-    main.append(name, streak);
+            <div class="period-switcher" id="periodSwitcher">
 
-    const del = document.createElement("button");
-    del.className = "delete";
-    del.textContent = "×";
-    del.setAttribute("aria-label","Удалить привычку");
+                <button
+                    type="button"
+                    class="period-button active"
+                    data-period="week"
+                >
+                    Неделя
+                </button>
 
-    check.onclick = () => toggle(h.id);
-    del.onclick = () => {
-      state.habits = state.habits.filter(x => x.id !== h.id);
-      save();
-      render();
-    };
+                <button
+                    type="button"
+                    class="period-button"
+                    data-period="month"
+                >
+                    Месяц
+                </button>
 
-    item.append(check, main, del);
-    els.list.appendChild(item);
-  });
+                <button
+                    type="button"
+                    class="period-button"
+                    data-period="year"
+                >
+                    Год
+                </button>
 
-  const total = state.habits.length;
-  const done = state.habits.filter(h => h.done).length;
-  const percent = total ? Math.round(done / total * 100) : 0;
-  const best = total ? Math.max(...state.habits.map(h => h.streak || 0)) : 0;
+            </div>
 
-  els.pct.textContent = percent + "%";
-  els.fill.style.width = percent + "%";
-  els.done.textContent = done;
-  els.total.textContent = total;
-  els.best.textContent = best;
-}
+        </section>
 
-function toggle(id){
-  const habit = state.habits.find(h => h.id === id);
-  if(!habit) return;
 
-  habit.done = !habit.done;
-  habit.streak = Math.max(0, (habit.streak || 0) + (habit.done ? 1 : -1));
+        <!-- =====================================
+             MAIN EARNINGS
+        ====================================== -->
 
-  save();
-  render();
-}
+        <section class="earnings-card">
 
-els.add.onclick = () => {
-  els.modal.classList.add("show");
-  els.input.value = "";
-  setTimeout(() => els.input.focus(), 50);
-};
+            <div class="card-label">
+                ЗАРАБОТАНО
+            </div>
 
-els.cancel.onclick = () => els.modal.classList.remove("show");
+            <div
+                class="earnings-value"
+                id="totalEarnings"
+            >
+                €0.00
+            </div>
 
-els.modal.onclick = e => {
-  if(e.target === els.modal) els.modal.classList.remove("show");
-};
+            <div
+                class="earnings-period"
+                id="earningsPeriod"
+            >
+                За эту неделю
+            </div>
 
-els.save.onclick = () => {
-  const name = els.input.value.trim();
-  if(!name){
-    els.input.focus();
-    return;
-  }
+        </section>
 
-  state.habits.push({
-    id: Date.now(),
-    name,
-    streak: 0,
-    done: false
-  });
-  
-  save();
-  render();
-  els.modal.classList.remove("show");
-};
 
-els.input.onkeydown = e => {
-  if(e.key === "Enter") els.save.click();
-};
+        <!-- =====================================
+             QUICK STATS
+        ====================================== -->
 
-els.reset.onclick = () => {
-  state.habits.forEach(h => h.done = false);
-  save();
-  render();
-};
+        <section class="quick-stats">
 
-render();
-</script>
-</body></html>
+            <div class="stat-card">
+
+                <div class="stat-value" id="shiftCount">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    СМЕН
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-value" id="workedHours">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    ЧАСОВ
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-value" id="averageEarnings">
+                    €0.00
+                </div>
+
+                <div class="stat-label">
+                    В СРЕДНЕМ
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             CURRENT RATE
+        ====================================== -->
+
+        <section class="rate-card">
+
+            <div class="rate-info">
+
+                <div class="card-label">
+                    ПОЧАСОВАЯ СТАВКА
+                </div>
+
+                <div
+                    class="rate-value"
+                    id="currentRate"
+                >
+                    €0.00
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                class="secondary-button"
+                id="changeRateButton"
+            >
+                Изменить
+            </button>
+
+        </section>
+
+
+        <!-- =====================================
+             ADD SHIFT
+        ====================================== -->
+
+        <section class="add-shift-section">
+
+            <button
+                type="button"
+                class="primary-button"
+                id="addShiftButton"
+            >
+                <span class="button-icon">+</span>
+                <span>Добавить смену</span>
+            </button>
+
+        </section>
+
+
+        <!-- =====================================
+             RECENT SHIFTS
+        ====================================== -->
+
+        <section class="shifts-section">
+
+            <div class="section-header">
+
+                <h2>
+                    Последние смены
+                </h2>
+
+                <button
+                    type="button"
+                    class="text-button"
+                    id="allShiftsButton"
+                >
+                    Все
+                </button>
+
+            </div>
+
+
+            <div
+                class="shifts-list"
+                id="shiftsList"
+            >
+
+                <div
+                    class="empty-state"
+                    id="emptyShifts"
+                >
+
+                    <div class="empty-icon">
+                        —
+                    </div>
+
+                    <div class="empty-title">
+                        Смен пока нет
+                    </div>
+
+                    <div class="empty-description">
+                        Добавь первую смену, чтобы начать
+                        отслеживать заработок.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             STATISTICS PREVIEW
+        ====================================== -->
+
+        <section class="statistics-preview">
+
+            <div class="section-header">
+
+                <h2>
+                    Статистика
+                </h2>
+
+                <button
+                    type="button"
+                    class="text-button"
+                    id="statisticsButton"
+                >
+                    Открыть
+                </button>
+
+            </div>
+
+
+            <div class="statistics-grid">
+
+                <div class="statistics-item">
+
+                    <div
+                        class="statistics-value"
+                        id="bestWeek"
+                    >
+                        €0.00
+                    </div>
+
+                    <div class="statistics-label">
+                        ЛУЧШАЯ НЕДЕЛЯ
+                    </div>
+
+                </div>
+
+
+                <div class="statistics-item">
+
+                    <div
+                        class="statistics-value"
+                        id="bestMonth"
+                    >
+                        €0.00
+                    </div>
+
+                    <div class="statistics-label">
+                        ЛУЧШИЙ МЕСЯЦ
+                    </div>
+
+                </div>
+
+
+                <div class="statistics-item">
+
+                    <div
+                        class="statistics-value"
+                        id="bestYear"
+                    >
+                        €0.00
+                    </div>
+
+                    <div class="statistics-label">
+                        ЛУЧШИЙ ГОД
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =========================================
+         FOOTER
+    ========================================== -->
+
+    <footer class="app-footer">
+
+        <a
+            href="https://t.me/shkeltinsh"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            Created by @shkeltinsh
+        </a>
+
+    </footer>
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
+
+<script type="module" src="modules/rate.js"></script>
+<script type="module" src="modules/shifts.js"></script>
+<script type="module" src="modules/earnings.js"></script>
+<script type="module" src="statistics/statistics.js"></script>
+```
+
+</body>
+</html>
