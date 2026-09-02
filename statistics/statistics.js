@@ -4,14 +4,15 @@
 
 
     /* =====================================================
-       JOB & CASH — STATISTICS
+       JOB & CASH — STATISTICS 2.0
        ===================================================== */
 
-    const MODULE_NAME = "JOB & CASH: Statistics";
+    const MODULE_NAME =
+        "JOB & CASH: Statistics";
 
 
     /* =====================================================
-       DATA
+       DATA SOURCE
        ===================================================== */
 
     function getShifts() {
@@ -36,12 +37,13 @@
 
 
     /* =====================================================
-       HELPERS
+       NUMBER HELPERS
        ===================================================== */
 
     function toNumber(value) {
 
-        const number = Number(value);
+        const number =
+            Number(value);
 
         return Number.isFinite(number)
             ? number
@@ -72,6 +74,10 @@
 
     }
 
+
+    /* =====================================================
+       DATE HELPERS
+       ===================================================== */
 
     function parseDate(value) {
 
@@ -131,64 +137,41 @@
     }
 
 
-    function normalizeShift(shift) {
-
-        if (!shift) {
-            return null;
-        }
-
+    function getToday() {
 
         const date =
-            parseDate(
-                shift.date
-            );
+            new Date();
 
 
-        if (!date) {
-            return null;
-        }
+        date.setHours(
+            0,
+            0,
+            0,
+            0
+        );
 
 
-        return {
-
-            id: shift.id,
-
-            date: shift.date,
-
-            dateObject: date,
-
-            hours:
-                toNumber(
-                    shift.hours
-                ),
-
-            rate:
-                toNumber(
-                    shift.rate
-                ),
-
-            earnings:
-                toNumber(
-                    shift.earnings
-                )
-
-        };
+        return date;
 
     }
 
 
-    function getNormalizedShifts() {
+    function getDateKey(date) {
 
-        return getShifts()
-            .map(normalizeShift)
-            .filter(Boolean);
+        return (
+            date.getFullYear() +
+            "-" +
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0") +
+            "-" +
+            String(
+                date.getDate()
+            ).padStart(2, "0")
+        );
 
     }
 
-
-    /* =====================================================
-       PERIOD KEYS
-       ===================================================== */
 
     function getMonthKey(date) {
 
@@ -257,8 +240,7 @@
         const week =
             Math.ceil(
                 (
-                    diff /
-                    86400000 +
+                    diff / 86400000 +
                     1
                 ) / 7
             );
@@ -287,6 +269,68 @@
                 info.week
             ).padStart(2, "0")
         );
+
+    }
+
+
+    /* =====================================================
+       NORMALIZATION
+       ===================================================== */
+
+    function normalizeShift(shift) {
+
+        if (!shift) {
+            return null;
+        }
+
+
+        const date =
+            parseDate(
+                shift.date
+            );
+
+
+        if (!date) {
+            return null;
+        }
+
+
+        return {
+
+            id:
+                shift.id,
+
+            date:
+                shift.date,
+
+            dateObject:
+                date,
+
+            hours:
+                toNumber(
+                    shift.hours
+                ),
+
+            rate:
+                toNumber(
+                    shift.rate
+                ),
+
+            earnings:
+                toNumber(
+                    shift.earnings
+                )
+
+        };
+
+    }
+
+
+    function getNormalizedShifts() {
+
+        return getShifts()
+            .map(normalizeShift)
+            .filter(Boolean);
 
     }
 
@@ -331,25 +375,27 @@
                     hours
                 ),
 
-            count,
+            count:
+
+                count,
 
             averageEarnings:
                 round(
-                    count
+                    count > 0
                         ? earnings / count
                         : 0
                 ),
 
             averageHours:
                 round(
-                    count
+                    count > 0
                         ? hours / count
                         : 0
                 ),
 
             averageRate:
                 round(
-                    hours
+                    hours > 0
                         ? earnings / hours
                         : 0
                 )
@@ -401,7 +447,7 @@
 
 
     /* =====================================================
-       DAILY
+       DAILY STATISTICS
        ===================================================== */
 
     function getDailyStatistics() {
@@ -430,7 +476,8 @@
 
                         period,
 
-                        type: "day",
+                        type:
+                            "day",
 
                         ...aggregate(
                             groups[period]
@@ -445,7 +492,7 @@
 
 
     /* =====================================================
-       WEEKLY
+       WEEKLY STATISTICS
        ===================================================== */
 
     function getWeeklyStatistics() {
@@ -476,7 +523,8 @@
 
                         period,
 
-                        type: "week",
+                        type:
+                            "week",
 
                         ...aggregate(
                             groups[period]
@@ -491,7 +539,7 @@
 
 
     /* =====================================================
-       MONTHLY
+       MONTHLY STATISTICS
        ===================================================== */
 
     function getMonthlyStatistics() {
@@ -522,7 +570,8 @@
 
                         period,
 
-                        type: "month",
+                        type:
+                            "month",
 
                         ...aggregate(
                             groups[period]
@@ -537,7 +586,7 @@
 
 
     /* =====================================================
-       YEARLY
+       YEARLY STATISTICS
        ===================================================== */
 
     function getYearlyStatistics() {
@@ -568,7 +617,8 @@
 
                         period,
 
-                        type: "year",
+                        type:
+                            "year",
 
                         ...aggregate(
                             groups[period]
@@ -578,6 +628,121 @@
 
                 }
             );
+
+    }
+
+
+    /* =====================================================
+       CURRENT PERIOD
+       ===================================================== */
+
+    function getCurrentWeek() {
+
+        const today =
+            getToday();
+
+
+        const key =
+            getWeekKey(
+                today
+            );
+
+
+        return getNormalizedShifts()
+            .filter(
+                function (shift) {
+
+                    return (
+                        getWeekKey(
+                            shift.dateObject
+                        ) === key
+                    );
+
+                }
+            );
+
+    }
+
+
+    function getCurrentMonth() {
+
+        const today =
+            getToday();
+
+
+        const key =
+            getMonthKey(
+                today
+            );
+
+
+        return getNormalizedShifts()
+            .filter(
+                function (shift) {
+
+                    return (
+                        getMonthKey(
+                            shift.dateObject
+                        ) === key
+                    );
+
+                }
+            );
+
+    }
+
+
+    function getCurrentYear() {
+
+        const today =
+            getToday();
+
+
+        const key =
+            getYearKey(
+                today
+            );
+
+
+        return getNormalizedShifts()
+            .filter(
+                function (shift) {
+
+                    return (
+                        getYearKey(
+                            shift.dateObject
+                        ) === key
+                    );
+
+                }
+            );
+
+    }
+
+
+    function getCurrentWeekSummary() {
+
+        return aggregate(
+            getCurrentWeek()
+        );
+
+    }
+
+
+    function getCurrentMonthSummary() {
+
+        return aggregate(
+            getCurrentMonth()
+        );
+
+    }
+
+
+    function getCurrentYearSummary() {
+
+        return aggregate(
+            getCurrentYear()
+        );
 
     }
 
@@ -607,7 +772,6 @@
 
                 return current.earnings >
                     best.earnings
-
                     ? current
                     : best;
 
@@ -649,154 +813,6 @@
 
         return findBest(
             getYearlyStatistics()
-        );
-
-    }
-
-
-    /* =====================================================
-       ALL TIME
-       ===================================================== */
-
-    function getAllTimeSummary() {
-
-        return aggregate(
-            getNormalizedShifts()
-        );
-
-    }
-
-
-    /* =====================================================
-       CURRENT PERIOD
-       ===================================================== */
-
-    function getCurrentPeriodSummary(
-        period
-    ) {
-
-        const shifts =
-            getNormalizedShifts();
-
-
-        const now =
-            new Date();
-
-
-        now.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
-
-        let filtered = [];
-
-
-        if (period === "day") {
-
-            const key =
-                now.getFullYear() +
-                "-" +
-                String(
-                    now.getMonth() + 1
-                ).padStart(2, "0") +
-                "-" +
-                String(
-                    now.getDate()
-                ).padStart(2, "0");
-
-
-            filtered =
-                shifts.filter(
-                    function (shift) {
-
-                        return (
-                            shift.date ===
-                            key
-                        );
-
-                    }
-                );
-
-        }
-
-
-        if (period === "week") {
-
-            const key =
-                getWeekKey(
-                    now
-                );
-
-
-            filtered =
-                shifts.filter(
-                    function (shift) {
-
-                        return (
-                            getWeekKey(
-                                shift.dateObject
-                            ) === key
-                        );
-
-                    }
-                );
-
-        }
-
-
-        if (period === "month") {
-
-            const key =
-                getMonthKey(
-                    now
-                );
-
-
-            filtered =
-                shifts.filter(
-                    function (shift) {
-
-                        return (
-                            getMonthKey(
-                                shift.dateObject
-                            ) === key
-                        );
-
-                    }
-                );
-
-        }
-
-
-        if (period === "year") {
-
-            const key =
-                getYearKey(
-                    now
-                );
-
-
-            filtered =
-                shifts.filter(
-                    function (shift) {
-
-                        return (
-                            getYearKey(
-                                shift.dateObject
-                            ) === key
-                        );
-
-                    }
-                );
-
-        }
-
-
-        return aggregate(
-            filtered
         );
 
     }
@@ -867,7 +883,101 @@
 
 
     /* =====================================================
-       UI
+       COMPLETE DASHBOARD DATA
+       ===================================================== */
+
+    function getDashboardData() {
+
+        const allTime =
+            aggregate(
+                getNormalizedShifts()
+            );
+
+
+        const currentWeek =
+            getCurrentWeekSummary();
+
+
+        const currentMonth =
+            getCurrentMonthSummary();
+
+
+        const currentYear =
+            getCurrentYearSummary();
+
+
+        const bestDay =
+            getBestDay();
+
+
+        const bestWeek =
+            getBestWeek();
+
+
+        const bestMonth =
+            getBestMonth();
+
+
+        const bestYear =
+            getBestYear();
+
+
+        return {
+
+            allTime,
+
+            current: {
+
+                week:
+                    currentWeek,
+
+                month:
+                    currentMonth,
+
+                year:
+                    currentYear
+
+            },
+
+            best: {
+
+                day:
+                    bestDay,
+
+                week:
+                    bestWeek,
+
+                month:
+                    bestMonth,
+
+                year:
+                    bestYear
+
+            },
+
+            history: {
+
+                days:
+                    getDailyStatistics(),
+
+                weeks:
+                    getWeeklyStatistics(),
+
+                months:
+                    getMonthlyStatistics(),
+
+                years:
+                    getYearlyStatistics()
+
+            }
+
+        };
+
+    }
+
+
+    /* =====================================================
+       EXISTING UI
        ===================================================== */
 
     function updateStatisticsUI() {
@@ -950,10 +1060,22 @@
             getNormalizedShifts,
 
         getAllTimeSummary:
-            getAllTimeSummary,
+            function () {
 
-        getCurrentPeriodSummary:
-            getCurrentPeriodSummary,
+                return aggregate(
+                    getNormalizedShifts()
+                );
+
+            },
+
+        getCurrentWeekSummary:
+            getCurrentWeekSummary,
+
+        getCurrentMonthSummary:
+            getCurrentMonthSummary,
+
+        getCurrentYearSummary:
+            getCurrentYearSummary,
 
         getDailyStatistics:
             getDailyStatistics,
@@ -981,6 +1103,9 @@
 
         getTopPeriods:
             getTopPeriods,
+
+        getDashboardData:
+            getDashboardData,
 
         updateUI:
             updateStatisticsUI
