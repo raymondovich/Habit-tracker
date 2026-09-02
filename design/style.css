@@ -61,6 +61,19 @@
     --success: #8cae82;
 
     /* -----------------------------------------------------
+       TYPOGRAPHY
+       ----------------------------------------------------- */
+
+    --font-ui:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+
+    /* -----------------------------------------------------
        RADIUS
        ----------------------------------------------------- */
 
@@ -129,14 +142,7 @@ body {
 
     color: var(--text);
 
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Display",
-        "SF Pro Text",
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
+    font-family: var(--font-ui);
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -154,7 +160,10 @@ button,
 input,
 select,
 textarea {
-    font: inherit;
+    font-family: var(--font-ui);
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
 }
 
 button {
@@ -165,6 +174,24 @@ button {
 a {
     color: inherit;
     text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div,
+label,
+button,
+input,
+select,
+textarea,
+a {
+    font-family: var(--font-ui);
 }
 
 ::selection {
@@ -1436,7 +1463,6 @@ a {
 
 /* =========================================================
    PERFORMANCE
-   OUTER BLOCK
    ========================================================= */
 
 .statistics-performance,
@@ -1452,14 +1478,19 @@ a {
     background:
         radial-gradient(
             circle at 92% 0%,
-            rgba(216, 177, 90, 0.055),
-            transparent 34%
+            rgba(216, 177, 90, 0.065),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 5% 100%,
+            rgba(255, 255, 255, 0.018),
+            transparent 38%
         ),
         linear-gradient(
             145deg,
-            #10100f 0%,
-            #0b0b0a 52%,
-            #080808 100%
+            #11110f 0%,
+            #0b0b0a 50%,
+            #070707 100%
         );
 
     border: 1px solid var(--border-strong);
@@ -1467,7 +1498,8 @@ a {
     border-radius: var(--radius-xl);
 
     box-shadow:
-        var(--shadow-medium);
+        var(--shadow-medium),
+        0 0 34px rgba(216, 177, 90, 0.03);
 }
 
 .statistics-performance::before,
@@ -1484,10 +1516,10 @@ a {
 
     border-radius: 50%;
 
-    border: 1px solid rgba(216, 177, 90, 0.065);
+    border: 1px solid rgba(216, 177, 90, 0.07);
 
     box-shadow:
-        0 0 0 20px rgba(216, 177, 90, 0.010),
+        0 0 0 20px rgba(216, 177, 90, 0.011),
         0 0 0 40px rgba(216, 177, 90, 0.006);
 }
 
@@ -1507,7 +1539,7 @@ a {
         linear-gradient(
             90deg,
             transparent,
-            rgba(216, 177, 90, 0.17),
+            rgba(216, 177, 90, 0.19),
             transparent
         );
 }
@@ -1529,7 +1561,7 @@ a {
     align-items: center;
     justify-content: space-between;
 
-    margin-bottom: 15px;
+    margin-bottom: 16px;
 }
 
 .performance-header h2 {
@@ -1541,7 +1573,7 @@ a {
 
 
 /* =========================================================
-   PERFORMANCE CURRENT / PREVIOUS
+   PERFORMANCE MAIN
    ========================================================= */
 
 .performance-main {
@@ -1550,12 +1582,18 @@ a {
     align-items: stretch;
     justify-content: space-between;
 
-    gap: 9px;
+    gap: 10px;
 
     padding-bottom: 16px;
 
-    border-bottom: 1px solid var(--border-soft);
+    border-bottom:
+        1px solid var(--border-soft);
 }
+
+
+/* =========================================================
+   CURRENT / PREVIOUS
+   ========================================================= */
 
 .current-performance-value,
 .previous-performance-value {
@@ -1570,8 +1608,8 @@ a {
     background:
         linear-gradient(
             145deg,
-            rgba(216, 177, 90, 0.052),
-            rgba(255, 255, 255, 0.018) 52%,
+            rgba(216, 177, 90, 0.055),
+            rgba(255, 255, 255, 0.018) 48%,
             rgba(255, 255, 255, 0.006)
         );
 
@@ -1610,7 +1648,7 @@ a {
 
     border-radius: 50%;
 
-    border: 1px solid rgba(216, 177, 90, 0.05);
+    border: 1px solid rgba(216, 177, 90, 0.055);
 }
 
 .previous-performance-value {
@@ -1620,7 +1658,7 @@ a {
 
     padding: 12px 12px 11px;
 
-    align-self: stretch;
+    align-self: flex-end;
 
     color: var(--text-tertiary);
 
@@ -1675,7 +1713,7 @@ a {
 
 /* =========================================================
    PERFORMANCE DETAILS
-   UNIFIED INNER CONTAINER
+   SAME DESIGN LANGUAGE AS PERFORMANCE
    ========================================================= */
 
 .performance-details {
@@ -1695,22 +1733,51 @@ a {
 
     background:
         radial-gradient(
-            circle at 50% 0%,
-            rgba(216, 177, 90, 0.035),
-            transparent 65%
+            circle at 92% 0%,
+            rgba(216, 177, 90, 0.05),
+            transparent 45%
+        ),
+        radial-gradient(
+            circle at 8% 100%,
+            rgba(255, 255, 255, 0.018),
+            transparent 45%
         ),
         linear-gradient(
             145deg,
-            rgba(255, 255, 255, 0.022),
-            rgba(255, 255, 255, 0.007)
+            #11110f 0%,
+            #0b0b0a 52%,
+            #080808 100%
         );
 
-    border: 1px solid rgba(255, 255, 255, 0.065);
+    border: 1px solid var(--border-strong);
 
-    border-radius: 14px;
+    border-radius: 18px;
 
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.025);
+        var(--shadow-small),
+        0 0 26px rgba(216, 177, 90, 0.02);
+}
+
+.performance-details::before {
+    content: "";
+
+    position: absolute;
+
+    width: 145px;
+    height: 145px;
+
+    top: -105px;
+    right: -65px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(216, 177, 90, 0.055);
+
+    box-shadow:
+        0 0 0 16px rgba(216, 177, 90, 0.008),
+        0 0 0 32px rgba(216, 177, 90, 0.005);
+
+    pointer-events: none;
 }
 
 .performance-detail {
@@ -1718,9 +1785,11 @@ a {
 
     min-width: 0;
 
-    padding: 13px 7px 12px;
+    padding: 14px 7px 13px;
 
     text-align: center;
+
+    z-index: 1;
 }
 
 .performance-detail + .performance-detail::before {
@@ -1767,6 +1836,7 @@ a {
 
 /* =========================================================
    BEST PERFORMANCE
+   SAME DESIGN LANGUAGE AS PERFORMANCE
    ========================================================= */
 
 .best-performance {
@@ -1780,15 +1850,20 @@ a {
 
     background:
         radial-gradient(
-            circle at 88% 0%,
-            rgba(216, 177, 90, 0.045),
+            circle at 92% 0%,
+            rgba(216, 177, 90, 0.06),
             transparent 34%
+        ),
+        radial-gradient(
+            circle at 5% 100%,
+            rgba(255, 255, 255, 0.018),
+            transparent 38%
         ),
         linear-gradient(
             145deg,
-            #0f0f0e 0%,
-            #0b0b0a 52%,
-            #080808 100%
+            #11110f 0%,
+            #0b0b0a 50%,
+            #070707 100%
         );
 
     border: 1px solid var(--border-strong);
@@ -1796,7 +1871,8 @@ a {
     border-radius: var(--radius-xl);
 
     box-shadow:
-        var(--shadow-medium);
+        var(--shadow-medium),
+        0 0 34px rgba(216, 177, 90, 0.03);
 }
 
 .best-performance::before {
@@ -1804,19 +1880,21 @@ a {
 
     position: absolute;
 
-    width: 190px;
-    height: 190px;
+    width: 205px;
+    height: 205px;
 
-    top: -142px;
-    right: -82px;
+    top: -150px;
+    right: -92px;
 
     border-radius: 50%;
 
-    border: 1px solid rgba(216, 177, 90, 0.06);
+    border: 1px solid rgba(216, 177, 90, 0.07);
 
     box-shadow:
-        0 0 0 18px rgba(216, 177, 90, 0.009),
-        0 0 0 36px rgba(216, 177, 90, 0.005);
+        0 0 0 20px rgba(216, 177, 90, 0.011),
+        0 0 0 40px rgba(216, 177, 90, 0.006);
+
+    pointer-events: none;
 }
 
 .best-performance::after {
@@ -1834,7 +1912,7 @@ a {
         linear-gradient(
             90deg,
             transparent,
-            rgba(216, 177, 90, 0.15),
+            rgba(216, 177, 90, 0.19),
             transparent
         );
 }
@@ -1845,7 +1923,7 @@ a {
 }
 
 .best-performance-header {
-    margin-bottom: 13px;
+    margin-bottom: 16px;
 }
 
 .best-performance-header h2 {
@@ -1856,7 +1934,7 @@ a {
 }
 
 .best-performance-row {
-    min-height: 49px;
+    min-height: 50px;
 
     display: flex;
 
@@ -1865,7 +1943,7 @@ a {
 
     gap: 14px;
 
-    padding: 0 3px;
+    padding: 10px 3px;
 
     border-bottom:
         1px solid var(--border-soft);
@@ -1882,7 +1960,7 @@ a {
 }
 
 .best-performance-date {
-    margin-top: 3px;
+    margin-top: 4px;
 
     color: var(--text-secondary);
 
@@ -1953,11 +2031,13 @@ a {
 
     border-radius: 50%;
 
-    border: 1px solid rgba(216, 177, 90, 0.065);
+    border: 1px solid rgba(216, 177, 90, 0.07);
 
     box-shadow:
-        0 0 0 21px rgba(216, 177, 90, 0.009),
-        0 0 0 42px rgba(216, 177, 90, 0.005);
+        0 0 0 21px rgba(216, 177, 90, 0.01),
+        0 0 0 42px rgba(216, 177, 90, 0.006);
+
+    pointer-events: none;
 }
 
 .all-time::after,
@@ -2003,11 +2083,19 @@ a {
 
     grid-template-columns: repeat(2, 1fr);
 
-    gap: 6px;
+    gap: 7px;
 }
 
 .all-time-item {
-    padding: 15px 12px;
+    min-height: 64px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    padding: 14px 12px;
 
     background:
         linear-gradient(
@@ -2033,7 +2121,7 @@ a {
 }
 
 .all-time-label {
-    margin-top: 6px;
+    margin-top: 7px;
 
     color: var(--text-tertiary);
 
@@ -2308,7 +2396,7 @@ a:focus-visible {
     }
 
     .performance-detail {
-        padding: 12px 5px 11px;
+        padding: 13px 5px 12px;
     }
 
     .performance-detail-value {
@@ -2317,6 +2405,21 @@ a:focus-visible {
 
     .performance-detail-label {
         font-size: 7px;
+    }
+
+    .best-performance-row {
+        min-height: 48px;
+        padding-top: 9px;
+        padding-bottom: 9px;
+    }
+
+    .all-time-grid {
+        gap: 6px;
+    }
+
+    .all-time-item {
+        min-height: 61px;
+        padding: 13px 10px;
     }
 }
 
@@ -2373,8 +2476,21 @@ a:focus-visible {
         font-size: 7px;
     }
 
+    .best-performance-label,
+    .best-performance-date {
+        font-size: 9px;
+    }
+
+    .best-performance-value {
+        font-size: 12px;
+    }
+
     .all-time-grid {
         grid-template-columns: 1fr 1fr;
+    }
+
+    .all-time-value {
+        font-size: 15px;
     }
 }
 
