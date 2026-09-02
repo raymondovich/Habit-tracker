@@ -1242,6 +1242,125 @@
 
         init();
 
+/* =====================================================
+   EXISTING STATISTICS UI
+   ===================================================== */
+
+function updateStatisticsUI() {
+
+    const bestWeekElement =
+        document.getElementById("bestWeek");
+
+    const bestMonthElement =
+        document.getElementById("bestMonth");
+
+    const bestYearElement =
+        document.getElementById("bestYear");
+
+
+    const bestWeek =
+        getBestWeek();
+
+    const bestMonth =
+        getBestMonth();
+
+    const bestYear =
+        getBestYear();
+
+
+    function formatMoney(value) {
+
+        return new Intl.NumberFormat(
+            "ru-RU",
+            {
+                maximumFractionDigits: 0
+            }
+        ).format(
+            toNumber(value)
+        ) + " ₽";
+
+    }
+
+
+    function getValue(item) {
+
+        if (!item) {
+
+            return "—";
+
+        }
+
+        return formatMoney(
+            item.earnings
+        );
+
+    }
+
+
+    if (bestWeekElement) {
+
+        bestWeekElement.textContent =
+            getValue(bestWeek);
+
+    }
+
+
+    if (bestMonthElement) {
+
+        bestMonthElement.textContent =
+            getValue(bestMonth);
+
+    }
+
+
+    if (bestYearElement) {
+
+        bestYearElement.textContent =
+            getValue(bestYear);
+
+    }
+
+}
+
+
+/* =====================================================
+   STATISTICS UI EVENTS
+   ===================================================== */
+
+window.addEventListener(
+    "jobcash:shiftschange",
+    function () {
+
+        updateStatisticsUI();
+
+    }
+);
+
+
+/* =====================================================
+   INITIAL STATISTICS RENDER
+   ===================================================== */
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            updateStatisticsUI();
+
+        }
+    );
+
+} else {
+
+    updateStatisticsUI();
+
+}
+
     }
 
 
