@@ -34,7 +34,7 @@
 
 
         rateElement.textContent =
-            "€" +
+            "₽" +
             currentRate.toFixed(2);
     }
 
@@ -43,7 +43,7 @@
 
         const input =
             window.prompt(
-                "Введите почасовую ставку (€):",
+                "Введите почасовую ставку (₽):",
                 currentRate > 0
                     ? currentRate.toFixed(2)
                     : ""
@@ -179,7 +179,7 @@
         formatRate: function (value) {
 
             return (
-                "€" +
+                "₽" +
                 Number(value).toFixed(2)
             );
 
