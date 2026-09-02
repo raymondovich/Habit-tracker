@@ -4,82 +4,31 @@
 
 
     /* =====================================================
-       JOB & CASH — STATISTICS ENGINE
+       JOB & CASH — STATISTICS
        ===================================================== */
 
-    const MODULE_NAME =
-        "JOB & CASH: Statistics";
+    const MODULE_NAME = "JOB & CASH: Statistics";
 
 
     /* =====================================================
-       DATA SOURCE
+       DATA
        ===================================================== */
 
     function getShifts() {
 
-        /*
-         * Основной источник —
-         * публичный API модуля смен.
-         */
-
         if (
             window.JobCashShifts &&
-            typeof window.JobCashShifts.getShifts ===
-                "function"
+            typeof window.JobCashShifts.getShifts === "function"
         ) {
 
-            const result =
+            const shifts =
                 window.JobCashShifts.getShifts();
 
-            if (Array.isArray(result)) {
-
-                return result;
-
-            }
+            return Array.isArray(shifts)
+                ? shifts
+                : [];
 
         }
-
-
-        /*
-         * Fallback для независимой работы
-         * статистического движка.
-         */
-
-        try {
-
-            const saved =
-                localStorage.getItem(
-                    "job_cash_shifts"
-                );
-
-
-            if (!saved) {
-
-                return [];
-
-            }
-
-
-            const parsed =
-                JSON.parse(saved);
-
-
-            if (Array.isArray(parsed)) {
-
-                return parsed;
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                MODULE_NAME +
-                ": ошибка чтения смен",
-                error
-            );
-
-        }
-
 
         return [];
 
@@ -87,13 +36,12 @@
 
 
     /* =====================================================
-       NUMBER HELPERS
+       HELPERS
        ===================================================== */
 
     function toNumber(value) {
 
-        const number =
-            Number(value);
+        const number = Number(value);
 
         return Number.isFinite(number)
             ? number
@@ -104,25 +52,31 @@
 
     function round(value) {
 
-        return (
-            Math.round(
-                toNumber(value) * 100
-            ) / 100
-        );
+        return Math.round(
+            toNumber(value) * 100
+        ) / 100;
 
     }
 
 
-    /* =====================================================
-       DATE HELPERS
-       ===================================================== */
+    function formatMoney(value) {
+
+        return new Intl.NumberFormat(
+            "ru-RU",
+            {
+                maximumFractionDigits: 0
+            }
+        ).format(
+            toNumber(value)
+        ) + " ₽";
+
+    }
+
 
     function parseDate(value) {
 
         if (!value) {
-
             return null;
-
         }
 
 
@@ -131,9 +85,7 @@
 
 
         if (parts.length !== 3) {
-
             return null;
-
         }
 
 
@@ -147,17 +99,6 @@
             Number(parts[2]);
 
 
-        if (
-            !Number.isInteger(year) ||
-            !Number.isInteger(month) ||
-            !Number.isInteger(day)
-        ) {
-
-            return null;
-
-        }
-
-
         const date =
             new Date(
                 year,
@@ -165,11 +106,6 @@
                 day
             );
 
-
-        /*
-         * Проверяем, что дата действительно
-         * соответствует введённому значению.
-         */
 
         if (
             date.getFullYear() !== year ||
@@ -195,48 +131,88 @@
     }
 
 
-    function formatDateKey(date) {
+    function normalizeShift(shift) {
 
-        if (!(date instanceof Date)) {
-
-            return "";
-
+        if (!shift) {
+            return null;
         }
 
 
-        const year =
-            date.getFullYear();
+        const date =
+            parseDate(
+                shift.date
+            );
 
 
-        const month =
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0");
+        if (!date) {
+            return null;
+        }
 
 
-        const day =
-            String(
-                date.getDate()
-            ).padStart(2, "0");
+        return {
 
+            id: shift.id,
+
+            date: shift.date,
+
+            dateObject: date,
+
+            hours:
+                toNumber(
+                    shift.hours
+                ),
+
+            rate:
+                toNumber(
+                    shift.rate
+                ),
+
+            earnings:
+                toNumber(
+                    shift.earnings
+                )
+
+        };
+
+    }
+
+
+    function getNormalizedShifts() {
+
+        return getShifts()
+            .map(normalizeShift)
+            .filter(Boolean);
+
+    }
+
+
+    /* =====================================================
+       PERIOD KEYS
+       ===================================================== */
+
+    function getMonthKey(date) {
 
         return (
-            year +
+            date.getFullYear() +
             "-" +
-            month +
-            "-" +
-            day
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0")
+        );
+
+    }
+
+
+    function getYearKey(date) {
+
+        return String(
+            date.getFullYear()
         );
 
     }
 
 
     function getISOWeekInfo(date) {
-
-        /*
-         * ISO week:
-         * Monday = первый день недели.
-         */
 
         const target =
             new Date(date);
@@ -249,10 +225,6 @@
             0
         );
 
-
-        /*
-         * Thursday определяет ISO year.
-         */
 
         const day =
             target.getDay() || 7;
@@ -285,22 +257,16 @@
         const week =
             Math.ceil(
                 (
-                    (
-                        diff /
-                        86400000
-                    ) + 1
+                    diff /
+                    86400000 +
+                    1
                 ) / 7
             );
 
 
         return {
-
-            year:
-                year,
-
-            week:
-                week
-
+            year,
+            week
         };
 
     }
@@ -309,7 +275,9 @@
     function getWeekKey(date) {
 
         const info =
-            getISOWeekInfo(date);
+            getISOWeekInfo(
+                date
+            );
 
 
         return (
@@ -323,104 +291,8 @@
     }
 
 
-    function getMonthKey(date) {
-
-        return (
-            date.getFullYear() +
-            "-" +
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0")
-        );
-
-    }
-
-
-    function getYearKey(date) {
-
-        return String(
-            date.getFullYear()
-        );
-
-    }
-
-
     /* =====================================================
-       NORMALIZE SHIFT
-       ===================================================== */
-
-    function normalizeShift(shift) {
-
-        if (!shift) {
-
-            return null;
-
-        }
-
-
-        const date =
-            parseDate(
-                shift.date
-            );
-
-
-        if (!date) {
-
-            return null;
-
-        }
-
-
-        return {
-
-            id:
-                shift.id,
-
-            date:
-                shift.date,
-
-            dateObject:
-                date,
-
-            hours:
-                toNumber(
-                    shift.hours
-                ),
-
-            rate:
-                toNumber(
-                    shift.rate
-                ),
-
-            earnings:
-                toNumber(
-                    shift.earnings
-                )
-
-        };
-
-    }
-
-
-    function getNormalizedShifts() {
-
-        return getShifts()
-            .map(
-                normalizeShift
-            )
-            .filter(
-                function (shift) {
-
-                    return shift !== null;
-
-                }
-            );
-
-    }
-
-
-    /* =====================================================
-       AGGREGATE SHIFTS
+       AGGREGATION
        ===================================================== */
 
     function aggregate(shifts) {
@@ -447,24 +319,6 @@
             shifts.length;
 
 
-        const averageEarnings =
-            count > 0
-                ? earnings / count
-                : 0;
-
-
-        const averageHours =
-            count > 0
-                ? hours / count
-                : 0;
-
-
-        const averageRate =
-            hours > 0
-                ? earnings / hours
-                : 0;
-
-
         return {
 
             earnings:
@@ -477,22 +331,27 @@
                     hours
                 ),
 
-            count:
-                count,
+            count,
 
             averageEarnings:
                 round(
-                    averageEarnings
+                    count
+                        ? earnings / count
+                        : 0
                 ),
 
             averageHours:
                 round(
-                    averageHours
+                    count
+                        ? hours / count
+                        : 0
                 ),
 
             averageRate:
                 round(
-                    averageRate
+                    hours
+                        ? earnings / hours
+                        : 0
                 )
 
         };
@@ -501,7 +360,7 @@
 
 
     /* =====================================================
-       GROUP BY
+       GROUPING
        ===================================================== */
 
     function groupBy(
@@ -542,7 +401,7 @@
 
 
     /* =====================================================
-       DAILY STATISTICS
+       DAILY
        ===================================================== */
 
     function getDailyStatistics() {
@@ -556,9 +415,7 @@
                 shifts,
                 function (shift) {
 
-                    return formatDateKey(
-                        shift.dateObject
-                    );
+                    return shift.date;
 
                 }
             );
@@ -567,23 +424,17 @@
         return Object.keys(groups)
             .sort()
             .map(
-                function (key) {
-
-                    const data =
-                        aggregate(
-                            groups[key]
-                        );
-
+                function (period) {
 
                     return {
 
-                        period:
-                            key,
+                        period,
 
-                        type:
-                            "day",
+                        type: "day",
 
-                        ...data
+                        ...aggregate(
+                            groups[period]
+                        )
 
                     };
 
@@ -594,7 +445,7 @@
 
 
     /* =====================================================
-       WEEKLY STATISTICS
+       WEEKLY
        ===================================================== */
 
     function getWeeklyStatistics() {
@@ -619,23 +470,17 @@
         return Object.keys(groups)
             .sort()
             .map(
-                function (key) {
-
-                    const data =
-                        aggregate(
-                            groups[key]
-                        );
-
+                function (period) {
 
                     return {
 
-                        period:
-                            key,
+                        period,
 
-                        type:
-                            "week",
+                        type: "week",
 
-                        ...data
+                        ...aggregate(
+                            groups[period]
+                        )
 
                     };
 
@@ -646,7 +491,7 @@
 
 
     /* =====================================================
-       MONTHLY STATISTICS
+       MONTHLY
        ===================================================== */
 
     function getMonthlyStatistics() {
@@ -671,23 +516,17 @@
         return Object.keys(groups)
             .sort()
             .map(
-                function (key) {
-
-                    const data =
-                        aggregate(
-                            groups[key]
-                        );
-
+                function (period) {
 
                     return {
 
-                        period:
-                            key,
+                        period,
 
-                        type:
-                            "month",
+                        type: "month",
 
-                        ...data
+                        ...aggregate(
+                            groups[period]
+                        )
 
                     };
 
@@ -698,7 +537,7 @@
 
 
     /* =====================================================
-       YEARLY STATISTICS
+       YEARLY
        ===================================================== */
 
     function getYearlyStatistics() {
@@ -723,23 +562,17 @@
         return Object.keys(groups)
             .sort()
             .map(
-                function (key) {
-
-                    const data =
-                        aggregate(
-                            groups[key]
-                        );
-
+                function (period) {
 
                     return {
 
-                        period:
-                            key,
+                        period,
 
-                        type:
-                            "year",
+                        type: "year",
 
-                        ...data
+                        ...aggregate(
+                            groups[period]
+                        )
 
                     };
 
@@ -753,13 +586,10 @@
        BEST PERIOD
        ===================================================== */
 
-    function findBest(
-        statistics
-    ) {
+    function findBest(statistics) {
 
         if (
-            !Array.isArray(statistics) ||
-            statistics.length === 0
+            !statistics.length
         ) {
 
             return null;
@@ -771,23 +601,15 @@
             function (best, current) {
 
                 if (!best) {
-
                     return current;
-
                 }
 
 
-                if (
-                    current.earnings >
+                return current.earnings >
                     best.earnings
-                ) {
 
-                    return current;
-
-                }
-
-
-                return best;
+                    ? current
+                    : best;
 
             },
             null
@@ -795,10 +617,6 @@
 
     }
 
-
-    /* =====================================================
-       BEST DAY
-       ===================================================== */
 
     function getBestDay() {
 
@@ -809,10 +627,6 @@
     }
 
 
-    /* =====================================================
-       BEST WEEK
-       ===================================================== */
-
     function getBestWeek() {
 
         return findBest(
@@ -822,10 +636,6 @@
     }
 
 
-    /* =====================================================
-       BEST MONTH
-       ===================================================== */
-
     function getBestMonth() {
 
         return findBest(
@@ -834,10 +644,6 @@
 
     }
 
-
-    /* =====================================================
-       BEST YEAR
-       ===================================================== */
 
     function getBestYear() {
 
@@ -849,17 +655,13 @@
 
 
     /* =====================================================
-       ALL-TIME SUMMARY
+       ALL TIME
        ===================================================== */
 
     function getAllTimeSummary() {
 
-        const shifts =
-            getNormalizedShifts();
-
-
         return aggregate(
-            shifts
+            getNormalizedShifts()
         );
 
     }
@@ -894,10 +696,16 @@
 
         if (period === "day") {
 
-            const todayKey =
-                formatDateKey(
-                    now
-                );
+            const key =
+                now.getFullYear() +
+                "-" +
+                String(
+                    now.getMonth() + 1
+                ).padStart(2, "0") +
+                "-" +
+                String(
+                    now.getDate()
+                ).padStart(2, "0");
 
 
             filtered =
@@ -905,10 +713,8 @@
                     function (shift) {
 
                         return (
-                            formatDateKey(
-                                shift.dateObject
-                            ) ===
-                            todayKey
+                            shift.date ===
+                            key
                         );
 
                     }
@@ -919,7 +725,7 @@
 
         if (period === "week") {
 
-            const currentWeek =
+            const key =
                 getWeekKey(
                     now
                 );
@@ -932,8 +738,7 @@
                         return (
                             getWeekKey(
                                 shift.dateObject
-                            ) ===
-                            currentWeek
+                            ) === key
                         );
 
                     }
@@ -944,7 +749,7 @@
 
         if (period === "month") {
 
-            const currentMonth =
+            const key =
                 getMonthKey(
                     now
                 );
@@ -957,8 +762,7 @@
                         return (
                             getMonthKey(
                                 shift.dateObject
-                            ) ===
-                            currentMonth
+                            ) === key
                         );
 
                     }
@@ -969,7 +773,7 @@
 
         if (period === "year") {
 
-            const currentYear =
+            const key =
                 getYearKey(
                     now
                 );
@@ -982,8 +786,7 @@
                         return (
                             getYearKey(
                                 shift.dateObject
-                            ) ===
-                            currentYear
+                            ) === key
                         );
 
                     }
@@ -1005,14 +808,8 @@
 
     function getTopPeriods(
         type,
-        limit
+        limit = 5
     ) {
-
-        const count =
-            Number(limit) > 0
-                ? Number(limit)
-                : 5;
-
 
         let statistics = [];
 
@@ -1024,24 +821,21 @@
 
         }
 
-
-        if (type === "week") {
+        else if (type === "week") {
 
             statistics =
                 getWeeklyStatistics();
 
         }
 
-
-        if (type === "month") {
+        else if (type === "month") {
 
             statistics =
                 getMonthlyStatistics();
 
         }
 
-
-        if (type === "year") {
+        else if (type === "year") {
 
             statistics =
                 getYearlyStatistics();
@@ -1063,8 +857,85 @@
             )
             .slice(
                 0,
-                count
+                Math.max(
+                    1,
+                    Number(limit) || 5
+                )
             );
+
+    }
+
+
+    /* =====================================================
+       UI
+       ===================================================== */
+
+    function updateStatisticsUI() {
+
+        const bestWeekElement =
+            document.getElementById(
+                "bestWeek"
+            );
+
+
+        const bestMonthElement =
+            document.getElementById(
+                "bestMonth"
+            );
+
+
+        const bestYearElement =
+            document.getElementById(
+                "bestYear"
+            );
+
+
+        const bestWeek =
+            getBestWeek();
+
+
+        const bestMonth =
+            getBestMonth();
+
+
+        const bestYear =
+            getBestYear();
+
+
+        if (bestWeekElement) {
+
+            bestWeekElement.textContent =
+                bestWeek
+                    ? formatMoney(
+                        bestWeek.earnings
+                    )
+                    : "—";
+
+        }
+
+
+        if (bestMonthElement) {
+
+            bestMonthElement.textContent =
+                bestMonth
+                    ? formatMoney(
+                        bestMonth.earnings
+                    )
+                    : "—";
+
+        }
+
+
+        if (bestYearElement) {
+
+            bestYearElement.textContent =
+                bestYear
+                    ? formatMoney(
+                        bestYear.earnings
+                    )
+                    : "—";
+
+        }
 
     }
 
@@ -1076,115 +947,43 @@
     window.JobCashStatistics = {
 
         getShifts:
-            function () {
-
-                return getNormalizedShifts();
-
-            },
-
+            getNormalizedShifts,
 
         getAllTimeSummary:
-            function () {
-
-                return getAllTimeSummary();
-
-            },
-
+            getAllTimeSummary,
 
         getCurrentPeriodSummary:
-            function (period) {
-
-                return getCurrentPeriodSummary(
-                    period
-                );
-
-            },
-
+            getCurrentPeriodSummary,
 
         getDailyStatistics:
-            function () {
-
-                return getDailyStatistics();
-
-            },
-
+            getDailyStatistics,
 
         getWeeklyStatistics:
-            function () {
-
-                return getWeeklyStatistics();
-
-            },
-
+            getWeeklyStatistics,
 
         getMonthlyStatistics:
-            function () {
-
-                return getMonthlyStatistics();
-
-            },
-
+            getMonthlyStatistics,
 
         getYearlyStatistics:
-            function () {
-
-                return getYearlyStatistics();
-
-            },
-
+            getYearlyStatistics,
 
         getBestDay:
-            function () {
-
-                return getBestDay();
-
-            },
-
+            getBestDay,
 
         getBestWeek:
-            function () {
-
-                return getBestWeek();
-
-            },
-
+            getBestWeek,
 
         getBestMonth:
-            function () {
-
-                return getBestMonth();
-
-            },
-
+            getBestMonth,
 
         getBestYear:
-            function () {
-
-                return getBestYear();
-
-            },
-
+            getBestYear,
 
         getTopPeriods:
-            function (
-                type,
-                limit
-            ) {
+            getTopPeriods,
 
-                return getTopPeriods(
-                    type,
-                    limit
-                );
-
-            },
-
-
-        reload:
-            function () {
-
-                return getAllTimeSummary();
-
-            }
+        updateUI:
+            updateStatisticsUI
 
     };
 
@@ -1197,12 +996,8 @@
         "jobcash:shiftschange",
         function () {
 
-            /*
-             * Statistics не хранит состояние,
-             * поэтому после изменения смен
-             * новые расчёты автоматически
-             * получают актуальные данные.
-             */
+            updateStatisticsUI();
+
 
             window.dispatchEvent(
                 new CustomEvent(
@@ -1219,6 +1014,9 @@
        ===================================================== */
 
     function init() {
+
+        updateStatisticsUI();
+
 
         console.log(
             MODULE_NAME +
@@ -1238,128 +1036,11 @@
             init
         );
 
-    } else {
+    }
+
+    else {
 
         init();
-
-/* =====================================================
-   EXISTING STATISTICS UI
-   ===================================================== */
-
-function updateStatisticsUI() {
-
-    const bestWeekElement =
-        document.getElementById("bestWeek");
-
-    const bestMonthElement =
-        document.getElementById("bestMonth");
-
-    const bestYearElement =
-        document.getElementById("bestYear");
-
-
-    const bestWeek =
-        getBestWeek();
-
-    const bestMonth =
-        getBestMonth();
-
-    const bestYear =
-        getBestYear();
-
-
-    function formatMoney(value) {
-
-        return new Intl.NumberFormat(
-            "ru-RU",
-            {
-                maximumFractionDigits: 0
-            }
-        ).format(
-            toNumber(value)
-        ) + " ₽";
-
-    }
-
-
-    function getValue(item) {
-
-        if (!item) {
-
-            return "—";
-
-        }
-
-        return formatMoney(
-            item.earnings
-        );
-
-    }
-
-
-    if (bestWeekElement) {
-
-        bestWeekElement.textContent =
-            getValue(bestWeek);
-
-    }
-
-
-    if (bestMonthElement) {
-
-        bestMonthElement.textContent =
-            getValue(bestMonth);
-
-    }
-
-
-    if (bestYearElement) {
-
-        bestYearElement.textContent =
-            getValue(bestYear);
-
-    }
-
-}
-
-
-/* =====================================================
-   STATISTICS UI EVENTS
-   ===================================================== */
-
-window.addEventListener(
-    "jobcash:shiftschange",
-    function () {
-
-        updateStatisticsUI();
-
-    }
-);
-
-
-/* =====================================================
-   INITIAL STATISTICS RENDER
-   ===================================================== */
-
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
-
-            updateStatisticsUI();
-
-        }
-    );
-
-} else {
-
-    updateStatisticsUI();
-
-}
 
     }
 
