@@ -1,85 +1,55 @@
 <!DOCTYPE html>
-
 <html lang="ru">
-
 <head>
-
-
 <meta charset="UTF-8">
-
 <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 >
-
 <meta
     name="theme-color"
     content="#050505"
 >
-
 <meta
     name="description"
     content="Job & Cash — приложение для учёта рабочих смен, часов и заработка."
 >
-
 <title>Job & Cash</title>
-
 <link
     rel="stylesheet"
     href="design/style.css"
 >
-
-
 </head>
-
 <body>
-
 <div class="app">
-
-
 <!-- =========================================
      HEADER
 ========================================== -->
-
 <header class="app-header">
-
     <div class="brand">
-
         <div class="brand-title">
             JOB & CASH
         </div>
-
         <div
             class="brand-subtitle"
             id="currentDate"
         >
             —
         </div>
-
     </div>
-
 </header>
-
-
-
 <!-- =========================================
      MAIN
 ========================================== -->
-
 <main class="main-content">
-
-
     <!-- =====================================
          PERIOD SELECTOR
     ====================================== -->
-
     <section class="period-section">
-
         <div
             class="period-switcher"
             id="periodSwitcher"
         >
-
             <button
                 type="button"
                 class="period-button active"
@@ -87,8 +57,6 @@
             >
                 Неделя
             </button>
-
-
             <button
                 type="button"
                 class="period-button"
@@ -96,8 +64,6 @@
             >
                 Месяц
             </button>
-
-
             <button
                 type="button"
                 class="period-button"
@@ -105,128 +71,81 @@
             >
                 Год
             </button>
-
         </div>
-
     </section>
-
-
-
     <!-- =====================================
          MAIN EARNINGS
     ====================================== -->
-
     <section class="earnings-card">
-
         <div class="card-label">
             ЗАРАБОТАНО
         </div>
-
-
         <div
             class="earnings-value"
             id="totalEarnings"
         >
             ₽0.00
         </div>
-
-
         <div
             class="earnings-period"
             id="earningsPeriod"
         >
             За эту неделю
         </div>
-
     </section>
-
-
-
     <!-- =====================================
          QUICK STATS
     ====================================== -->
-
     <section class="quick-stats">
-
-
         <div class="stat-card">
-
             <div
                 class="stat-value"
                 id="shiftCount"
             >
                 0
             </div>
-
             <div class="stat-label">
                 СМЕН
             </div>
-
         </div>
-
-
-
         <div class="stat-card">
-
             <div
                 class="stat-value"
                 id="workedHours"
             >
                 0
             </div>
-
             <div class="stat-label">
                 ЧАСОВ
             </div>
-
         </div>
-
-
-
         <div class="stat-card">
-
             <div
                 class="stat-value"
                 id="averageEarnings"
             >
                 ₽0.00
             </div>
-
             <div class="stat-label">
                 В СРЕДНЕМ
             </div>
-
         </div>
-
-
     </section>
-
-
-
     <!-- =====================================
          CURRENT RATE
     ====================================== -->
-
     <section class="rate-card">
-
-
         <div class="rate-info">
-
             <div class="card-label">
                 ПОЧАСОВАЯ СТАВКА
             </div>
-
-
             <div
                 class="rate-value"
                 id="currentRate"
             >
                 ₽0.00
             </div>
-
         </div>
-
-
         <button
             type="button"
             class="secondary-button"
@@ -234,54 +153,32 @@
         >
             Изменить
         </button>
-
-
     </section>
-
-
-
     <!-- =====================================
          ADD SHIFT
     ====================================== -->
-
     <section class="add-shift-section">
-
-
         <button
             type="button"
             class="primary-button"
             id="addShiftButton"
         >
-
             <span class="button-icon">
                 +
             </span>
-
             <span>
                 Добавить смену
             </span>
-
         </button>
-
-
     </section>
-
-
-
     <!-- =====================================
          RECENT SHIFTS
     ====================================== -->
-
     <section class="shifts-section">
-
-
         <div class="section-header">
-
             <h2>
                 Последние смены
             </h2>
-
-
             <button
                 type="button"
                 class="text-button"
@@ -289,145 +186,443 @@
             >
                 Все
             </button>
-
         </div>
-
-
-
         <div
             class="shifts-list"
             id="shiftsList"
         >
-
-
             <div
                 class="empty-state"
                 id="emptyShifts"
             >
-
                 <div class="empty-icon">
                     —
                 </div>
-
-
                 <div class="empty-title">
                     Смен пока нет
                 </div>
-
-
                 <div class="empty-description">
                     Добавь первую смену, чтобы начать
                     отслеживать заработок.
                 </div>
-
             </div>
-
-
         </div>
-
-
     </section>
-
-
-
     <!-- =====================================
          STATISTICS PREVIEW
+========================================== -->
+<section class="statistics-preview">
+    <div class="section-header">
+        <h2>
+            Статистика
+        </h2>
+        <button
+            type="button"
+            class="text-button"
+            id="statisticsButton"
+        >
+            Открыть
+        </button>
+    </div>
+    <div class="statistics-grid">
+        <div class="statistics-item">
+            <div
+                class="statistics-value"
+                id="bestWeek"
+            >
+                ₽0.00
+            </div>
+            <div class="statistics-label">
+                ЛУЧШАЯ НЕДЕЛЯ
+            </div>
+        </div>
+        <div class="statistics-item">
+            <div
+                class="statistics-value"
+                id="bestMonth"
+            >
+                ₽0.00
+            </div>
+            <div class="statistics-label">
+                ЛУЧШИЙ МЕСЯЦ
+            </div>
+        </div>
+        <div class="statistics-item">
+            <div
+                class="statistics-value"
+                id="bestYear"
+            >
+                ₽0.00
+            </div>
+            <div class="statistics-label">
+                ЛУЧШИЙ ГОД
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =========================================
+     STATISTICS UI 3.1
+========================================== -->
+<section
+    class="statistics-dashboard"
+    id="statisticsDashboard"
+>
+    <!-- =====================================
+         STATISTICS HEADER
     ====================================== -->
-
-    <section class="statistics-preview">
-
-
-        <div class="section-header">
-
+    <div class="statistics-dashboard-header">
+        <div>
+            <div class="card-label">
+                ANALYTICS
+            </div>
             <h2>
-                Статистика
+                Производительность
             </h2>
-
-
+        </div>
+        <div
+            class="statistics-period-label"
+            id="statisticsPeriodLabel"
+        >
+            Неделя
+        </div>
+    </div>
+    <!-- =====================================
+         CHART CONTROLS
+    ====================================== -->
+    <div class="statistics-controls">
+        <div
+            class="statistics-metric-switcher"
+            id="statisticsMetricSwitcher"
+        >
             <button
                 type="button"
-                class="text-button"
-                id="statisticsButton"
+                class="statistics-control-button active"
+                data-statistics-metric="earnings"
             >
-                Открыть
+                Заработок
             </button>
-
+            <button
+                type="button"
+                class="statistics-control-button"
+                data-statistics-metric="hours"
+            >
+                Часы
+            </button>
+            <button
+                type="button"
+                class="statistics-control-button"
+                data-statistics-metric="shifts"
+            >
+                Смены
+            </button>
         </div>
-
-
-
-        <div class="statistics-grid">
-
-
-            <div class="statistics-item">
-
-                <div
-                    class="statistics-value"
-                    id="bestWeek"
-                >
-                    ₽0.00
-                </div>
-
-
-                <div class="statistics-label">
-                    ЛУЧШАЯ НЕДЕЛЯ
-                </div>
-
-            </div>
-
-
-
-            <div class="statistics-item">
-
-                <div
-                    class="statistics-value"
-                    id="bestMonth"
-                >
-                    ₽0.00
-                </div>
-
-
-                <div class="statistics-label">
-                    ЛУЧШИЙ МЕСЯЦ
-                </div>
-
-            </div>
-
-
-
-            <div class="statistics-item">
-
-                <div
-                    class="statistics-value"
-                    id="bestYear"
-                >
-                    ₽0.00
-                </div>
-
-
-                <div class="statistics-label">
-                    ЛУЧШИЙ ГОД
-                </div>
-
-            </div>
-
-
+        <div
+            class="statistics-range-switcher"
+            id="statisticsRangeSwitcher"
+        >
+            <button
+                type="button"
+                class="statistics-range-button active"
+                data-statistics-range="day"
+            >
+                Дни
+            </button>
+            <button
+                type="button"
+                class="statistics-range-button"
+                data-statistics-range="week"
+            >
+                Недели
+            </button>
+            <button
+                type="button"
+                class="statistics-range-button"
+                data-statistics-range="month"
+            >
+                Месяцы
+            </button>
+            <button
+                type="button"
+                class="statistics-range-button"
+                data-statistics-range="year"
+            >
+                Годы
+            </button>
         </div>
-
-
+    </div>
+    <!-- =====================================
+         CHART
+    ====================================== -->
+    <div class="statistics-chart-card">
+        <div class="statistics-chart-header">
+            <div>
+                <div class="statistics-chart-label">
+                    ДИНАМИКА
+                </div>
+                <div
+                    class="statistics-chart-value"
+                    id="statisticsChartValue"
+                >
+                    ₽0.00
+                </div>
+            </div>
+            <div
+                class="statistics-chart-period"
+                id="statisticsChartPeriod"
+            >
+                —
+            </div>
+        </div>
+        <div
+            class="statistics-chart"
+            id="statisticsChart"
+            aria-label="График статистики"
+        >
+            <div class="statistics-chart-empty">
+                Недостаточно данных
+            </div>
+        </div>
+        <div
+            class="statistics-chart-labels"
+            id="statisticsChartLabels"
+        >
+        </div>
+    </div>
+    <!-- =====================================
+         PERFORMANCE COMPARISON
+    ====================================== -->
+    <section class="performance-section">
+        <div class="section-header">
+            <h2>
+                Performance
+            </h2>
+        </div>
+        <div class="performance-card">
+            <div class="performance-period">
+                <div class="performance-period-title">
+                    ТЕКУЩИЙ ПЕРИОД
+                </div>
+                <div
+                    class="performance-period-value"
+                    id="currentPerformanceValue"
+                >
+                    ₽0.00
+                </div>
+            </div>
+            <div class="performance-divider">
+                <span>
+                    VS
+                </span>
+            </div>
+            <div class="performance-period">
+                <div class="performance-period-title">
+                    ПРЕДЫДУЩИЙ
+                </div>
+                <div
+                    class="performance-period-value secondary"
+                    id="previousPerformanceValue"
+                >
+                    ₽0.00
+                </div>
+            </div>
+            <div
+                class="performance-change"
+                id="performanceChange"
+            >
+                <span
+                    class="performance-change-value"
+                    id="performanceChangeValue"
+                >
+                    0%
+                </span>
+                <span
+                    class="performance-change-direction"
+                    id="performanceChangeDirection"
+                >
+                    —
+                </span>
+            </div>
+        </div>
+        <!-- PERFORMANCE DETAILS -->
+        <div class="performance-details">
+            <div class="performance-detail">
+                <span>
+                    Часы
+                </span>
+                <strong
+                    id="performanceHours"
+                >
+                    0
+                </strong>
+            </div>
+            <div class="performance-detail">
+                <span>
+                    Смены
+                </span>
+                <strong
+                    id="performanceShifts"
+                >
+                    0
+                </strong>
+            </div>
+            <div class="performance-detail">
+                <span>
+                    Среднее
+                </span>
+                <strong
+                    id="performanceAverage"
+                >
+                    ₽0.00
+                </strong>
+            </div>
+        </div>
     </section>
-
-
+    <!-- =====================================
+         BEST PERFORMANCE
+    ====================================== -->
+    <section class="best-performance-section">
+        <div class="section-header">
+            <h2>
+                Best Performance
+            </h2>
+        </div>
+        <div class="best-performance-card">
+            <div class="best-performance-row">
+                <div class="best-performance-info">
+                    <div class="best-performance-title">
+                        Лучший день
+                    </div>
+                    <div
+                        class="best-performance-date"
+                        id="bestDayDate"
+                    >
+                        —
+                    </div>
+                </div>
+                <div
+                    class="best-performance-value"
+                    id="bestDayValue"
+                >
+                    ₽0.00
+                </div>
+            </div>
+            <div class="best-performance-row">
+                <div class="best-performance-info">
+                    <div class="best-performance-title">
+                        Лучшая неделя
+                    </div>
+                    <div
+                        class="best-performance-date"
+                        id="bestWeekDate"
+                    >
+                        —
+                    </div>
+                </div>
+                <div
+                    class="best-performance-value"
+                >
+                    ₽0.00
+                </div>
+            </div>
+            <div class="best-performance-row">
+                <div class="best-performance-info">
+                    <div class="best-performance-title">
+                        Лучший месяц
+                    </div>
+                    <div
+                        class="best-performance-date"
+                        id="bestMonthDate"
+                    >
+                        —
+                    </div>
+                </div>
+                <div
+                    class="best-performance-value"
+                >
+                    ₽0.00
+                </div>
+            </div>
+            <div class="best-performance-row">
+                <div class="best-performance-info">
+                    <div class="best-performance-title">
+                        Лучший год
+                    </div>
+                    <div
+                        class="best-performance-date"
+                        id="bestYearDate"
+                    >
+                        —
+                    </div>
+                </div>
+                <div
+                    class="best-performance-value"
+                >
+                    ₽0.00
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- =====================================
+         ALL TIME
+    ====================================== -->
+    <section class="all-time-section">
+        <div class="section-header">
+            <h2>
+                All Time
+            </h2>
+        </div>
+        <div class="all-time-card">
+            <div class="all-time-main">
+                <div class="card-label">
+                    ВСЕГО ЗАРАБОТАНО
+                </div>
+                <div
+                    class="all-time-value"
+                    id="allTimeEarnings"
+                >
+                    ₽0.00
+                </div>
+            </div>
+            <div class="all-time-grid">
+                <div class="all-time-stat">
+                    <strong
+                        id="allTimeHours"
+                    >
+                        0
+                    </strong>
+                    <span>
+                        ЧАСОВ
+                    </span>
+                </div>
+                <div class="all-time-stat">
+                    <strong
+                        id="allTimeShifts"
+                    >
+                        0
+                    </strong>
+                    <span>
+                        СМЕН
+                    </span>
+                </div>
+                <div class="all-time-stat">
+                    <strong
+                        id="allTimeAverage"
+                    >
+                        ₽0.00
+                    </strong>
+                    <span>
+                        СРЕДНЕЕ
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
 </main>
-
-
-
 <!-- =========================================
      FOOTER
 ========================================== -->
-
 <footer class="app-footer">
-
     <a
         href="https://t.me/shkeltinsh"
         target="_blank"
@@ -435,17 +630,14 @@
     >
         Created by @shkeltinsh
     </a>
-
 </footer>
-
-
 </div>
-
 <!-- =========================================
      JAVASCRIPT
 ========================================== -->
-
 <script src="modules/rate.js"></script>
 <script src="modules/shifts.js"></script>
 <script src="modules/earnings.js"></script>
 <script src="statistics/statistics.js"></script>
+</body>
+</html>
