@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 
 <html lang="ru">
+
 <head>
-    <meta charset="UTF-8">
 
 ```
+<meta charset="UTF-8">
+
 <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 >
 
-<meta name="theme-color" content="#050505">
+<meta
+    name="theme-color"
+    content="#050505"
+>
 
-<title>JOB & CASH</title>
+<meta
+    name="description"
+    content="Job & Cash — приложение для учёта рабочих смен, часов и заработка."
+>
 
-<link rel="stylesheet" href="design/style.css">
+<title>Job & Cash</title>
+
+<link
+    rel="stylesheet"
+    href="design/style.css"
+>
 ```
 
 </head>
@@ -24,7 +37,10 @@
 <div class="app">
 
 ```
-<!-- HEADER -->
+<!-- =========================================
+     HEADER
+========================================== -->
+
 <header class="app-header">
 
     <div class="brand">
@@ -45,56 +61,93 @@
 </header>
 
 
-<!-- MAIN -->
+
+<!-- =========================================
+     MAIN
+========================================== -->
+
 <main class="main-content">
 
 
-    <!-- PERIOD -->
-    <section class="period-switcher" id="periodSwitcher">
+    <!-- =====================================
+         PERIOD SELECTOR
+    ====================================== -->
 
-        <button
-            class="period-button active"
-            data-period="week"
-            type="button"
-        >
-            Неделя
-        </button>
+    <section class="period-section">
 
-        <button
-            class="period-button"
-            data-period="month"
-            type="button"
+        <div
+            class="period-switcher"
+            id="periodSwitcher"
         >
-            Месяц
-        </button>
 
-        <button
-            class="period-button"
-            data-period="year"
-            type="button"
-        >
-            Год
-        </button>
+            <button
+                type="button"
+                class="period-button active"
+                data-period="week"
+            >
+                Неделя
+            </button>
+
+
+            <button
+                type="button"
+                class="period-button"
+                data-period="month"
+            >
+                Месяц
+            </button>
+
+
+            <button
+                type="button"
+                class="period-button"
+                data-period="year"
+            >
+                Год
+            </button>
+
+        </div>
 
     </section>
 
 
-    <!-- EARNINGS -->
+
+    <!-- =====================================
+         MAIN EARNINGS
+    ====================================== -->
+
     <section class="earnings-card">
 
-        <div class="earnings-value" id="totalEarnings">
+        <div class="card-label">
+            ЗАРАБОТАНО
+        </div>
+
+
+        <div
+            class="earnings-value"
+            id="totalEarnings"
+        >
             €0.00
         </div>
 
-        <div class="earnings-period" id="earningsPeriod">
+
+        <div
+            class="earnings-period"
+            id="earningsPeriod"
+        >
             За эту неделю
         </div>
 
     </section>
 
 
-    <!-- QUICK STATS -->
+
+    <!-- =====================================
+         QUICK STATS
+    ====================================== -->
+
     <section class="quick-stats">
+
 
         <div class="stat-card">
 
@@ -106,10 +159,11 @@
             </div>
 
             <div class="stat-label">
-                Смен
+                СМЕН
             </div>
 
         </div>
+
 
 
         <div class="stat-card">
@@ -122,10 +176,11 @@
             </div>
 
             <div class="stat-label">
-                Часов
+                ЧАСОВ
             </div>
 
         </div>
+
 
 
         <div class="stat-card">
@@ -138,53 +193,87 @@
             </div>
 
             <div class="stat-label">
-                Средний заработок
+                В СРЕДНЕМ
             </div>
 
         </div>
 
+
     </section>
 
 
-    <!-- RATE -->
+
+    <!-- =====================================
+         CURRENT RATE
+    ====================================== -->
+
     <section class="rate-card">
 
-        <div>
 
-            <div class="rate-value" id="currentRate">
+        <div class="rate-info">
+
+            <div class="card-label">
+                ПОЧАСОВАЯ СТАВКА
+            </div>
+
+
+            <div
+                class="rate-value"
+                id="currentRate"
+            >
                 €0.00
             </div>
 
         </div>
 
+
         <button
+            type="button"
             class="secondary-button"
             id="changeRateButton"
-            type="button"
         >
-            Изменить ставку
+            Изменить
         </button>
+
 
     </section>
 
 
-    <!-- ADD SHIFT -->
-    <section>
+
+    <!-- =====================================
+         ADD SHIFT
+    ====================================== -->
+
+    <section class="add-shift-section">
+
 
         <button
+            type="button"
             class="primary-button"
             id="addShiftButton"
-            type="button"
         >
-            <span class="button-icon">＋</span>
-            Добавить смену
+
+            <span class="button-icon">
+                +
+            </span>
+
+            <span>
+                Добавить смену
+            </span>
+
         </button>
+
 
     </section>
 
 
-    <!-- SHIFTS -->
+
+    <!-- =====================================
+         RECENT SHIFTS
+    ====================================== -->
+
     <section class="shifts-section">
+
 
         <div class="section-header">
 
@@ -192,10 +281,11 @@
                 Последние смены
             </h2>
 
+
             <button
+                type="button"
                 class="text-button"
                 id="allShiftsButton"
-                type="button"
             >
                 Все
             </button>
@@ -203,25 +293,49 @@
         </div>
 
 
+
         <div
             class="shifts-list"
             id="shiftsList"
         >
 
+
             <div
                 class="empty-state"
                 id="emptyShifts"
             >
-                Смен пока нет
+
+                <div class="empty-icon">
+                    —
+                </div>
+
+
+                <div class="empty-title">
+                    Смен пока нет
+                </div>
+
+
+                <div class="empty-description">
+                    Добавь первую смену, чтобы начать
+                    отслеживать заработок.
+                </div>
+
             </div>
 
+
         </div>
+
 
     </section>
 
 
-    <!-- STATISTICS -->
+
+    <!-- =====================================
+         STATISTICS PREVIEW
+    ====================================== -->
+
     <section class="statistics-preview">
+
 
         <div class="section-header">
 
@@ -229,18 +343,21 @@
                 Статистика
             </h2>
 
+
             <button
+                type="button"
                 class="text-button"
                 id="statisticsButton"
-                type="button"
             >
-                Подробнее
+                Открыть
             </button>
 
         </div>
 
 
+
         <div class="statistics-grid">
+
 
             <div class="statistics-item">
 
@@ -251,11 +368,13 @@
                     €0.00
                 </div>
 
+
                 <div class="statistics-label">
-                    Лучшая неделя
+                    ЛУЧШАЯ НЕДЕЛЯ
                 </div>
 
             </div>
+
 
 
             <div class="statistics-item">
@@ -267,11 +386,13 @@
                     €0.00
                 </div>
 
+
                 <div class="statistics-label">
-                    Лучший месяц
+                    ЛУЧШИЙ МЕСЯЦ
                 </div>
 
             </div>
+
 
 
             <div class="statistics-item">
@@ -283,29 +404,36 @@
                     €0.00
                 </div>
 
+
                 <div class="statistics-label">
-                    Лучший год
+                    ЛУЧШИЙ ГОД
                 </div>
 
             </div>
 
+
         </div>
 
+
     </section>
+
 
 </main>
 
 
-<!-- FOOTER -->
+
+<!-- =========================================
+     FOOTER
+========================================== -->
+
 <footer class="app-footer">
 
-    Created by
     <a
         href="https://t.me/shkeltinsh"
         target="_blank"
         rel="noopener noreferrer"
     >
-        @shkeltinsh
+        Created by @shkeltinsh
     </a>
 
 </footer>
@@ -313,14 +441,20 @@
 
 </div>
 
-<!--
-    НА ЭТОМ ЭТАПЕ ПОДКЛЮЧАЕМ
-    ТОЛЬКО RATE.JS
--->
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
 
-<script type="module" src="modules/rate.js"></script>
-<script type="module" src="modules/shifts.js"></script>
+<script
+    type="module"
+    src="modules/rate.js"
+></script>
 
+<script
+    type="module"
+    src="modules/shifts.js"
+></script>
 
 </body>
+
 </html>
