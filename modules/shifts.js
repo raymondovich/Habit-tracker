@@ -214,7 +214,7 @@
     function formatMoney(value) {
 
         return (
-            "€" +
+            "₽" +
             Number(value || 0)
                 .toFixed(2)
         );
@@ -370,14 +370,14 @@
                             <div>
                                 <span>Ставка</span>
                                 <strong id="jcPreviewRate">
-                                    €0.00
+                                    ₽0.00
                                 </strong>
                             </div>
 
                             <div>
                                 <span>Заработок</span>
                                 <strong id="jcPreviewEarnings">
-                                    €0.00
+                                    ₽0.00
                                 </strong>
                             </div>
 
