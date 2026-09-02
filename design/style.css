@@ -1836,7 +1836,7 @@ a {
 
 /* =========================================================
    BEST PERFORMANCE
-   SAME DESIGN LANGUAGE AS PERFORMANCE
+   SAME CARD SYSTEM AS PERFORMANCE
    ========================================================= */
 
 .best-performance {
@@ -1851,8 +1851,8 @@ a {
     background:
         radial-gradient(
             circle at 92% 0%,
-            rgba(216, 177, 90, 0.06),
-            transparent 34%
+            rgba(216, 177, 90, 0.065),
+            transparent 32%
         ),
         radial-gradient(
             circle at 5% 100%,
@@ -1922,18 +1922,32 @@ a {
     z-index: 1;
 }
 
+
+/* ---------------------------------------------------------
+   HEADER
+   --------------------------------------------------------- */
+
 .best-performance-header {
-    margin-bottom: 16px;
+    margin-bottom: 15px;
 }
 
 .best-performance-header h2 {
     font-size: 12px;
+    line-height: 1;
+
     font-weight: 600;
 
     color: var(--text);
 }
 
+
+/* ---------------------------------------------------------
+   ROW CONTAINER
+   --------------------------------------------------------- */
+
 .best-performance-row {
+    position: relative;
+
     min-height: 50px;
 
     display: flex;
@@ -1943,20 +1957,57 @@ a {
 
     gap: 14px;
 
-    padding: 10px 3px;
+    padding: 10px 12px;
 
-    border-bottom:
-        1px solid var(--border-soft);
+    margin-bottom: 6px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(216, 177, 90, 0.042),
+            rgba(255, 255, 255, 0.014)
+        );
+
+    border: 1px solid rgba(216, 177, 90, 0.075);
+
+    border-radius: 12px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+    transition:
+        background var(--transition),
+        border-color var(--transition);
 }
 
 .best-performance-row:last-child {
-    border-bottom: 0;
+    margin-bottom: 0;
 }
+
+.best-performance-row:hover {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(216, 177, 90, 0.055),
+            rgba(255, 255, 255, 0.018)
+        );
+
+    border-color:
+        rgba(216, 177, 90, 0.11);
+}
+
+
+/* ---------------------------------------------------------
+   ROW CONTENT
+   --------------------------------------------------------- */
 
 .best-performance-label {
     color: var(--text-tertiary);
 
     font-size: 10px;
+    font-weight: 500;
+
+    line-height: 1.2;
 }
 
 .best-performance-date {
@@ -1965,17 +2016,81 @@ a {
     color: var(--text-secondary);
 
     font-size: 10px;
+    line-height: 1.2;
 }
 
 .best-performance-value {
+    flex-shrink: 0;
+
     color: var(--accent-light);
 
     font-size: 13px;
     font-weight: 600;
 
+    line-height: 1;
+
     white-space: nowrap;
 }
 
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    .best-performance {
+        padding: 17px;
+    }
+
+    .best-performance-header {
+        margin-bottom: 13px;
+    }
+
+    .best-performance-row {
+        min-height: 48px;
+
+        padding:
+            9px
+            10px;
+
+        margin-bottom: 5px;
+    }
+
+    .best-performance-label,
+    .best-performance-date {
+        font-size: 9px;
+    }
+
+    .best-performance-value {
+        font-size: 12px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL SCREENS
+   ========================================================= */
+
+@media (max-width: 350px) {
+
+    .best-performance-row {
+        min-height: 46px;
+
+        padding:
+            8px
+            9px;
+    }
+
+    .best-performance-label,
+    .best-performance-date {
+        font-size: 8px;
+    }
+
+    .best-performance-value {
+        font-size: 11px;
+    }
+}
 
 /* =========================================================
    ALL-TIME
