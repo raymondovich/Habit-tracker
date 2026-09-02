@@ -8,7 +8,12 @@
        ===================================================== */
 
 
-    let currentPeriod = "month";
+    const SHIFTS_STORAGE_KEY =
+        "job_cash_shifts";
+
+
+    let currentPeriod =
+        "week";
 
 
     /* =====================================================
@@ -18,17 +23,20 @@
     let periodSwitcher = null;
 
     let totalEarnings = null;
+
     let earningsPeriod = null;
 
     let shiftCount = null;
+
     let workedHours = null;
+
     let averageEarnings = null;
 
     let currentDate = null;
 
 
     /* =====================================================
-       INIT DOM
+       DOM INIT
        ===================================================== */
 
     function initDOM() {
@@ -78,6 +86,80 @@
 
 
     /* =====================================================
+       STORAGE
+       ===================================================== */
+
+    function getShifts() {
+
+        /*
+         First try the public shifts API.
+        */
+
+        if (
+            window.JobCashShifts &&
+            typeof window.JobCashShifts.getShifts ===
+                "function"
+        ) {
+
+            const result =
+                window.JobCashShifts.getShifts();
+
+
+            if (Array.isArray(result)) {
+
+                return result;
+
+            }
+
+        }
+
+
+        /*
+         Fallback:
+         read directly from localStorage.
+        */
+
+        try {
+
+            const saved =
+                localStorage.getItem(
+                    SHIFTS_STORAGE_KEY
+                );
+
+
+            if (!saved) {
+
+                return [];
+
+            }
+
+
+            const parsed =
+                JSON.parse(saved);
+
+
+            if (Array.isArray(parsed)) {
+
+                return parsed;
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "JOB & CASH: ошибка чтения смен",
+                error
+            );
+
+        }
+
+
+        return [];
+
+    }
+
+
+    /* =====================================================
        MONEY
        ===================================================== */
 
@@ -98,31 +180,6 @@
     /* =====================================================
        DATE
        ===================================================== */
-
-    function getToday() {
-
-        const date =
-            new Date();
-
-
-        return {
-
-            year:
-                date.getFullYear(),
-
-            month:
-                date.getMonth(),
-
-            day:
-                date.getDate(),
-
-            date:
-                date
-
-        };
-
-    }
-
 
     function parseDate(value) {
 
@@ -167,17 +224,29 @@
         }
 
 
-        return new Date(
-            year,
-            month,
-            day
+        const date =
+            new Date(
+                year,
+                month,
+                day
+            );
+
+
+        date.setHours(
+            0,
+            0,
+            0,
+            0
         );
+
+
+        return date;
 
     }
 
 
     /* =====================================================
-       PERIOD — WEEK
+       WEEK RANGE
        ===================================================== */
 
     function getWeekRange() {
@@ -199,17 +268,17 @@
 
 
         /*
-         JavaScript:
-         Sunday = 0
          Monday = 1
+         Sunday = 0
 
-         We need Monday → Sunday.
+         Week:
+         Monday → Sunday
         */
 
-        const difference =
+        const daysFromMonday =
             day === 0
-                ? -6
-                : 1 - day;
+                ? 6
+                : day - 1;
 
 
         const start =
@@ -217,8 +286,16 @@
 
 
         start.setDate(
-            today.getDate() +
-            difference
+            today.getDate() -
+            daysFromMonday
+        );
+
+
+        start.setHours(
+            0,
+            0,
+            0,
+            0
         );
 
 
@@ -240,15 +317,20 @@
 
 
         return {
-            start: start,
-            end: end
+
+            start:
+                start,
+
+            end:
+                end
+
         };
 
     }
 
 
     /* =====================================================
-       PERIOD — MONTH
+       MONTH RANGE
        ===================================================== */
 
     function getMonthRange() {
@@ -290,15 +372,20 @@
 
 
         return {
-            start: start,
-            end: end
+
+            start:
+                start,
+
+            end:
+                end
+
         };
 
     }
 
 
     /* =====================================================
-       PERIOD — YEAR
+       YEAR RANGE
        ===================================================== */
 
     function getYearRange() {
@@ -340,15 +427,20 @@
 
 
         return {
-            start: start,
-            end: end
+
+            start:
+                start,
+
+            end:
+                end
+
         };
 
     }
 
 
     /* =====================================================
-       CURRENT RANGE
+       CURRENT PERIOD RANGE
        ===================================================== */
 
     function getCurrentRange() {
@@ -377,24 +469,13 @@
 
 
     /* =====================================================
-       SHIFT FILTER
+       FILTER SHIFTS
        ===================================================== */
 
     function getPeriodShifts() {
 
-        if (
-            !window.JobCashShifts ||
-            typeof window.JobCashShifts.getShifts !==
-                "function"
-        ) {
-
-            return [];
-
-        }
-
-
         const shifts =
-            window.JobCashShifts.getShifts();
+            getShifts();
 
 
         const range =
@@ -506,7 +587,7 @@
             currentPeriod === "week"
         ) {
 
-            return "За неделю";
+            return "За эту неделю";
 
         }
 
@@ -515,21 +596,66 @@
             currentPeriod === "year"
         ) {
 
-            return "За год";
+            return "За этот год";
 
         }
 
 
-        return "За месяц";
+        return "За этот месяц";
 
     }
 
 
     /* =====================================================
-       RENDER PERIOD
+       CURRENT DATE
        ===================================================== */
 
-    function renderPeriod() {
+    function renderCurrentDate() {
+
+        if (!currentDate) {
+
+            return;
+
+        }
+
+
+        const today =
+            new Date();
+
+
+        const months = [
+
+            "Январь",
+            "Февраль",
+            "Март",
+            "Апрель",
+            "Май",
+            "Июнь",
+            "Июль",
+            "Август",
+            "Сентябрь",
+            "Октябрь",
+            "Ноябрь",
+            "Декабрь"
+
+        ];
+
+
+        currentDate.textContent =
+            months[
+                today.getMonth()
+            ] +
+            " " +
+            today.getFullYear();
+
+    }
+
+
+    /* =====================================================
+       RENDER PERIOD BUTTONS
+       ===================================================== */
+
+    function renderPeriodButtons() {
 
         if (!periodSwitcher) {
 
@@ -560,20 +686,10 @@
                         "active"
                     );
 
-                    button.setAttribute(
-                        "aria-selected",
-                        "true"
-                    );
-
                 } else {
 
                     button.classList.remove(
                         "active"
-                    );
-
-                    button.setAttribute(
-                        "aria-selected",
-                        "false"
                     );
 
                 }
@@ -594,6 +710,10 @@
             calculate();
 
 
+        /*
+         MAIN EARNINGS
+        */
+
         if (totalEarnings) {
 
             totalEarnings.textContent =
@@ -604,6 +724,10 @@
         }
 
 
+        /*
+         PERIOD LABEL
+        */
+
         if (earningsPeriod) {
 
             earningsPeriod.textContent =
@@ -611,6 +735,10 @@
 
         }
 
+
+        /*
+         SHIFT COUNT
+        */
 
         if (shiftCount) {
 
@@ -622,6 +750,10 @@
         }
 
 
+        /*
+         WORKED HOURS
+        */
+
         if (workedHours) {
 
             workedHours.textContent =
@@ -629,6 +761,10 @@
 
         }
 
+
+        /*
+         AVERAGE
+        */
 
         if (averageEarnings) {
 
@@ -643,57 +779,12 @@
 
 
     /* =====================================================
-       CURRENT DATE
-       ===================================================== */
-
-    function renderCurrentDate() {
-
-        if (!currentDate) {
-
-            return;
-
-        }
-
-
-        const today =
-            new Date();
-
-
-        const monthNames = [
-
-            "Январь",
-            "Февраль",
-            "Март",
-            "Апрель",
-            "Май",
-            "Июнь",
-            "Июль",
-            "Август",
-            "Сентябрь",
-            "Октябрь",
-            "Ноябрь",
-            "Декабрь"
-
-        ];
-
-
-        currentDate.textContent =
-            monthNames[
-                today.getMonth()
-            ] +
-            " " +
-            today.getFullYear();
-
-    }
-
-
-    /* =====================================================
-       RENDER
+       FULL RENDER
        ===================================================== */
 
     function render() {
 
-        renderPeriod();
+        renderPeriodButtons();
 
         renderEarnings();
 
@@ -773,27 +864,40 @@
 
     function initEvents() {
 
+        /*
+         New shift added.
+        */
+
         window.addEventListener(
             "jobcash:shiftschange",
             function () {
 
-                render();
+                /*
+                 Small delay guarantees that
+                 localStorage and shifts module
+                 are already synchronized.
+                */
+
+                window.setTimeout(
+                    function () {
+
+                        render();
+
+                    },
+                    0
+                );
 
             }
         );
 
 
+        /*
+         Rate changed.
+        */
+
         window.addEventListener(
             "jobcash:ratechange",
             function () {
-
-                /*
-                 Existing shifts keep their
-                 historical earnings.
-
-                 We still rerender the UI
-                 so everything stays synchronized.
-                */
 
                 render();
 
@@ -820,7 +924,9 @@
         setPeriod:
             function (period) {
 
-                setPeriod(period);
+                setPeriod(
+                    period
+                );
 
             },
 
