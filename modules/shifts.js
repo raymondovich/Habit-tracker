@@ -1,1020 +1,957 @@
-
 (function () {
 
-    "use strict";
+```
+"use strict";
 
 
-    const STORAGE_KEY =
-        "job_cash_shifts";
+const STORAGE_KEY = "job_cash_shifts";
 
 
-    let shifts = [];
+let shifts = [];
 
 
-    const addButton =
-        document.getElementById(
-            "addShiftButton"
-        );
+const addButton =
+    document.getElementById("addShiftButton");
+
+const shiftsList =
+    document.getElementById("shiftsList");
+
+const emptyState =
+    document.getElementById("emptyShifts");
 
 
-    const shiftsList =
-        document.getElementById(
-            "shiftsList"
-        );
+/* =====================================================
+   STORAGE
+   ===================================================== */
 
+function loadShifts() {
 
-    const emptyState =
-        document.getElementById(
-            "emptyShifts"
-        );
+    try {
 
+        const saved =
+            localStorage.getItem(STORAGE_KEY);
 
-    /* =========================================
-       LOAD
-    ========================================= */
-
-    function loadShifts() {
-
-        try {
-
-            const saved =
-                localStorage.getItem(
-                    STORAGE_KEY
-                );
-
-
-            if (!saved) {
-
-                shifts = [];
-
-                return;
-            }
-
-
-            const parsed =
-                JSON.parse(saved);
-
-
-            shifts =
-                Array.isArray(parsed)
-                    ? parsed
-                    : [];
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "JOB & CASH: ошибка загрузки смен",
-                error
-            );
-
+        if (!saved) {
             shifts = [];
-        }
-
-    }
-
-
-    /* =========================================
-       SAVE
-    ========================================= */
-
-    function saveShifts() {
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(shifts)
-        );
-
-    }
-
-
-    /* =========================================
-       DATE
-    ========================================= */
-
-    function today() {
-
-        const date =
-            new Date();
-
-
-        const year =
-            date.getFullYear();
-
-
-        const month =
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0");
-
-
-        const day =
-            String(
-                date.getDate()
-            ).padStart(2, "0");
-
-
-        return (
-            year +
-            "-" +
-            month +
-            "-" +
-            day
-        );
-
-    }
-
-
-    function formatDate(value) {
-
-        const parts =
-            value.split("-");
-
-
-        if (parts.length !== 3) {
-
-            return value;
-        }
-
-
-        return (
-            parts[2] +
-            "." +
-            parts[1] +
-            "." +
-            parts[0]
-        );
-
-    }
-
-
-    /* =========================================
-       HOURS
-    ========================================= */
-
-    function timeToMinutes(time) {
-
-        const parts =
-            time.split(":");
-
-
-        return (
-            Number(parts[0]) * 60 +
-            Number(parts[1])
-        );
-
-    }
-
-
-    function calculateHours(
-        start,
-        end
-    ) {
-
-        let startMinutes =
-            timeToMinutes(start);
-
-
-        let endMinutes =
-            timeToMinutes(end);
-
-
-        let difference =
-            endMinutes -
-            startMinutes;
-
-
-        /*
-         * Ночная смена:
-         * 22:00 → 06:00
-         */
-
-        if (difference <= 0) {
-
-            difference += 1440;
-        }
-
-
-        return (
-            difference / 60
-        );
-
-    }
-
-
-    /* =========================================
-       MONEY
-    ========================================= */
-
-    function money(value) {
-
-        return (
-            "€" +
-            Number(value).toFixed(2)
-        );
-
-    }
-
-
-    /* =========================================
-       ADD SHIFT MODAL
-    ========================================= */
-
-    function openModal() {
-
-        const rate =
-            window.JobCashRate
-                ? window.JobCashRate.getRate()
-                : 0;
-
-
-        if (rate <= 0) {
-
-            window.alert(
-                "Сначала установите почасовую ставку."
-            );
-
             return;
         }
 
+        const parsed =
+            JSON.parse(saved);
 
-        const modal =
-            document.createElement("div");
+        shifts =
+            Array.isArray(parsed)
+                ? parsed
+                : [];
 
+    } catch (error) {
 
-        modal.id =
-            "jobCashShiftModal";
+        console.error(
+            "JOB & CASH: ошибка загрузки смен",
+            error
+        );
 
+        shifts = [];
 
-        modal.innerHTML = `
+    }
 
-            <div class="jc-overlay">
-
-                <div class="jc-modal">
-
-                    <div class="jc-modal-top">
-
-                        <div>
-
-                            <div class="jc-eyebrow">
-                                JOB & CASH
-                            </div>
-
-                            <h2>
-                                Новая смена
-                            </h2>
-
-                        </div>
+}
 
 
-                        <button
-                            type="button"
-                            id="jcClose"
-                            class="jc-close"
-                        >
-                            ×
-                        </button>
+function saveShifts() {
 
-                    </div>
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(shifts)
+    );
+
+}
 
 
-                    <label>
+/* =====================================================
+   DATE
+   ===================================================== */
 
-                        <span>Дата</span>
+function getToday() {
 
-                        <input
-                            type="date"
-                            id="jcDate"
-                            value="${today()}"
-                        >
+    const date =
+        new Date();
 
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+function formatDate(value) {
+
+    if (!value) {
+        return "";
+    }
+
+    const parts =
+        value.split("-");
+
+    if (parts.length !== 3) {
+        return value;
+    }
+
+    return (
+        parts[2] +
+        "." +
+        parts[1] +
+        "." +
+        parts[0]
+    );
+
+}
+
+
+/* =====================================================
+   TIME
+   ===================================================== */
+
+function timeToMinutes(time) {
+
+    if (!time) {
+        return 0;
+    }
+
+    const parts =
+        time.split(":");
+
+    if (parts.length !== 2) {
+        return 0;
+    }
+
+    const hours =
+        Number(parts[0]);
+
+    const minutes =
+        Number(parts[1]);
+
+    if (
+        !Number.isFinite(hours) ||
+        !Number.isFinite(minutes)
+    ) {
+        return 0;
+    }
+
+    return (
+        hours * 60 +
+        minutes
+    );
+
+}
+
+
+function calculateHours(start, end) {
+
+    const startMinutes =
+        timeToMinutes(start);
+
+    const endMinutes =
+        timeToMinutes(end);
+
+
+    let difference =
+        endMinutes -
+        startMinutes;
+
+
+    /*
+     * Смена через полночь.
+     */
+
+    if (difference < 0) {
+
+        difference += 1440;
+
+    }
+
+
+    return (
+        difference / 60
+    );
+
+}
+
+
+/* =====================================================
+   MONEY
+   ===================================================== */
+
+function money(value) {
+
+    const number =
+        Number(value) || 0;
+
+    return (
+        "€" +
+        number.toFixed(2)
+    );
+
+}
+
+
+/* =====================================================
+   MODAL
+   ===================================================== */
+
+function createModal() {
+
+    const existing =
+        document.getElementById(
+            "jobCashShiftModal"
+        );
+
+    if (existing) {
+        return existing;
+    }
+
+
+    const modal =
+        document.createElement("div");
+
+    modal.id =
+        "jobCashShiftModal";
+
+
+    modal.innerHTML = `
+
+        <div class="jc-modal-backdrop"></div>
+
+        <div class="jc-modal">
+
+            <div class="jc-modal-header">
+
+                <div class="jc-modal-title">
+                    Добавить смену
+                </div>
+
+                <button
+                    type="button"
+                    class="jc-modal-close"
+                    id="jcClose"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="jc-field">
+
+                <label for="jcDate">
+                    Дата
+                </label>
+
+                <input
+                    type="date"
+                    id="jcDate"
+                >
+
+            </div>
+
+
+            <div class="jc-time-row">
+
+                <div class="jc-field">
+
+                    <label for="jcStart">
+                        Начало
                     </label>
 
-
-                    <div class="jc-row">
-
-                        <label>
-
-                            <span>Начало</span>
-
-                            <input
-                                type="time"
-                                id="jcStart"
-                                value="09:00"
-                            >
-
-                        </label>
-
-
-                        <label>
-
-                            <span>Конец</span>
-
-                            <input
-                                type="time"
-                                id="jcEnd"
-                                value="17:00"
-                            >
-
-                        </label>
-
-                    </div>
-
-
-                    <div class="jc-summary">
-
-                        <div>
-
-                            <small>
-                                ЧАСЫ
-                            </small>
-
-                            <strong id="jcHours">
-                                8 ч
-                            </strong>
-
-                        </div>
-
-
-                        <div>
-
-                            <small>
-                                СТАВКА
-                            </small>
-
-                            <strong>
-                                ${money(rate)}
-                            </strong>
-
-                        </div>
-
-
-                        <div>
-
-                            <small>
-                                ЗАРАБОТОК
-                            </small>
-
-                            <strong id="jcEarnings">
-                                ${money(rate * 8)}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        id="jcSave"
-                        class="jc-save"
+                    <input
+                        type="time"
+                        id="jcStart"
+                        value="09:00"
                     >
-                        Сохранить смену
-                    </button>
+
+                </div>
+
+
+                <div class="jc-field">
+
+                    <label for="jcEnd">
+                        Конец
+                    </label>
+
+                    <input
+                        type="time"
+                        id="jcEnd"
+                        value="17:00"
+                    >
 
                 </div>
 
             </div>
 
-        `;
+
+            <div class="jc-preview">
+
+                <div>
+
+                    <span>
+                        Часы
+                    </span>
+
+                    <strong id="jcHours">
+                        8.00
+                    </strong>
+
+                </div>
 
 
-        document.body.appendChild(
-            modal
-        );
+                <div>
+
+                    <span>
+                        Заработок
+                    </span>
+
+                    <strong id="jcEarnings">
+                        €0.00
+                    </strong>
+
+                </div>
+
+            </div>
 
 
-        injectStyles();
+            <button
+                type="button"
+                class="jc-save"
+                id="jcSave"
+            >
+                Сохранить смену
+            </button>
+
+        </div>
+
+    `;
 
 
-        const date =
-            document.getElementById(
-                "jcDate"
-            );
+    document.body.appendChild(modal);
 
 
-        const start =
-            document.getElementById(
-                "jcStart"
-            );
+    injectModalStyles();
 
 
-        const end =
-            document.getElementById(
-                "jcEnd"
-            );
+    return modal;
+
+}
 
 
-        const hoursElement =
-            document.getElementById(
-                "jcHours"
-            );
+function injectModalStyles() {
+
+    if (
+        document.getElementById(
+            "jobCashShiftStyles"
+        )
+    ) {
+        return;
+    }
 
 
-        const earningsElement =
-            document.getElementById(
-                "jcEarnings"
-            );
+    const style =
+        document.createElement("style");
+
+    style.id =
+        "jobCashShiftStyles";
 
 
-        function update() {
+    style.textContent = `
 
-            const hours =
-                calculateHours(
-                    start.value,
-                    end.value
-                );
-
-
-            hoursElement.textContent =
-                hours.toFixed(2) +
-                " ч";
-
-
-            earningsElement.textContent =
-                money(
-                    hours * rate
-                );
-
+        #jobCashShiftModal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
 
-        start.addEventListener(
-            "input",
-            update
+        .jc-modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,.82);
+            backdrop-filter: blur(8px);
+        }
+
+
+        .jc-modal {
+            position: relative;
+            width: 100%;
+            max-width: 430px;
+            padding: 24px;
+            background: #0b0b0b;
+            border: 1px solid rgba(214,166,58,.42);
+            border-radius: 18px;
+            box-shadow:
+                0 20px 70px rgba(0,0,0,.75),
+                0 0 30px rgba(214,166,58,.08);
+        }
+
+
+        .jc-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+
+        .jc-modal-title {
+            color: #f4f1e9;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+
+        .jc-modal-close {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 50%;
+            background: #101010;
+            color: #b4b0a7;
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+
+        .jc-field {
+            margin-bottom: 18px;
+        }
+
+
+        .jc-field label {
+            display: block;
+            margin-bottom: 8px;
+            color: #74716b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+
+        .jc-field input {
+            box-sizing: border-box;
+            width: 100%;
+            height: 48px;
+            padding: 0 14px;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 10px;
+            background: #101010;
+            color: #f4f1e9;
+            font-size: 16px;
+            outline: none;
+        }
+
+
+        .jc-field input:focus {
+            border-color: rgba(214,166,58,.55);
+        }
+
+
+        .jc-time-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+
+        .jc-preview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+
+        .jc-preview > div {
+            padding: 15px;
+            border: 1px solid rgba(214,166,58,.16);
+            border-radius: 12px;
+            background: #101010;
+        }
+
+
+        .jc-preview span {
+            display: block;
+            margin-bottom: 7px;
+            color: #74716b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+
+        .jc-preview strong {
+            color: #d6a63a;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+
+        .jc-save {
+            width: 100%;
+            height: 50px;
+            border: 1px solid rgba(214,166,58,.55);
+            border-radius: 10px;
+            background: #d6a63a;
+            color: #050505;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+
+        .jc-save:active {
+            transform: translateY(1px);
+        }
+
+    `;
+
+
+    document.head.appendChild(style);
+
+}
+
+
+/* =====================================================
+   MODAL LOGIC
+   ===================================================== */
+
+function openModal() {
+
+    if (
+        !window.JobCashRate ||
+        typeof window.JobCashRate.getRate !== "function"
+    ) {
+
+        window.alert(
+            "Модуль ставки ещё не загружен."
         );
 
+        return;
+    }
 
-        end.addEventListener(
-            "input",
-            update
+
+    const rate =
+        window.JobCashRate.getRate();
+
+
+    if (rate <= 0) {
+
+        window.alert(
+            "Сначала установите почасовую ставку."
         );
 
-
-        document
-            .getElementById("jcClose")
-            .addEventListener(
-                "click",
-                function () {
-
-                    modal.remove();
-
-                }
-            );
-
-
-        document
-            .getElementById("jcSave")
-            .addEventListener(
-                "click",
-                function () {
-
-                    const hours =
-                        calculateHours(
-                            start.value,
-                            end.value
-                        );
-
-
-                    const shift = {
-
-                        id:
-                            Date.now(),
-
-                        date:
-                            date.value,
-
-                        start:
-                            start.value,
-
-                        end:
-                            end.value,
-
-                        hours:
-                            Math.round(
-                                hours * 100
-                            ) / 100,
-
-                        rate:
-                            rate,
-
-                        earnings:
-                            Math.round(
-                                hours *
-                                rate *
-                                100
-                            ) / 100
-
-                    };
-
-
-                    shifts.push(
-                        shift
-                    );
-
-
-                    shifts.sort(
-                        function (a, b) {
-
-                            return (
-                                b.date.localeCompare(
-                                    a.date
-                                )
-                            );
-
-                        }
-                    );
-
-
-                    saveShifts();
-
-
-                    modal.remove();
-
-
-                    render();
-
-
-                    notify();
-
-                }
-            );
-
-
-        update();
+        return;
 
     }
 
 
-    /* =========================================
-       RENDER
-    ========================================= */
-
-    function render() {
-
-        if (!shiftsList) {
-
-            return;
-        }
+    const modal =
+        createModal();
 
 
-        if (shifts.length === 0) {
+    const dateInput =
+        modal.querySelector("#jcDate");
 
-            shiftsList.innerHTML = "";
+    const startInput =
+        modal.querySelector("#jcStart");
 
-
-            if (emptyState) {
-
-                emptyState.style.display =
-                    "";
-
-                shiftsList.appendChild(
-                    emptyState
-                );
-
-            }
+    const endInput =
+        modal.querySelector("#jcEnd");
 
 
-            return;
-        }
+    dateInput.value =
+        getToday();
 
 
-        if (emptyState) {
-
-            emptyState.style.display =
-                "none";
-        }
+    updatePreview();
 
 
-        shiftsList.innerHTML = "";
+    modal.style.display =
+        "flex";
 
 
-        shifts
-            .slice(0, 5)
-            .forEach(
-                function (shift) {
+    function updatePreview() {
 
-                    const item =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    item.className =
-                        "shift-item";
-
-
-                    item.innerHTML = `
-
-                        <div>
-
-                            <div class="shift-date">
-                                ${formatDate(shift.date)}
-                            </div>
-
-                            <div class="shift-time">
-                                ${shift.start}
-                                —
-                                ${shift.end}
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="shift-hours">
-                                ${shift.hours} ч
-                            </div>
-
-                            <div class="shift-earnings">
-                                ${money(shift.earnings)}
-                            </div>
-
-                        </div>
-
-                    `;
-
-
-                    shiftsList.appendChild(
-                        item
-                    );
-
-                }
+        const hours =
+            calculateHours(
+                startInput.value,
+                endInput.value
             );
 
+
+        const earnings =
+            hours * rate;
+
+
+        modal.querySelector(
+            "#jcHours"
+        ).textContent =
+            hours.toFixed(2);
+
+
+        modal.querySelector(
+            "#jcEarnings"
+        ).textContent =
+            money(earnings);
+
     }
 
 
-    /* =========================================
-       EVENTS
-    ========================================= */
+    startInput.oninput =
+        updatePreview;
 
-    function notify() {
 
-        window.dispatchEvent(
-            new CustomEvent(
-                "jobcash:shiftschange",
-                {
-                    detail: {
-                        shifts:
-                            getShifts()
-                    }
-                }
-            )
+    endInput.oninput =
+        updatePreview;
+
+
+    modal.querySelector(
+        "#jcClose"
+    ).onclick =
+        function () {
+
+            closeModal();
+
+        };
+
+
+    modal.querySelector(
+        ".jc-modal-backdrop"
+    ).onclick =
+        function () {
+
+            closeModal();
+
+        };
+
+
+    modal.querySelector(
+        "#jcSave"
+    ).onclick =
+        function () {
+
+            saveShift(
+                dateInput.value,
+                startInput.value,
+                endInput.value,
+                rate
+            );
+
+        };
+
+}
+
+
+function closeModal() {
+
+    const modal =
+        document.getElementById(
+            "jobCashShiftModal"
         );
 
+    if (!modal) {
+        return;
     }
 
+    modal.style.display =
+        "none";
 
-    /* =========================================
-       API
-    ========================================= */
+}
 
-    function getShifts() {
 
-        return shifts.map(
-            function (shift) {
+/* =====================================================
+   SAVE SHIFT
+   ===================================================== */
 
-                return {
-                    ...shift
-                };
+function saveShift(
+    date,
+    start,
+    end,
+    rate
+) {
 
-            }
+    if (!date) {
+
+        window.alert(
+            "Выберите дату."
         );
 
+        return;
+
     }
 
 
-    window.JobCashShifts = {
+    if (!start || !end) {
 
-        getShifts:
-            getShifts,
+        window.alert(
+            "Укажите время начала и окончания."
+        );
 
-        reload:
-            function () {
+        return;
 
-                loadShifts();
+    }
 
-                render();
 
-            }
+    if (start === end) {
+
+        window.alert(
+            "Время начала и окончания не может совпадать."
+        );
+
+        return;
+
+    }
+
+
+    const hours =
+        calculateHours(
+            start,
+            end
+        );
+
+
+    if (
+        !Number.isFinite(hours) ||
+        hours <= 0 ||
+        hours > 24
+    ) {
+
+        window.alert(
+            "Некорректная продолжительность смены."
+        );
+
+        return;
+
+    }
+
+
+    const earnings =
+        hours * rate;
+
+
+    const shift = {
+
+        id:
+            Date.now(),
+
+        date:
+            date,
+
+        start:
+            start,
+
+        end:
+            end,
+
+        hours:
+            Math.round(
+                hours * 100
+            ) / 100,
+
+        rate:
+            rate,
+
+        earnings:
+            Math.round(
+                earnings * 100
+            ) / 100
 
     };
 
 
-    /* =========================================
-       STYLES
-    ========================================= */
-
-    function injectStyles() {
-
-        if (
-            document.getElementById(
-                "jobcash-shift-styles"
-            )
-        ) {
-
-            return;
-        }
+    shifts.push(
+        shift
+    );
 
 
-        const style =
-            document.createElement(
-                "style"
+    shifts.sort(
+        function (a, b) {
+
+            return (
+                String(b.date)
+                    .localeCompare(
+                        String(a.date)
+                    ) ||
+                String(b.start)
+                    .localeCompare(
+                        String(a.start)
+                    )
             );
 
+        }
+    );
 
-        style.id =
-            "jobcash-shift-styles";
 
+    saveShifts();
 
-        style.textContent = `
-
-            .jc-overlay {
-
-                position: fixed;
-
-                inset: 0;
-
-                z-index: 9999;
-
-                display: flex;
-
-                align-items: center;
-
-                justify-content: center;
-
-                padding: 20px;
-
-                background:
-                    rgba(0,0,0,.82);
-
-                backdrop-filter:
-                    blur(12px);
-
-            }
-
-
-            .jc-modal {
-
-                width: 100%;
-
-                max-width: 430px;
-
-                box-sizing: border-box;
-
-                padding: 24px;
-
-                border:
-                    1px solid
-                    rgba(214,166,58,.35);
-
-                border-radius: 20px;
-
-                background: #090909;
-
-                box-shadow:
-                    0 30px 80px
-                    rgba(0,0,0,.8);
-
-            }
-
-
-            .jc-modal-top {
-
-                display: flex;
-
-                justify-content:
-                    space-between;
-
-                align-items:
-                    flex-start;
-
-                margin-bottom: 24px;
-
-            }
-
-
-            .jc-eyebrow {
-
-                margin-bottom: 6px;
-
-                color: #b98b2f;
-
-                font-size: 10px;
-
-                font-weight: 700;
-
-                letter-spacing: .2em;
-
-            }
-
-
-            .jc-modal h2 {
-
-                margin: 0;
-
-                color: #f4f1e9;
-
-                font-size: 24px;
-
-            }
-
-
-            .jc-close {
-
-                width: 34px;
-
-                height: 34px;
-
-                border:
-                    1px solid
-                    rgba(255,255,255,.1);
-
-                border-radius: 50%;
-
-                background: #101010;
-
-                color: #b4b0a7;
-
-                font-size: 22px;
-
-            }
-
-
-            .jc-modal label {
-
-                display: flex;
-
-                flex-direction: column;
-
-                gap: 7px;
-
-                margin-bottom: 15px;
-
-            }
-
-
-            .jc-modal label span {
-
-                color: #74716b;
-
-                font-size: 10px;
-
-                font-weight: 700;
-
-                letter-spacing: .12em;
-
-                text-transform: uppercase;
-
-            }
-
-
-            .jc-modal input {
-
-                box-sizing: border-box;
-
-                width: 100%;
-
-                padding: 13px;
-
-                border:
-                    1px solid
-                    rgba(255,255,255,.1);
-
-                border-radius: 10px;
-
-                outline: none;
-
-                background: #050505;
-
-                color: #f4f1e9;
-
-                font: inherit;
-
-            }
-
-
-            .jc-row {
-
-                display: grid;
-
-                grid-template-columns:
-                    1fr 1fr;
-
-                gap: 12px;
-
-            }
-
-
-            .jc-summary {
-
-                display: grid;
-
-                grid-template-columns:
-                    repeat(3, 1fr);
-
-                gap: 8px;
-
-                margin:
-                    8px 0 18px;
-
-                padding: 14px;
-
-                border:
-                    1px solid
-                    rgba(214,166,58,.16);
-
-                border-radius: 12px;
-
-                background: #0d0d0d;
-
-            }
-
-
-            .jc-summary div {
-
-                display: flex;
-
-                flex-direction: column;
-
-                gap: 5px;
-
-            }
-
-
-            .jc-summary small {
-
-                color: #74716b;
-
-                font-size: 9px;
-
-                letter-spacing: .08em;
-
-            }
-
-
-            .jc-summary strong {
-
-                color: #d6a63a;
-
-                font-size: 13px;
-
-            }
-
-
-            .jc-save {
-
-                width: 100%;
-
-                padding: 14px;
-
-                border:
-                    1px solid
-                    rgba(214,166,58,.55);
-
-                border-radius: 11px;
-
-                background: #d6a63a;
-
-                color: #050505;
-
-                font: inherit;
-
-                font-weight: 700;
-
-            }
-
-        `;
-
-
-        document.head.appendChild(
-            style
-        );
-
-    }
-
-
-    /* =========================================
-       INIT
-    ========================================= */
-
-    loadShifts();
 
     render();
 
 
-    if (addButton) {
+    closeModal();
 
-        addButton.addEventListener(
-            "click",
-            openModal
-        );
+
+    window.dispatchEvent(
+        new CustomEvent(
+            "jobcash:shiftschange",
+            {
+                detail: {
+                    shift:
+                        shift
+                }
+            }
+        )
+    );
+
+}
+
+
+/* =====================================================
+   RENDER
+   ===================================================== */
+
+function render() {
+
+    if (!shiftsList) {
+        return;
+    }
+
+
+    shiftsList.innerHTML = "";
+
+
+    if (shifts.length === 0) {
+
+        if (emptyState) {
+
+            shiftsList.appendChild(
+                emptyState
+            );
+
+        }
+
+        return;
 
     }
 
 
-})();
+    const recent =
+        shifts.slice(0, 5);
 
+
+    recent.forEach(
+        function (shift) {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+            item.className =
+                "shift-item";
+
+
+            item.innerHTML = `
+
+                <div class="shift-date">
+                    ${formatDate(shift.date)}
+                </div>
+
+                <div class="shift-time">
+                    ${shift.start} — ${shift.end}
+                </div>
+
+                <div class="shift-hours">
+                    ${Number(shift.hours).toFixed(2)} ч
+                </div>
+
+                <div class="shift-earnings">
+                    ${money(shift.earnings)}
+                </div>
+
+            `;
+
+
+            shiftsList.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PUBLIC API
+   ===================================================== */
+
+window.JobCashShifts = {
+
+    getShifts: function () {
+
+        return shifts.slice();
+
+    },
+
+
+    reload: function () {
+
+        loadShifts();
+
+        render();
+
+    }
+
+};
+
+
+/* =====================================================
+   INIT
+   ===================================================== */
+
+loadShifts();
+
+render();
+
+
+if (addButton) {
+
+    addButton.addEventListener(
+        "click",
+        openModal
+    );
+
+}
+```
+
+})();
