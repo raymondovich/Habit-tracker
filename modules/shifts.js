@@ -1470,315 +1470,230 @@
     }
 
 
-    /* =====================================================
+        /* =====================================================
        SWIPE TO DELETE
        ===================================================== */
-
-    function startSwipe(
-        event
-    ) {
-
-        const item =
-            event.target.closest(
-                ".shift-item"
-            );
-
-
-        if (!item) {
-
-            return;
-
-        }
-
-
-        /*
-         Не начинаем свайп,
-         если палец/указатель находится
-         на кнопке редактирования или удаления.
-        */
-
-        if (
-            event.target.closest(
-                ".jc-shift-action"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        swipeItem =
-            item;
-
-
-        swipeStartX =
-            event.clientX;
-
-
-        swipeCurrentX =
-            event.clientX;
-
-
-        swipeActive =
-            true;
-
-
-        swipeItem.classList.add(
-            "is-swiping"
-        );
-
-    }
-
-
-    function moveSwipe(
-        event
-    ) {
-
-        if (
-            !swipeActive ||
-            !swipeItem
-        ) {
-
-            return;
-
-        }
-
-
-        swipeCurrentX =
-            event.clientX;
-
-
-        const distance =
-            swipeCurrentX -
-            swipeStartX;
-
-
-        /*
-         Только свайп вправо.
-         При движении влево ничего
-         не происходит.
-        */
-
-        if (distance <= 0) {
-
-            swipeItem.style.setProperty(
-                "--swipe-x",
-                "0px"
-            );
-
-            return;
-
-        }
-
-
-        /*
-         Ограничиваем движение,
-         чтобы строку нельзя было
-         утащить слишком далеко.
-        */
-
-        const limitedDistance =
-            Math.min(
-                distance,
-                100
-            );
-
-
-        swipeItem.style.setProperty(
-            "--swipe-x",
-            limitedDistance + "px"
-        );
-
-    }
-
-
-    function endSwipe() {
-
-        if (
-            !swipeActive ||
-            !swipeItem
-        ) {
-
-            return;
-
-        }
-
-
-        const item =
-            swipeItem;
-
-
-        const distance =
-            swipeCurrentX -
-            swipeStartX;
-
-
-        swipeActive =
-            false;
-
-
-        swipeItem =
-            null;
-
-
-        item.classList.remove(
-            "is-swiping"
-        );
-
-
-        /*
-         Если свайп достаточно длинный —
-         удаляем смену.
-        */
-
-        if (
-            distance >=
-            SWIPE_DELETE_DISTANCE
-        ) {
-
-            const shiftId =
-                item.dataset.shiftId;
-
-
-            item.style.setProperty(
-                "--swipe-x",
-                "100px"
-            );
-
-
-            /*
-             Небольшая задержка позволяет
-             строке визуально завершить
-             свайп перед удалением.
-            */
-
-            window.setTimeout(
-                function () {
-
-                    deleteShift(
-                        shiftId
-                    );
-
-                },
-                80
-            );
-
-
-            return;
-
-        }
-
-
-        /*
-         Недостаточный свайп —
-         возвращаем строку назад.
-        */
-
-        item.style.setProperty(
-            "--swipe-x",
-            "0px"
-        );
-
-    }
-
-
-    function cancelSwipe() {
-
-        if (
-            !swipeItem
-        ) {
-
-            swipeActive =
-                false;
-
-            return;
-
-        }
-
-
-        const item =
-            swipeItem;
-
-
-        swipeActive =
-            false;
-
-
-        swipeItem =
-            null;
-
-
-        item.classList.remove(
-            "is-swiping"
-        );
-
-
-        item.style.setProperty(
-            "--swipe-x",
-            "0px"
-        );
-
-    }
-
 
     function initSwipe() {
 
         if (!shiftsList) {
-
             return;
-
         }
 
 
-        /*
-         Pointer Events работают
-         на iPhone, Android, мыши
-         и других устройствах.
-        */
-
-        shiftsList.addEventListener(
-            "pointerdown",
-            startSwipe
-        );
+        let activeItem = null;
+        let startX = 0;
+        let currentX = 0;
 
 
         shiftsList.addEventListener(
-            "pointermove",
-            moveSwipe
-        );
-
-
-        shiftsList.addEventListener(
-            "pointerup",
-            endSwipe
-        );
-
-
-        shiftsList.addEventListener(
-            "pointercancel",
-            cancelSwipe
-        );
-
-
-        shiftsList.addEventListener(
-            "pointerleave",
+            "touchstart",
             function (event) {
 
+                const item =
+                    event.target.closest(
+                        ".shift-item"
+                    );
+
+
+                if (!item) {
+                    return;
+                }
+
+
+                /*
+                 Не запускаем свайп,
+                 если нажали на кнопку.
+                */
+
                 if (
-                    event.pointerType ===
-                    "mouse"
+                    event.target.closest(
+                        ".jc-shift-action"
+                    )
+                ) {
+                    return;
+                }
+
+
+                activeItem = item;
+
+                startX =
+                    event.touches[0].clientX;
+
+                currentX =
+                    startX;
+
+
+                activeItem.classList.add(
+                    "is-swiping"
+                );
+
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        shiftsList.addEventListener(
+            "touchmove",
+            function (event) {
+
+                if (!activeItem) {
+                    return;
+                }
+
+
+                currentX =
+                    event.touches[0].clientX;
+
+
+                const distance =
+                    currentX - startX;
+
+
+                /*
+                 Только движение вправо.
+                */
+
+                if (distance <= 0) {
+                    return;
+                }
+
+
+                /*
+                 Ограничиваем движение
+                 максимум 100px.
+                */
+
+                const translateX =
+                    Math.min(
+                        distance,
+                        100
+                    );
+
+
+                activeItem.style.setProperty(
+                    "--swipe-x",
+                    translateX + "px"
+                );
+
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        shiftsList.addEventListener(
+            "touchend",
+            function () {
+
+                if (!activeItem) {
+                    return;
+                }
+
+
+                const item =
+                    activeItem;
+
+
+                const distance =
+                    currentX - startX;
+
+
+                activeItem = null;
+
+
+                item.classList.remove(
+                    "is-swiping"
+                );
+
+
+                /*
+                 Достаточный свайп —
+                 запускаем существующее
+                 удаление.
+                */
+
+                if (
+                    distance >=
+                    SWIPE_DELETE_DISTANCE
                 ) {
 
-                    cancelSwipe();
+                    const shiftId =
+                        item.dataset.shiftId;
+
+
+                    item.style.setProperty(
+                        "--swipe-x",
+                        "100px"
+                    );
+
+
+                    window.setTimeout(
+                        function () {
+
+                            deleteShift(
+                                shiftId
+                            );
+
+                        },
+                        100
+                    );
+
+
+                    return;
 
                 }
 
+
+                /*
+                 Недостаточный свайп —
+                 возвращаем строку.
+                */
+
+                item.style.setProperty(
+                    "--swipe-x",
+                    "0px"
+                );
+
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        shiftsList.addEventListener(
+            "touchcancel",
+            function () {
+
+                if (!activeItem) {
+                    return;
+                }
+
+
+                activeItem.style.setProperty(
+                    "--swipe-x",
+                    "0px"
+                );
+
+
+                activeItem.classList.remove(
+                    "is-swiping"
+                );
+
+
+                activeItem = null;
+
+            },
+            {
+                passive: true
             }
         );
 
     }
-
 
     /* =====================================================
        RENDER
