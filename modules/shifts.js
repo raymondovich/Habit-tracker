@@ -1,4 +1,4 @@
-```javascript
+
 (function () {
 
     "use strict";
