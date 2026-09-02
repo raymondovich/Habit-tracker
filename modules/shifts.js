@@ -1476,224 +1476,232 @@
 
     function initSwipe() {
 
-        if (!shiftsList) {
-            return;
+    if (!shiftsList) {
+        return;
+    }
+
+
+    let activeItem = null;
+    let startX = 0;
+    let currentX = 0;
+
+
+    shiftsList.addEventListener(
+        "touchstart",
+        function (event) {
+
+            const item =
+                event.target.closest(
+                    ".shift-item"
+                );
+
+
+            if (!item) {
+                return;
+            }
+
+
+            /*
+             Не запускаем свайп,
+             если нажали на кнопку.
+            */
+
+            if (
+                event.target.closest(
+                    ".jc-shift-action"
+                )
+            ) {
+                return;
+            }
+
+
+            activeItem = item;
+
+            startX =
+                event.touches[0].clientX;
+
+            currentX =
+                startX;
+
+
+            activeItem.classList.add(
+                "is-swiping"
+            );
+
+        },
+        {
+            passive: true
         }
+    );
 
 
-        let activeItem = null;
-        let startX = 0;
-        let currentX = 0;
+    shiftsList.addEventListener(
+        "touchmove",
+        function (event) {
 
-
-        shiftsList.addEventListener(
-            "touchstart",
-            function (event) {
-
-                const item =
-                    event.target.closest(
-                        ".shift-item"
-                    );
-
-
-                if (!item) {
-                    return;
-                }
-
-
-                /*
-                 Не запускаем свайп,
-                 если нажали на кнопку.
-                */
-
-                if (
-                    event.target.closest(
-                        ".jc-shift-action"
-                    )
-                ) {
-                    return;
-                }
-
-
-                activeItem = item;
-
-                startX =
-                    event.touches[0].clientX;
-
-                currentX =
-                    startX;
-
-
-                activeItem.classList.add(
-                    "is-swiping"
-                );
-
-            },
-            {
-                passive: true
+            if (!activeItem) {
+                return;
             }
-        );
 
 
-        shiftsList.addEventListener(
-            "touchmove",
-            function (event) {
-
-                if (!activeItem) {
-                    return;
-                }
+            currentX =
+                event.touches[0].clientX;
 
 
-                currentX =
-                    event.touches[0].clientX;
+            /*
+             При свайпе справа налево
+             distance будет отрицательным.
+            */
+
+            const distance =
+                startX - currentX;
 
 
-                const distance =
-                    currentX - startX;
+            /*
+             Только движение влево.
+            */
 
-
-                /*
-                 Только движение вправо.
-                */
-
-                if (distance <= 0) {
-                    return;
-                }
-
-
-                /*
-                 Ограничиваем движение
-                 максимум 100px.
-                */
-
-                const translateX =
-                    Math.min(
-                        distance,
-                        100
-                    );
-
-
-                activeItem.style.setProperty(
-                    "--swipe-x",
-                    translateX + "px"
-                );
-
-            },
-            {
-                passive: true
+            if (distance <= 0) {
+                return;
             }
-        );
 
 
-        shiftsList.addEventListener(
-            "touchend",
-            function () {
+            /*
+             Максимальное смещение строки.
+            */
 
-                if (!activeItem) {
-                    return;
-                }
-
-
-                const item =
-                    activeItem;
-
-
-                const distance =
-                    currentX - startX;
-
-
-                activeItem = null;
-
-
-                item.classList.remove(
-                    "is-swiping"
+            const translateX =
+                Math.min(
+                    distance,
+                    100
                 );
 
 
-                /*
-                 Достаточный свайп —
-                 запускаем существующее
-                 удаление.
-                */
+            /*
+             Двигаем строку влево.
+            */
 
-                if (
-                    distance >=
-                    SWIPE_DELETE_DISTANCE
-                ) {
+            activeItem.style.setProperty(
+                "--swipe-x",
+                "-" + translateX + "px"
+            );
 
-                    const shiftId =
-                        item.dataset.shiftId;
-
-
-                    item.style.setProperty(
-                        "--swipe-x",
-                        "100px"
-                    );
+        },
+        {
+            passive: true
+        }
+    );
 
 
-                    window.setTimeout(
-                        function () {
+    shiftsList.addEventListener(
+        "touchend",
+        function () {
 
-                            deleteShift(
-                                shiftId
-                            );
-
-                        },
-                        100
-                    );
+            if (!activeItem) {
+                return;
+            }
 
 
-                    return;
+            const item =
+                activeItem;
 
-                }
+
+            const distance =
+                startX - currentX;
 
 
-                /*
-                 Недостаточный свайп —
-                 возвращаем строку.
-                */
+            activeItem = null;
+
+
+            item.classList.remove(
+                "is-swiping"
+            );
+
+
+            /*
+             Достаточный свайп —
+             запускаем существующее
+             удаление.
+            */
+
+            if (
+                distance >=
+                SWIPE_DELETE_DISTANCE
+            ) {
+
+                const shiftId =
+                    item.dataset.shiftId;
+
 
                 item.style.setProperty(
                     "--swipe-x",
-                    "0px"
+                    "-100px"
                 );
 
-            },
-            {
-                passive: true
+
+                window.setTimeout(
+                    function () {
+
+                        deleteShift(
+                            shiftId
+                        );
+
+                    },
+                    100
+                );
+
+
+                return;
+
             }
-        );
 
 
-        shiftsList.addEventListener(
-            "touchcancel",
-            function () {
+            /*
+             Недостаточный свайп —
+             возвращаем строку.
+            */
 
-                if (!activeItem) {
-                    return;
-                }
+            item.style.setProperty(
+                "--swipe-x",
+                "0px"
+            );
 
-
-                activeItem.style.setProperty(
-                    "--swipe-x",
-                    "0px"
-                );
-
-
-                activeItem.classList.remove(
-                    "is-swiping"
-                );
+        },
+        {
+            passive: true
+        }
+    );
 
 
-                activeItem = null;
+    shiftsList.addEventListener(
+        "touchcancel",
+        function () {
 
-            },
-            {
-                passive: true
+            if (!activeItem) {
+                return;
             }
-        );
 
-    }
+
+            activeItem.style.setProperty(
+                "--swipe-x",
+                "0px"
+            );
+
+
+            activeItem.classList.remove(
+                "is-swiping"
+            );
+
+
+            activeItem = null;
+
+        },
+        {
+            passive: true
+        }
+    );
+
+}
 
     /* =====================================================
        RENDER
