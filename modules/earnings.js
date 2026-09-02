@@ -170,7 +170,7 @@
 
 
         return (
-            "€" +
+            "₽" +
             number.toFixed(2)
         );
 
