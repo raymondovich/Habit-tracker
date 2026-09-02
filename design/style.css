@@ -30,6 +30,9 @@
     --border-soft: rgba(255, 255, 255, 0.045);
     --border-strong: rgba(255, 255, 255, 0.115);
 
+    --border-premium: rgba(216, 177, 90, 0.18);
+    --border-premium-strong: rgba(216, 177, 90, 0.28);
+
     /* -----------------------------------------------------
        ACCENT
        ----------------------------------------------------- */
@@ -748,6 +751,83 @@ a {
 
 .shifts-section {
     margin-bottom: 28px;
+
+    position: relative;
+
+    padding: 18px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 88% 0%,
+            rgba(216, 177, 90, 0.065),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 12% 100%,
+            rgba(255, 255, 255, 0.018),
+            transparent 42%
+        ),
+        linear-gradient(
+            145deg,
+            #11110f 0%,
+            #0b0b0a 48%,
+            #070707 100%
+        );
+
+    border: 1px solid var(--border-strong);
+
+    border-radius: var(--radius-xl);
+
+    box-shadow:
+        var(--shadow-medium),
+        0 0 34px rgba(216, 177, 90, 0.035);
+}
+
+.shifts-section::before {
+    content: "";
+
+    position: absolute;
+
+    width: 210px;
+    height: 210px;
+
+    top: -165px;
+    right: -95px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(216, 177, 90, 0.075);
+
+    box-shadow:
+        0 0 0 22px rgba(216, 177, 90, 0.012),
+        0 0 0 44px rgba(216, 177, 90, 0.007);
+}
+
+.shifts-section::after {
+    content: "";
+
+    position: absolute;
+
+    left: 22px;
+    right: 22px;
+    bottom: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(216, 177, 90, 0.20),
+            transparent
+        );
+}
+
+.shifts-section > * {
+    position: relative;
+    z-index: 1;
 }
 
 .shifts-list {
@@ -970,10 +1050,8 @@ a {
 
 
 /* =========================================================
-   =========================================================
    STATISTICS SCREEN
    LIFE GAME 2.0 STYLE
-   =========================================================
    ========================================================= */
 
 .statistics-screen {
@@ -1363,23 +1441,87 @@ a {
 
 .statistics-performance,
 .performance-card {
+    position: relative;
+
+    overflow: hidden;
+
     margin-bottom: 14px;
 
     padding: 19px;
 
     background:
+        radial-gradient(
+            circle at 92% 0%,
+            rgba(216, 177, 90, 0.065),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 5% 100%,
+            rgba(255, 255, 255, 0.018),
+            transparent 38%
+        ),
         linear-gradient(
             145deg,
-            #101010,
-            #090909
+            #11110f 0%,
+            #0b0b0a 50%,
+            #070707 100%
         );
 
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
 
     border-radius: var(--radius-xl);
 
     box-shadow:
-        var(--shadow-medium);
+        var(--shadow-medium),
+        0 0 34px rgba(216, 177, 90, 0.03);
+}
+
+.statistics-performance::before,
+.performance-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 205px;
+    height: 205px;
+
+    top: -150px;
+    right: -92px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(216, 177, 90, 0.07);
+
+    box-shadow:
+        0 0 0 20px rgba(216, 177, 90, 0.011),
+        0 0 0 40px rgba(216, 177, 90, 0.006);
+}
+
+.statistics-performance::after,
+.performance-card::after {
+    content: "";
+
+    position: absolute;
+
+    left: 22px;
+    right: 22px;
+    bottom: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(216, 177, 90, 0.19),
+            transparent
+        );
+}
+
+.statistics-performance > *,
+.performance-card > * {
+    position: relative;
+    z-index: 1;
 }
 
 .performance-header {
@@ -1401,10 +1543,10 @@ a {
 .performance-main {
     display: flex;
 
-    align-items: flex-end;
+    align-items: stretch;
     justify-content: space-between;
 
-    gap: 15px;
+    gap: 10px;
 
     padding-bottom: 16px;
 
@@ -1412,7 +1554,40 @@ a {
         1px solid var(--border-soft);
 }
 
+
+/* =========================================================
+   PERFORMANCE CURRENT / PREVIOUS
+   ========================================================= */
+
+.current-performance-value,
+.previous-performance-value {
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+
+    border: 1px solid rgba(216, 177, 90, 0.13);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(216, 177, 90, 0.055),
+            rgba(255, 255, 255, 0.018) 48%,
+            rgba(255, 255, 255, 0.006)
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
 .current-performance-value {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 15px 14px 14px;
+
     font-size: 34px;
     line-height: 0.95;
 
@@ -1423,16 +1598,63 @@ a {
     color: var(--text);
 }
 
+.current-performance-value::before,
+.previous-performance-value::before {
+    content: "";
+
+    position: absolute;
+
+    width: 100px;
+    height: 100px;
+
+    top: -65px;
+    right: -35px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(216, 177, 90, 0.055);
+}
+
 .previous-performance-value {
-    margin-top: 7px;
+    flex: 0 1 42%;
+
+    margin-top: 0;
+
+    padding: 12px 12px 11px;
+
+    align-self: flex-end;
 
     color: var(--text-tertiary);
 
     font-size: 10px;
+
+    line-height: 1.2;
+}
+
+.previous-performance-value::after {
+    content: "PREVIOUS";
+
+    display: block;
+
+    margin-top: 6px;
+
+    color: var(--text-disabled);
+
+    font-size: 7px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.12em;
 }
 
 .performance-change {
+    min-width: 68px;
+
+    padding: 10px 0;
+
     text-align: right;
+
+    align-self: center;
 }
 
 .performance-change-value {
@@ -1508,28 +1730,84 @@ a {
    ========================================================= */
 
 .best-performance {
+    position: relative;
+
+    overflow: hidden;
+
     margin-bottom: 14px;
 
     padding: 19px;
 
     background:
         radial-gradient(
-            circle at 90% 0%,
-            rgba(216, 177, 90, 0.045),
-            transparent 35%
+            circle at 88% 0%,
+            rgba(216, 177, 90, 0.052),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 8% 100%,
+            rgba(255, 255, 255, 0.017),
+            transparent 42%
         ),
         linear-gradient(
             145deg,
-            #101010,
-            #090909
+            #10100f 0%,
+            #0b0b0a 50%,
+            #080808 100%
         );
 
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
 
     border-radius: var(--radius-xl);
 
     box-shadow:
-        var(--shadow-medium);
+        var(--shadow-medium),
+        0 0 30px rgba(216, 177, 90, 0.025);
+}
+
+.best-performance::before {
+    content: "";
+
+    position: absolute;
+
+    width: 190px;
+    height: 190px;
+
+    top: -142px;
+    right: -82px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(216, 177, 90, 0.065);
+
+    box-shadow:
+        0 0 0 18px rgba(216, 177, 90, 0.01),
+        0 0 0 36px rgba(216, 177, 90, 0.006);
+}
+
+.best-performance::after {
+    content: "";
+
+    position: absolute;
+
+    left: 22px;
+    right: 22px;
+    bottom: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(216, 177, 90, 0.17),
+            transparent
+        );
+}
+
+.best-performance > * {
+    position: relative;
+    z-index: 1;
 }
 
 .best-performance-header {
@@ -1593,23 +1871,87 @@ a {
 
 .all-time,
 .all-time-card {
+    position: relative;
+
+    overflow: hidden;
+
     margin-bottom: 14px;
 
     padding: 19px;
 
     background:
+        radial-gradient(
+            circle at 8% 0%,
+            rgba(216, 177, 90, 0.048),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 100% 100%,
+            rgba(255, 255, 255, 0.018),
+            transparent 38%
+        ),
         linear-gradient(
             145deg,
-            #101010,
-            #090909
+            #11110f 0%,
+            #0b0b0a 52%,
+            #070707 100%
         );
 
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
 
     border-radius: var(--radius-xl);
 
     box-shadow:
-        var(--shadow-medium);
+        var(--shadow-medium),
+        0 0 34px rgba(216, 177, 90, 0.028);
+}
+
+.all-time::before,
+.all-time-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 215px;
+    height: 215px;
+
+    top: -162px;
+    left: -95px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(216, 177, 90, 0.07);
+
+    box-shadow:
+        0 0 0 21px rgba(216, 177, 90, 0.01),
+        0 0 0 42px rgba(216, 177, 90, 0.006);
+}
+
+.all-time::after,
+.all-time-card::after {
+    content: "";
+
+    position: absolute;
+
+    left: 22px;
+    right: 22px;
+    bottom: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(216, 177, 90, 0.18),
+            transparent
+        );
+}
+
+.all-time > *,
+.all-time-card > * {
+    position: relative;
+    z-index: 1;
 }
 
 .all-time-header {
@@ -1635,9 +1977,13 @@ a {
     padding: 15px 12px;
 
     background:
-        rgba(255, 255, 255, 0.018);
+        linear-gradient(
+            145deg,
+            rgba(216, 177, 90, 0.035),
+            rgba(255, 255, 255, 0.012)
+        );
 
-    border: 1px solid var(--border-soft);
+    border: 1px solid rgba(216, 177, 90, 0.08);
 
     border-radius: 12px;
 }
@@ -1671,23 +2017,52 @@ a {
    ========================================================= */
 
 .statistics-card {
+    position: relative;
+
+    overflow: hidden;
+
     margin-bottom: 14px;
 
     padding: 18px;
 
     background:
+        radial-gradient(
+            circle at 90% 0%,
+            rgba(216, 177, 90, 0.04),
+            transparent 34%
+        ),
         linear-gradient(
             145deg,
             #101010,
             #090909
         );
 
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
 
     border-radius: var(--radius-xl);
 
     box-shadow:
         var(--shadow-medium);
+}
+
+.statistics-card::after {
+    content: "";
+
+    position: absolute;
+
+    left: 22px;
+    right: 22px;
+    bottom: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(216, 177, 90, 0.15),
+            transparent
+        );
 }
 
 
@@ -1810,6 +2185,10 @@ a:focus-visible {
         padding: 0 13px;
     }
 
+    .shifts-section {
+        padding: 16px;
+    }
+
     .shift-item {
         grid-template-columns:
             minmax(70px, 1fr)
@@ -1876,6 +2255,20 @@ a:focus-visible {
         padding: 17px;
     }
 
+    .current-performance-value {
+        font-size: 29px;
+        padding: 14px 12px;
+    }
+
+    .previous-performance-value {
+        padding: 11px 10px;
+        font-size: 9px;
+    }
+
+    .performance-change {
+        min-width: 58px;
+    }
+
 }
 
 
@@ -1916,7 +2309,11 @@ a:focus-visible {
     }
 
     .current-performance-value {
-        font-size: 29px;
+        font-size: 26px;
+    }
+
+    .previous-performance-value {
+        font-size: 8px;
     }
 
     .all-time-grid {
