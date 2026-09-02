@@ -27,6 +27,13 @@
 
 
     /* =====================================================
+       SWIPE STATE
+       ===================================================== */
+
+    let swipeState = null;
+
+
+    /* =====================================================
        INIT DOM
        ===================================================== */
 
@@ -263,6 +270,7 @@
 
         }
 
+
         return 0;
 
     }
@@ -476,274 +484,7 @@
         );
 
 
-        injectModalStyles();
-
-
         return modal;
-
-    }
-
-
-    /* =====================================================
-       MODAL STYLES
-       ===================================================== */
-
-    function injectModalStyles() {
-
-        if (
-            document.getElementById(
-                "jobCashShiftStyles"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        const style =
-            document.createElement("style");
-
-
-        style.id =
-            "jobCashShiftStyles";
-
-
-        style.textContent = `
-
-            #jobCashShiftModal {
-                position: fixed;
-                inset: 0;
-                z-index: 99999;
-            }
-
-            .jc-modal-backdrop {
-                position: absolute;
-                inset: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 20px;
-                background: rgba(0,0,0,.82);
-                backdrop-filter: blur(12px);
-            }
-
-            .jc-modal {
-                width: 100%;
-                max-width: 430px;
-                background: #0b0b0b;
-                border: 1px solid rgba(214,166,58,.42);
-                border-radius: 18px;
-                padding: 22px;
-                box-sizing: border-box;
-                box-shadow:
-                    0 25px 80px rgba(0,0,0,.75),
-                    0 0 35px rgba(214,166,58,.08);
-            }
-
-            .jc-modal-header {
-                display: flex;
-                align-items: flex-start;
-                justify-content: space-between;
-                margin-bottom: 24px;
-            }
-
-            .jc-modal-title {
-                color: #f4f1e9;
-                font-size: 22px;
-                font-weight: 700;
-                letter-spacing: .02em;
-            }
-
-            .jc-modal-subtitle {
-                margin-top: 5px;
-                color: #74716b;
-                font-size: 13px;
-            }
-
-            .jc-modal-close {
-                width: 34px;
-                height: 34px;
-                border: 1px solid rgba(255,255,255,.1);
-                border-radius: 50%;
-                background: #111;
-                color: #b4b0a7;
-                font-size: 24px;
-                line-height: 1;
-                cursor: pointer;
-            }
-
-            .jc-label {
-                display: block;
-                margin-bottom: 7px;
-                color: #b4b0a7;
-                font-size: 12px;
-                text-transform: uppercase;
-                letter-spacing: .08em;
-            }
-
-            .jc-input {
-                width: 100%;
-                min-height: 48px;
-                box-sizing: border-box;
-                margin-bottom: 16px;
-                padding: 0 14px;
-                border: 1px solid rgba(214,166,58,.18);
-                border-radius: 10px;
-                outline: none;
-                background: #101010;
-                color: #f4f1e9;
-                font-size: 16px;
-            }
-
-            .jc-input:focus {
-                border-color: rgba(214,166,58,.55);
-            }
-
-            .jc-time-row {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
-
-            .jc-preview {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-                margin: 5px 0 20px;
-                padding: 14px 8px;
-                border: 1px solid rgba(214,166,58,.14);
-                border-radius: 12px;
-                background: #080808;
-            }
-
-            .jc-preview div {
-                text-align: center;
-            }
-
-            .jc-preview span {
-                display: block;
-                margin-bottom: 6px;
-                color: #74716b;
-                font-size: 10px;
-                text-transform: uppercase;
-                letter-spacing: .05em;
-            }
-
-            .jc-preview strong {
-                color: #d6a63a;
-                font-size: 15px;
-            }
-
-            .jc-save-button {
-                width: 100%;
-                min-height: 50px;
-                border: 1px solid #d6a63a;
-                border-radius: 11px;
-                background: #d6a63a;
-                color: #050505;
-                font-size: 15px;
-                font-weight: 700;
-                cursor: pointer;
-            }
-
-            .jc-save-button:active {
-                transform: scale(.98);
-            }
-
-
-            /* ================================
-               SHIFT ACTIONS
-               ================================ */
-
-            .jc-shift-actions {
-
-                display: flex;
-
-                align-items: center;
-
-                gap: 6px;
-
-                margin-left: 8px;
-
-                flex-shrink: 0;
-
-            }
-
-
-            .jc-shift-action {
-
-                width: 32px;
-
-                height: 32px;
-
-                display: flex;
-
-                align-items: center;
-
-                justify-content: center;
-
-                padding: 0;
-
-                border:
-                    1px solid
-                    rgba(255,255,255,.10);
-
-                border-radius: 8px;
-
-                background: #111;
-
-                color: #aaa;
-
-                font-size: 16px;
-
-                line-height: 1;
-
-                cursor: pointer;
-
-                transition:
-                    border-color .15s ease,
-                    color .15s ease,
-                    background .15s ease;
-
-            }
-
-
-            .jc-shift-action-edit:hover {
-
-                border-color:
-                    rgba(214,166,58,.55);
-
-                color:
-                    #d6a63a;
-
-            }
-
-
-            .jc-shift-action-delete:hover {
-
-                border-color:
-                    rgba(255,80,80,.50);
-
-                color:
-                    #ff7777;
-
-            }
-
-
-            .jc-shift-action:active {
-
-                transform:
-                    scale(.94);
-
-            }
-
-        `;
-
-
-        document.head.appendChild(
-            style
-        );
 
     }
 
@@ -1547,33 +1288,29 @@
                                 </div>
 
 
-                                <div
-                                    class="jc-shift-actions"
+                                <button
+                                    type="button"
+                                    class="shift-edit-button"
+                                    data-action="edit"
+                                    data-id="${shift.id}"
+                                    aria-label="Редактировать смену"
+                                    title="Редактировать"
                                 >
-
-                                    <button
-                                        type="button"
-                                        class="jc-shift-action jc-shift-action-edit"
-                                        data-action="edit"
-                                        data-id="${shift.id}"
-                                        aria-label="Редактировать смену"
-                                        title="Редактировать"
+                                    <span
+                                        class="shift-edit-icon"
+                                        aria-hidden="true"
                                     >
                                         ✎
-                                    </button>
+                                    </span>
+                                </button>
 
 
-                                    <button
-                                        type="button"
-                                        class="jc-shift-action jc-shift-action-delete"
-                                        data-action="delete"
-                                        data-id="${shift.id}"
-                                        aria-label="Удалить смену"
-                                        title="Удалить"
-                                    >
-                                        ×
-                                    </button>
-
+                                <div
+                                    class="shift-delete-action"
+                                    data-delete-action="true"
+                                    aria-hidden="true"
+                                >
+                                    Удалить
                                 </div>
 
                             </div>
@@ -1588,40 +1325,218 @@
 
 
     /* =====================================================
-       SHIFT ACTIONS
+       EDIT ACTION
        ===================================================== */
 
-    function handleShiftAction(
+    function handleEditAction(
         event
     ) {
 
         const button =
             event.target.closest(
-                "[data-action]"
+                "[data-action='edit']"
             );
 
 
         if (!button) {
 
-            return;
+            return false;
 
         }
-
-
-        const action =
-            button.dataset.action;
 
 
         const id =
             button.dataset.id;
 
 
+        openEditModal(
+            id
+        );
+
+
+        return true;
+
+    }
+
+
+    /* =====================================================
+       SWIPE HELPERS
+       ===================================================== */
+
+    function getShiftElement(
+        event
+    ) {
+
+        return event.target.closest(
+            ".shift-item"
+        );
+
+    }
+
+
+    function closeSwipe(
+        item
+    ) {
+
+        if (!item) {
+
+            return;
+
+        }
+
+
+        item.style.transform =
+            "";
+
+
+        item.classList.remove(
+            "shift-item-swiped"
+        );
+
+    }
+
+
+    function openSwipe(
+        item
+    ) {
+
+        if (!item) {
+
+            return;
+
+        }
+
+
+        item.style.transform =
+            "translateX(88px)";
+
+
+        item.classList.add(
+            "shift-item-swiped"
+        );
+
+    }
+
+
+    function handleSwipeStart(
+        event
+    ) {
+
         if (
-            action ===
-            "edit"
+            event.pointerType ===
+            "mouse" &&
+            event.button !== 0
         ) {
 
-            openEditModal(id);
+            return;
+
+        }
+
+
+        const item =
+            getShiftElement(
+                event
+            );
+
+
+        if (!item) {
+
+            return;
+
+        }
+
+
+        const editButton =
+            event.target.closest(
+                ".shift-edit-button"
+            );
+
+
+        if (editButton) {
+
+            return;
+
+        }
+
+
+        const rect =
+            item.getBoundingClientRect();
+
+
+        swipeState = {
+
+            item:
+                item,
+
+            startX:
+                event.clientX,
+
+            startY:
+                event.clientY,
+
+            currentX:
+                event.clientX,
+
+            startTransform:
+                item.classList.contains(
+                    "shift-item-swiped"
+                )
+                    ? 88
+                    : 0,
+
+            width:
+                rect.width,
+
+            dragging:
+                false
+
+        };
+
+
+        item.setPointerCapture?.(
+            event.pointerId
+        );
+
+    }
+
+
+    function handleSwipeMove(
+        event
+    ) {
+
+        if (!swipeState) {
+
+            return;
+
+        }
+
+
+        const item =
+            swipeState.item;
+
+
+        if (!item) {
+
+            return;
+
+        }
+
+
+        const deltaX =
+            event.clientX -
+            swipeState.startX;
+
+
+        const deltaY =
+            event.clientY -
+            swipeState.startY;
+
+
+        if (
+            !swipeState.dragging &&
+            Math.abs(deltaY) >
+                Math.abs(deltaX)
+        ) {
 
             return;
 
@@ -1629,13 +1544,230 @@
 
 
         if (
-            action ===
-            "delete"
+            Math.abs(deltaX) >
+            8
         ) {
 
-            deleteShift(id);
+            swipeState.dragging =
+                true;
 
         }
+
+
+        if (
+            !swipeState.dragging
+        ) {
+
+            return;
+
+        }
+
+
+        let translate =
+            swipeState.startTransform +
+            deltaX;
+
+
+        /*
+         Swipe is only allowed to the right.
+        */
+
+        if (translate < 0) {
+
+            translate = 0;
+
+        }
+
+
+        if (translate > 100) {
+
+            translate = 100;
+
+        }
+
+
+        item.style.transform =
+            "translateX(" +
+            translate +
+            "px)";
+
+
+        if (
+            translate >= 44
+        ) {
+
+            item.classList.add(
+                "shift-item-swiped"
+            );
+
+        } else {
+
+            item.classList.remove(
+                "shift-item-swiped"
+            );
+
+        }
+
+    }
+
+
+    function handleSwipeEnd(
+        event
+    ) {
+
+        if (!swipeState) {
+
+            return;
+
+        }
+
+
+        const state =
+            swipeState;
+
+
+        swipeState =
+            null;
+
+
+        const item =
+            state.item;
+
+
+        if (!item) {
+
+            return;
+
+        }
+
+
+        const deltaX =
+            event.clientX -
+            state.startX;
+
+
+        if (
+            state.dragging
+        ) {
+
+            if (
+                deltaX >= 44 ||
+                state.startTransform >= 44
+            ) {
+
+                openSwipe(
+                    item
+                );
+
+            } else {
+
+                closeSwipe(
+                    item
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SWIPE DELETE ACTION
+       ===================================================== */
+
+    function handleDeleteSwipeClick(
+        event
+    ) {
+
+        const item =
+            event.target.closest(
+                ".shift-item"
+            );
+
+
+        if (!item) {
+
+            return;
+
+        }
+
+
+        if (
+            !item.classList.contains(
+                "shift-item-swiped"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        const id =
+            item.dataset.shiftId;
+
+
+        const deleteArea =
+            item.querySelector(
+                ".shift-delete-action"
+            );
+
+
+        if (
+            !deleteArea
+        ) {
+
+            return;
+
+        }
+
+
+        const rect =
+            deleteArea.getBoundingClientRect();
+
+
+        if (
+            event.clientX < rect.left ||
+            event.clientX > rect.right ||
+            event.clientY < rect.top ||
+            event.clientY > rect.bottom
+        ) {
+
+            return;
+
+        }
+
+
+        deleteShift(
+            id
+        );
+
+    }
+
+
+    /* =====================================================
+       SHIFT CLICK
+       ===================================================== */
+
+    function handleShiftClick(
+        event
+    ) {
+
+        if (
+            handleEditAction(
+                event
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        handleDeleteSwipeClick(
+            event
+        );
 
     }
 
@@ -1685,7 +1817,31 @@
 
             shiftsList.addEventListener(
                 "click",
-                handleShiftAction
+                handleShiftClick
+            );
+
+
+            shiftsList.addEventListener(
+                "pointerdown",
+                handleSwipeStart
+            );
+
+
+            shiftsList.addEventListener(
+                "pointermove",
+                handleSwipeMove
+            );
+
+
+            shiftsList.addEventListener(
+                "pointerup",
+                handleSwipeEnd
+            );
+
+
+            shiftsList.addEventListener(
+                "pointercancel",
+                handleSwipeEnd
             );
 
         }
