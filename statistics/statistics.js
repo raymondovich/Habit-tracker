@@ -1,11 +1,11 @@
 /* =========================================================
    JOB & CASH
    STATISTICS ENGINE
-   Version 2.3
+   Version 3.0
    ========================================================= */
 (function () {
     "use strict";
-    const VERSION = "2.3";
+    const VERSION = "3.0";
     /* =========================================================
        DATA ACCESS
        ========================================================= */
@@ -55,11 +55,17 @@
     function parseDate(dateString) {
         if (!dateString) return null;
         const parts = dateString.split("-");
-        if (parts.length !== 3) return null;
+        if (parts.length !== 3) {
+            return null;
+        }
         const year = Number(parts[0]);
         const month = Number(parts[1]) - 1;
         const day = Number(parts[2]);
-        const date = new Date(year, month, day);
+        const date = new Date(
+            year,
+            month,
+            day
+        );
         if (Number.isNaN(date.getTime())) {
             return null;
         }
@@ -67,42 +73,61 @@
     }
     function startOfDay(date) {
         const result = new Date(date);
-        result.setHours(0, 0, 0, 0);
+        result.setHours(
+            0,
+            0,
+            0,
+            0
+        );
         return result;
     }
     function formatDateKey(date) {
         return [
             date.getFullYear(),
-            String(date.getMonth() + 1).padStart(2, "0"),
-            String(date.getDate()).padStart(2, "0")
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0"),
+            String(
+                date.getDate()
+            ).padStart(2, "0")
         ].join("-");
     }
     function getMonday(date) {
         const result = startOfDay(date);
         const day = result.getDay();
-        const difference = day === 0
-            ? -6
-            : 1 - day;
-        result.setDate(result.getDate() + difference);
+        const difference =
+            day === 0
+                ? -6
+                : 1 - day;
+        result.setDate(
+            result.getDate() + difference
+        );
         return result;
     }
     function getWeekKey(date) {
-        return formatDateKey(getMonday(date));
+        return formatDateKey(
+            getMonday(date)
+        );
     }
     function getMonthKey(date) {
         return (
             date.getFullYear() +
             "-" +
-            String(date.getMonth() + 1).padStart(2, "0")
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0")
         );
     }
     function getYearKey(date) {
-        return String(date.getFullYear());
+        return String(
+            date.getFullYear()
+        );
     }
     function formatMoney(value) {
         return (
-            Math.round(Number(value) || 0)
-                .toLocaleString("ru-RU") +
+            Math.round(
+                Number(value) || 0
+            ).toLocaleString("ru-RU") +
             " ₽"
         );
     }
@@ -120,7 +145,10 @@
             averageRate: 0
         };
     }
-    function addShiftToStats(stats, shift) {
+    function addShiftToStats(
+        stats,
+        shift
+    ) {
         stats.earnings += shift.earnings;
         stats.hours += shift.hours;
         stats.shifts += 1;
@@ -128,140 +156,247 @@
     function finalizeStats(stats) {
         if (stats.shifts > 0) {
             stats.averageEarnings =
-                stats.earnings / stats.shifts;
+                stats.earnings /
+                stats.shifts;
             stats.averageHours =
-                stats.hours / stats.shifts;
+                stats.hours /
+                stats.shifts;
         }
         if (stats.hours > 0) {
             stats.averageEarningsPerHour =
-                stats.earnings / stats.hours;
+                stats.earnings /
+                stats.hours;
             stats.averageRate =
-                stats.earnings / stats.hours;
+                stats.earnings /
+                stats.hours;
         }
         return stats;
     }
     function aggregateShifts(shifts) {
-        const stats = createEmptyStats();
-        shifts.forEach(function (shift) {
-            addShiftToStats(stats, shift);
-        });
-        return finalizeStats(stats);
+        const stats =
+            createEmptyStats();
+        shifts.forEach(
+            function (shift) {
+                addShiftToStats(
+                    stats,
+                    shift
+                );
+            }
+        );
+        return finalizeStats(
+            stats
+        );
     }
     /* =========================================================
-       DAILY STATISTICS
+       DAILY
        ========================================================= */
     function getDailyStatistics() {
-        const shifts = getNormalizedShifts();
+        const shifts =
+            getNormalizedShifts();
         const result = {};
-        shifts.forEach(function (shift) {
-            const date = parseDate(shift.date);
-            if (!date) return;
-            const key = formatDateKey(date);
-            if (!result[key]) {
-                result[key] = createEmptyStats();
+        shifts.forEach(
+            function (shift) {
+                const date =
+                    parseDate(
+                        shift.date
+                    );
+                if (!date) return;
+                const key =
+                    formatDateKey(
+                        date
+                    );
+                if (!result[key]) {
+                    result[key] =
+                        createEmptyStats();
+                }
+                addShiftToStats(
+                    result[key],
+                    shift
+                );
             }
-            addShiftToStats(result[key], shift);
-        });
-        Object.keys(result).forEach(function (key) {
-            finalizeStats(result[key]);
-        });
+        );
+        Object.keys(result).forEach(
+            function (key) {
+                finalizeStats(
+                    result[key]
+                );
+            }
+        );
         return result;
     }
     /* =========================================================
-       WEEKLY STATISTICS
+       WEEKLY
        ========================================================= */
     function getWeeklyStatistics() {
-        const shifts = getNormalizedShifts();
+        const shifts =
+            getNormalizedShifts();
         const result = {};
-        shifts.forEach(function (shift) {
-            const date = parseDate(shift.date);
-            if (!date) return;
-            const key = getWeekKey(date);
-            if (!result[key]) {
-                result[key] = createEmptyStats();
+        shifts.forEach(
+            function (shift) {
+                const date =
+                    parseDate(
+                        shift.date
+                    );
+                if (!date) return;
+                const key =
+                    getWeekKey(
+                        date
+                    );
+                if (!result[key]) {
+                    result[key] =
+                        createEmptyStats();
+                }
+                addShiftToStats(
+                    result[key],
+                    shift
+                );
             }
-            addShiftToStats(result[key], shift);
-        });
-        Object.keys(result).forEach(function (key) {
-            finalizeStats(result[key]);
-        });
+        );
+        Object.keys(result).forEach(
+            function (key) {
+                finalizeStats(
+                    result[key]
+                );
+            }
+        );
         return result;
     }
     /* =========================================================
-       MONTHLY STATISTICS
+       MONTHLY
        ========================================================= */
     function getMonthlyStatistics() {
-        const shifts = getNormalizedShifts();
+        const shifts =
+            getNormalizedShifts();
         const result = {};
-        shifts.forEach(function (shift) {
-            const date = parseDate(shift.date);
-            if (!date) return;
-            const key = getMonthKey(date);
-            if (!result[key]) {
-                result[key] = createEmptyStats();
+        shifts.forEach(
+            function (shift) {
+                const date =
+                    parseDate(
+                        shift.date
+                    );
+                if (!date) return;
+                const key =
+                    getMonthKey(
+                        date
+                    );
+                if (!result[key]) {
+                    result[key] =
+                        createEmptyStats();
+                }
+                addShiftToStats(
+                    result[key],
+                    shift
+                );
             }
-            addShiftToStats(result[key], shift);
-        });
-        Object.keys(result).forEach(function (key) {
-            finalizeStats(result[key]);
-        });
+        );
+        Object.keys(result).forEach(
+            function (key) {
+                finalizeStats(
+                    result[key]
+                );
+            }
+        );
         return result;
     }
     /* =========================================================
-       YEARLY STATISTICS
+       YEARLY
        ========================================================= */
     function getYearlyStatistics() {
-        const shifts = getNormalizedShifts();
+        const shifts =
+            getNormalizedShifts();
         const result = {};
-        shifts.forEach(function (shift) {
-            const date = parseDate(shift.date);
-            if (!date) return;
-            const key = getYearKey(date);
-            if (!result[key]) {
-                result[key] = createEmptyStats();
+        shifts.forEach(
+            function (shift) {
+                const date =
+                    parseDate(
+                        shift.date
+                    );
+                if (!date) return;
+                const key =
+                    getYearKey(
+                        date
+                    );
+                if (!result[key]) {
+                    result[key] =
+                        createEmptyStats();
+                }
+                addShiftToStats(
+                    result[key],
+                    shift
+                );
             }
-            addShiftToStats(result[key], shift);
-        });
-        Object.keys(result).forEach(function (key) {
-            finalizeStats(result[key]);
-        });
+        );
+        Object.keys(result).forEach(
+            function (key) {
+                finalizeStats(
+                    result[key]
+                );
+            }
+        );
         return result;
     }
     /* =========================================================
        CURRENT PERIOD
        ========================================================= */
     function getCurrentPeriodShifts() {
-        const shifts = getNormalizedShifts();
-        const period = getCurrentPeriod();
-        const now = new Date();
+        const shifts =
+            getNormalizedShifts();
+        const period =
+            getCurrentPeriod();
+        const now =
+            new Date();
         if (period === "month") {
-            const currentMonth = getMonthKey(now);
-            return shifts.filter(function (shift) {
-                const date = parseDate(shift.date);
-                return (
-                    date &&
-                    getMonthKey(date) === currentMonth
-                );
-            });
+            const key =
+                getMonthKey(now);
+            return shifts.filter(
+                function (shift) {
+                    const date =
+                        parseDate(
+                            shift.date
+                        );
+                    return (
+                        date &&
+                        getMonthKey(
+                            date
+                        ) === key
+                    );
+                }
+            );
         }
         if (period === "year") {
-            const currentYear = getYearKey(now);
-            return shifts.filter(function (shift) {
-                const date = parseDate(shift.date);
+            const key =
+                getYearKey(now);
+            return shifts.filter(
+                function (shift) {
+                    const date =
+                        parseDate(
+                            shift.date
+                        );
+                    return (
+                        date &&
+                        getYearKey(
+                            date
+                        ) === key
+                    );
+                }
+            );
+        }
+        const key =
+            getWeekKey(now);
+        return shifts.filter(
+            function (shift) {
+                const date =
+                    parseDate(
+                        shift.date
+                    );
                 return (
                     date &&
-                    getYearKey(date) === currentYear
+                    getWeekKey(
+                        date
+                    ) === key
                 );
-            });
-        }
-        const currentWeek = getWeekKey(now);
-        return shifts.filter(function (shift) {
-            const date = parseDate(shift.date);
-            return (
-                date &&
-                getWeekKey(date) === currentWeek
-            );
-        });
+            }
+        );
     }
     function getCurrentPeriodSummary() {
         return aggregateShifts(
@@ -272,50 +407,85 @@
        PREVIOUS PERIOD
        ========================================================= */
     function getPreviousPeriodShifts() {
-        const shifts = getNormalizedShifts();
-        const period = getCurrentPeriod();
-        const now = new Date();
+        const shifts =
+            getNormalizedShifts();
+        const period =
+            getCurrentPeriod();
+        const now =
+            new Date();
         if (period === "month") {
-            const previousMonth = new Date(
-                now.getFullYear(),
-                now.getMonth() - 1,
-                1
-            );
-            const key = getMonthKey(previousMonth);
-            return shifts.filter(function (shift) {
-                const date = parseDate(shift.date);
-                return (
-                    date &&
-                    getMonthKey(date) === key
+            const previous =
+                new Date(
+                    now.getFullYear(),
+                    now.getMonth() - 1,
+                    1
                 );
-            });
+            const key =
+                getMonthKey(
+                    previous
+                );
+            return shifts.filter(
+                function (shift) {
+                    const date =
+                        parseDate(
+                            shift.date
+                        );
+                    return (
+                        date &&
+                        getMonthKey(
+                            date
+                        ) === key
+                    );
+                }
+            );
         }
         if (period === "year") {
-            const previousYear =
-                String(now.getFullYear() - 1);
-            return shifts.filter(function (shift) {
-                const date = parseDate(shift.date);
-                return (
-                    date &&
-                    getYearKey(date) === previousYear
+            const key =
+                String(
+                    now.getFullYear() - 1
                 );
-            });
+            return shifts.filter(
+                function (shift) {
+                    const date =
+                        parseDate(
+                            shift.date
+                        );
+                    return (
+                        date &&
+                        getYearKey(
+                            date
+                        ) === key
+                    );
+                }
+            );
         }
-        const currentMonday = getMonday(now);
-        const previousMonday = new Date(
-            currentMonday
-        );
+        const currentMonday =
+            getMonday(now);
+        const previousMonday =
+            new Date(
+                currentMonday
+            );
         previousMonday.setDate(
             previousMonday.getDate() - 7
         );
-        const key = getWeekKey(previousMonday);
-        return shifts.filter(function (shift) {
-            const date = parseDate(shift.date);
-            return (
-                date &&
-                getWeekKey(date) === key
+        const key =
+            getWeekKey(
+                previousMonday
             );
-        });
+        return shifts.filter(
+            function (shift) {
+                const date =
+                    parseDate(
+                        shift.date
+                    );
+                return (
+                    date &&
+                    getWeekKey(
+                        date
+                    ) === key
+                );
+            }
+        );
     }
     function getPreviousPeriodSummary() {
         return aggregateShifts(
@@ -325,7 +495,10 @@
     /* =========================================================
        PERIOD COMPARISON
        ========================================================= */
-    function calculateChange(current, previous) {
+    function calculateChange(
+        current,
+        previous
+    ) {
         if (previous === 0) {
             if (current === 0) {
                 return {
@@ -340,56 +513,68 @@
                 direction: "up"
             };
         }
-        const difference = current - previous;
+        const value =
+            current - previous;
         const percent =
-            (difference / previous) * 100;
-        let direction = "equal";
+            (value / previous) * 100;
+        let direction =
+            "equal";
         if (percent > 0) {
             direction = "up";
-        } else if (percent < 0) {
+        }
+        if (percent < 0) {
             direction = "down";
         }
         return {
-            value: difference,
+            value,
             percent,
             direction
         };
     }
     function getPeriodComparison() {
-        const current = getCurrentPeriodSummary();
-        const previous = getPreviousPeriodSummary();
+        const current =
+            getCurrentPeriodSummary();
+        const previous =
+            getPreviousPeriodSummary();
         return {
-            period: getCurrentPeriod(),
+            period:
+                getCurrentPeriod(),
             current,
             previous,
-            earnings: calculateChange(
-                current.earnings,
-                previous.earnings
-            ),
-            hours: calculateChange(
-                current.hours,
-                previous.hours
-            ),
-            shifts: calculateChange(
-                current.shifts,
-                previous.shifts
-            ),
-            averageEarnings: calculateChange(
-                current.averageEarnings,
-                previous.averageEarnings
-            ),
-            averageEarningsPerHour: calculateChange(
-                current.averageEarningsPerHour,
-                previous.averageEarningsPerHour
-            ),
-            averageHours: calculateChange(
-                current.averageHours,
-                previous.averageHours
-            )
+            earnings:
+                calculateChange(
+                    current.earnings,
+                    previous.earnings
+                ),
+            hours:
+                calculateChange(
+                    current.hours,
+                    previous.hours
+                ),
+            shifts:
+                calculateChange(
+                    current.shifts,
+                    previous.shifts
+                ),
+            averageEarnings:
+                calculateChange(
+                    current.averageEarnings,
+                    previous.averageEarnings
+                ),
+            averageEarningsPerHour:
+                calculateChange(
+                    current.averageEarningsPerHour,
+                    previous.averageEarningsPerHour
+                ),
+            averageHours:
+                calculateChange(
+                    current.averageHours,
+                    previous.averageHours
+                )
         };
     }
     /* =========================================================
-       ALL-TIME SUMMARY
+       ALL TIME
        ========================================================= */
     function getAllTimeSummary() {
         return aggregateShifts(
@@ -400,22 +585,26 @@
        BEST PERIODS
        ========================================================= */
     function getBestFromMap(map) {
-        const entries = Object.entries(map);
+        const entries =
+            Object.entries(map);
         if (!entries.length) {
             return null;
         }
         let best = null;
-        entries.forEach(function ([period, stats]) {
-            if (
-                !best ||
-                stats.earnings > best.earnings
-            ) {
-                best = {
-                    period,
-                    ...stats
-                };
+        entries.forEach(
+            function ([period, stats]) {
+                if (
+                    !best ||
+                    stats.earnings >
+                    best.earnings
+                ) {
+                    best = {
+                        period,
+                        ...stats
+                    };
+                }
             }
-        });
+        );
         return best;
     }
     function getBestDay() {
@@ -441,97 +630,288 @@
     /* =========================================================
        TOP PERIODS
        ========================================================= */
-    function getTopPeriods(type, limit = 5) {
+    function getTopPeriods(
+        type,
+        limit = 5
+    ) {
         let data;
         switch (type) {
             case "day":
-                data = getDailyStatistics();
+                data =
+                    getDailyStatistics();
                 break;
             case "week":
-                data = getWeeklyStatistics();
+                data =
+                    getWeeklyStatistics();
                 break;
             case "month":
-                data = getMonthlyStatistics();
+                data =
+                    getMonthlyStatistics();
                 break;
             case "year":
-                data = getYearlyStatistics();
+                data =
+                    getYearlyStatistics();
                 break;
             default:
                 return [];
         }
         return Object.entries(data)
-            .map(function ([period, stats]) {
-                return {
-                    period,
-                    ...stats
-                };
-            })
-            .sort(function (a, b) {
-                return b.earnings - a.earnings;
-            })
+            .map(
+                function ([period, stats]) {
+                    return {
+                        period,
+                        ...stats
+                    };
+                }
+            )
+            .sort(
+                function (a, b) {
+                    return (
+                        b.earnings -
+                        a.earnings
+                    );
+                }
+            )
             .slice(0, limit);
     }
     /* =========================================================
-       HISTORICAL SERIES
+       HISTORY
        ========================================================= */
     function getHistory(type) {
         let data;
         switch (type) {
             case "day":
-                data = getDailyStatistics();
+                data =
+                    getDailyStatistics();
                 break;
             case "week":
-                data = getWeeklyStatistics();
+                data =
+                    getWeeklyStatistics();
                 break;
             case "month":
-                data = getMonthlyStatistics();
+                data =
+                    getMonthlyStatistics();
                 break;
             case "year":
-                data = getYearlyStatistics();
+                data =
+                    getYearlyStatistics();
                 break;
             default:
                 return [];
         }
         return Object.entries(data)
-            .map(function ([period, stats]) {
-                return {
-                    period,
-                    earnings: stats.earnings,
-                    hours: stats.hours,
-                    shifts: stats.shifts,
-                    averageEarnings:
-                        stats.averageEarnings,
-                    averageEarningsPerHour:
-                        stats.averageEarningsPerHour,
-                    averageHours:
-                        stats.averageHours,
-                    averageRate:
-                        stats.averageRate
-                };
-            })
-            .sort(function (a, b) {
-                return a.period.localeCompare(
-                    b.period
-                );
-            });
+            .map(
+                function ([period, stats]) {
+                    return {
+                        period,
+                        earnings:
+                            stats.earnings,
+                        hours:
+                            stats.hours,
+                        shifts:
+                            stats.shifts,
+                        averageEarnings:
+                            stats.averageEarnings,
+                        averageEarningsPerHour:
+                            stats.averageEarningsPerHour,
+                        averageHours:
+                            stats.averageHours,
+                        averageRate:
+                            stats.averageRate
+                    };
+                }
+            )
+            .sort(
+                function (a, b) {
+                    return (
+                        a.period.localeCompare(
+                            b.period
+                        )
+                    );
+                }
+            );
     }
     /* =========================================================
-       PERFORMANCE INSIGHTS
+       CHART SERIES
+       ========================================================= */
+    function getChartSeries(
+        type = getCurrentPeriod()
+    ) {
+        const shifts =
+            getNormalizedShifts();
+        const series = {};
+        shifts.forEach(
+            function (shift) {
+                const date =
+                    parseDate(
+                        shift.date
+                    );
+                if (!date) return;
+                let key;
+                if (type === "day") {
+                    key =
+                        formatDateKey(
+                            date
+                        );
+                }
+                if (type === "week") {
+                    key =
+                        getWeekKey(
+                            date
+                        );
+                }
+                if (type === "month") {
+                    key =
+                        getMonthKey(
+                            date
+                        );
+                }
+                if (type === "year") {
+                    key =
+                        getYearKey(
+                            date
+                        );
+                }
+                if (!key) return;
+                if (!series[key]) {
+                    series[key] =
+                        createEmptyStats();
+                }
+                addShiftToStats(
+                    series[key],
+                    shift
+                );
+            }
+        );
+        Object.keys(series).forEach(
+            function (key) {
+                finalizeStats(
+                    series[key]
+                );
+            }
+        );
+        return Object.entries(series)
+            .map(
+                function ([period, stats]) {
+                    return {
+                        period,
+                        earnings:
+                            stats.earnings,
+                        hours:
+                            stats.hours,
+                        shifts:
+                            stats.shifts,
+                        averageEarnings:
+                            stats.averageEarnings,
+                        averageEarningsPerHour:
+                            stats.averageEarningsPerHour
+                    };
+                }
+            )
+            .sort(
+                function (a, b) {
+                    return (
+                        a.period.localeCompare(
+                            b.period
+                        )
+                    );
+                }
+            );
+    }
+    /* =========================================================
+       CHART DATA
+       ========================================================= */
+    function getChartData(
+        type = getCurrentPeriod(),
+        metric = "earnings"
+    ) {
+        const series =
+            getChartSeries(type);
+        return series.map(
+            function (item) {
+                return {
+                    period:
+                        item.period,
+                    value:
+                        Number(
+                            item[metric]
+                        ) || 0
+                };
+            }
+        );
+    }
+    /* =========================================================
+       CHART MAX
+       ========================================================= */
+    function getChartMax(
+        type = getCurrentPeriod(),
+        metric = "earnings"
+    ) {
+        const data =
+            getChartData(
+                type,
+                metric
+            );
+        if (!data.length) {
+            return 0;
+        }
+        return Math.max(
+            ...data.map(
+                function (item) {
+                    return item.value;
+                }
+            )
+        );
+    }
+    /* =========================================================
+       CHART NORMALIZATION
+       ========================================================= */
+    function getNormalizedChartData(
+        type = getCurrentPeriod(),
+        metric = "earnings"
+    ) {
+        const data =
+            getChartData(
+                type,
+                metric
+            );
+        const max =
+            getChartMax(
+                type,
+                metric
+            );
+        return data.map(
+            function (item, index) {
+                return {
+                    index,
+                    period:
+                        item.period,
+                    value:
+                        item.value,
+                    normalized:
+                        max > 0
+                            ? item.value / max
+                            : 0
+                };
+            }
+        );
+    }
+    /* =========================================================
+       PERFORMANCE SUMMARY
        ========================================================= */
     function getPerformanceSummary() {
         const comparison =
             getPeriodComparison();
-        const current =
-            comparison.current;
-        const allTime =
-            getAllTimeSummary();
         return {
-            period: comparison.period,
-            current,
+            period:
+                comparison.period,
+            current:
+                comparison.current,
             previous:
                 comparison.previous,
             comparison,
-            allTime,
+            allTime:
+                getAllTimeSummary(),
             bestDay:
                 getBestDay(),
             bestWeek:
@@ -543,7 +923,7 @@
         };
     }
     /* =========================================================
-       MAIN DASHBOARD UI
+       DASHBOARD UI
        ========================================================= */
     function updateCurrentPeriodUI() {
         const summary =
@@ -653,7 +1033,7 @@
         }
     }
     /* =========================================================
-       FULL UI UPDATE
+       FULL UPDATE
        ========================================================= */
     function updateUI() {
         updateCurrentPeriodUI();
@@ -663,20 +1043,26 @@
                 "jobcash:statisticschange",
                 {
                     detail: {
-                        version: VERSION,
+                        version:
+                            VERSION,
                         period:
                             getCurrentPeriod(),
                         summary:
                             getCurrentPeriodSummary(),
                         comparison:
-                            getPeriodComparison()
+                            getPeriodComparison(),
+                        chart:
+                            getChartData(
+                                getCurrentPeriod(),
+                                "earnings"
+                            )
                     }
                 }
             )
         );
     }
     /* =========================================================
-       PERIOD SWITCHER BRIDGE
+       PERIOD SWITCHER
        ========================================================= */
     function bindPeriodSwitcher() {
         const switcher =
@@ -687,31 +1073,32 @@
         switcher.addEventListener(
             "click",
             function () {
-                /*
-                 * earnings.js processes the click
-                 * and changes currentPeriod.
-                 *
-                 * Statistics waits one event loop cycle
-                 * and then reads the new period.
-                 */
-                setTimeout(function () {
-                    updateCurrentPeriodUI();
-                    window.dispatchEvent(
-                        new CustomEvent(
-                            "jobcash:statisticsperiodchange",
-                            {
-                                detail: {
-                                    period:
-                                        getCurrentPeriod(),
-                                    summary:
-                                        getCurrentPeriodSummary(),
-                                    comparison:
-                                        getPeriodComparison()
+                setTimeout(
+                    function () {
+                        updateCurrentPeriodUI();
+                        window.dispatchEvent(
+                            new CustomEvent(
+                                "jobcash:statisticsperiodchange",
+                                {
+                                    detail: {
+                                        period:
+                                            getCurrentPeriod(),
+                                        summary:
+                                            getCurrentPeriodSummary(),
+                                        comparison:
+                                            getPeriodComparison(),
+                                        chart:
+                                            getChartData(
+                                                getCurrentPeriod(),
+                                                "earnings"
+                                            )
+                                    }
                                 }
-                            }
-                        )
-                    );
-                }, 0);
+                            )
+                        );
+                    },
+                    0
+                );
             }
         );
     }
@@ -741,7 +1128,8 @@
        PUBLIC API
        ========================================================= */
     window.JobCashStatistics = {
-        version: VERSION,
+        version:
+            VERSION,
         /* Data */
         getPeriod:
             getCurrentPeriod,
@@ -757,19 +1145,24 @@
         getPeriodComparison,
         /* All time */
         getAllTimeSummary,
-        /* Historical statistics */
+        /* Historical */
         getDailyStatistics,
         getWeeklyStatistics,
         getMonthlyStatistics,
         getYearlyStatistics,
-        /* Historical series */
+        /* History */
         getHistory,
-        /* Best periods */
+        /* Chart */
+        getChartSeries,
+        getChartData,
+        getChartMax,
+        getNormalizedChartData,
+        /* Best */
         getBestDay,
         getBestWeek,
         getBestMonth,
         getBestYear,
-        /* Rankings */
+        /* Ranking */
         getTopPeriods,
         /* Performance */
         getPerformanceSummary,
