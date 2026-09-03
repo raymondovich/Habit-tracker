@@ -1840,46 +1840,66 @@ a {
 
 /* =========================================================
    BEST PERFORMANCE
-   SAME CARD SYSTEM AS PERFORMANCE
+   OUTER PREMIUM CONTAINER + 4 INDIVIDUAL CARDS
    ========================================================= */
 
-.best-performance {
-    position: relative;
+.best-performance-section {
+    margin-bottom: 14px;
+}
 
+
+/* ---------------------------------------------------------
+   OUTER CONTAINER
+   Объединяет все 4 пункта в один визуальный блок
+   --------------------------------------------------------- */
+
+.best-performance-card {
+    position: relative;
     overflow: hidden;
 
-    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
 
-    padding: 19px;
+    gap: 6px;
+
+    width: 100%;
+
+    padding: 6px;
 
     background:
         radial-gradient(
-            circle at 92% 0%,
-            rgba(216, 177, 90, 0.065),
-            transparent 32%
+            circle at 94% 0%,
+            rgba(216, 177, 90, 0.075),
+            transparent 38%
         ),
         radial-gradient(
             circle at 5% 100%,
             rgba(255, 255, 255, 0.018),
-            transparent 38%
+            transparent 42%
         ),
         linear-gradient(
             145deg,
             #11110f 0%,
-            #0b0b0a 50%,
+            #0b0b0a 52%,
             #070707 100%
         );
 
+    /* ОБЩАЯ внешняя рамка */
     border: 1px solid var(--border-strong);
 
-    border-radius: var(--radius-xl);
+    border-radius: 18px;
 
     box-shadow:
         var(--shadow-medium),
-        0 0 34px rgba(216, 177, 90, 0.03);
+        0 0 34px rgba(216, 177, 90, 0.025);
 }
 
-.best-performance::before {
+
+/* ---------------------------------------------------------
+   Тонкий внутренний золотой акцент
+   --------------------------------------------------------- */
+
+.best-performance-card::before {
     content: "";
 
     position: absolute;
@@ -1887,27 +1907,29 @@ a {
     width: 205px;
     height: 205px;
 
-    top: -150px;
-    right: -92px;
+    top: -125px;
+    right: -65px;
 
     border-radius: 50%;
 
-    border: 1px solid rgba(216, 177, 90, 0.07);
+    border: 1px solid rgba(216, 177, 90, 0.055);
 
     box-shadow:
-        0 0 0 20px rgba(216, 177, 90, 0.011),
-        0 0 0 40px rgba(216, 177, 90, 0.006);
+        0 0 50px rgba(216, 177, 90, 0.018);
 
     pointer-events: none;
 }
 
-.best-performance::after {
+
+/* Нижняя тонкая линия в стиле Performance */
+
+.best-performance-card::after {
     content: "";
 
     position: absolute;
 
-    left: 22px;
-    right: 22px;
+    left: 10%;
+    right: 10%;
     bottom: 0;
 
     height: 1px;
@@ -1916,46 +1938,26 @@ a {
         linear-gradient(
             90deg,
             transparent,
-            rgba(216, 177, 90, 0.19),
+            rgba(216, 177, 90, 0.20),
             transparent
         );
+
+    pointer-events: none;
 }
 
-.best-performance > * {
+
+/* ---------------------------------------------------------
+   4 INDIVIDUAL CARDS
+   Их собственные контуры СОХРАНЯЮТСЯ
+   --------------------------------------------------------- */
+
+.best-performance-card .best-performance-row {
     position: relative;
     z-index: 1;
-}
-
-
-/* ---------------------------------------------------------
-   HEADER
-   --------------------------------------------------------- */
-
-.best-performance-header {
-    margin-bottom: 15px;
-}
-
-.best-performance-header h2 {
-    font-size: 12px;
-    line-height: 1;
-
-    font-weight: 600;
-
-    color: var(--text);
-}
-
-
-/* ---------------------------------------------------------
-   ROW CONTAINER
-   --------------------------------------------------------- */
-
-.best-performance-row {
-    position: relative;
 
     min-height: 50px;
 
     display: flex;
-
     align-items: center;
     justify-content: space-between;
 
@@ -1963,58 +1965,93 @@ a {
 
     padding: 10px 12px;
 
-    margin-bottom: 6px;
+    margin: 0;
+
+    overflow: hidden;
 
     background:
         linear-gradient(
             145deg,
-            rgba(216, 177, 90, 0.042),
-            rgba(255, 255, 255, 0.014)
+            rgba(216, 177, 90, 0.035),
+            rgba(255, 255, 255, 0.012)
         );
 
+    /* ВНУТРЕННИЕ РАМКИ ОСТАЮТСЯ */
     border: 1px solid rgba(216, 177, 90, 0.075);
 
-    border-radius: 12px;
+    border-radius: 13px;
 
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.025);
 
     transition:
         background var(--transition),
-        border-color var(--transition);
+        border-color var(--transition),
+        box-shadow var(--transition);
 }
 
-.best-performance-row:last-child {
-    margin-bottom: 0;
+
+/* Лёгкий локальный градиент внутри каждого пункта */
+
+.best-performance-card .best-performance-row::before {
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+    height: 120px;
+
+    top: -82px;
+    right: -45px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(216, 177, 90, 0.035);
+
+    pointer-events: none;
 }
 
-.best-performance-row:hover {
+
+/* Hover */
+
+.best-performance-card .best-performance-row:hover {
     background:
         linear-gradient(
             145deg,
-            rgba(216, 177, 90, 0.055),
-            rgba(255, 255, 255, 0.018)
+            rgba(216, 177, 90, 0.05),
+            rgba(255, 255, 255, 0.016)
         );
 
     border-color:
-        rgba(216, 177, 90, 0.11);
+        rgba(216, 177, 90, 0.12);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        0 4px 16px rgba(0, 0, 0, 0.18);
 }
 
 
 /* ---------------------------------------------------------
-   ROW CONTENT
+   TEXT
    --------------------------------------------------------- */
 
-.best-performance-label {
-    color: var(--text-tertiary);
+.best-performance-title {
+    position: relative;
+    z-index: 2;
 
-    font-size: 10px;
+    color: var(--text);
+
+    font-size: 13px;
     font-weight: 500;
 
     line-height: 1.2;
 }
 
-.best-performance-date {
+
+.best-performance-card .best-performance-date {
+    position: relative;
+    z-index: 2;
+
     margin-top: 4px;
 
     color: var(--text-secondary);
@@ -2023,7 +2060,11 @@ a {
     line-height: 1.2;
 }
 
-.best-performance-value {
+
+.best-performance-card .best-performance-value {
+    position: relative;
+    z-index: 2;
+
     flex-shrink: 0;
 
     color: var(--accent-light);
@@ -2043,59 +2084,64 @@ a {
 
 @media (max-width: 420px) {
 
-    .best-performance {
-        padding: 17px;
+    .best-performance-card {
+        gap: 5px;
+        padding: 5px;
+
+        border-radius: 17px;
     }
 
-    .best-performance-header {
-        margin-bottom: 13px;
-    }
-
-    .best-performance-row {
+    .best-performance-card .best-performance-row {
         min-height: 48px;
 
-        padding:
-            9px
-            10px;
+        padding: 9px 10px;
 
-        margin-bottom: 5px;
+        border-radius: 12px;
     }
 
-    .best-performance-label,
-    .best-performance-date {
+    .best-performance-title {
+        font-size: 12px;
+    }
+
+    .best-performance-card .best-performance-date {
         font-size: 9px;
     }
 
-    .best-performance-value {
+    .best-performance-card .best-performance-value {
         font-size: 12px;
     }
 }
 
 
-/* =========================================================
-   VERY SMALL SCREENS
-   ========================================================= */
-
 @media (max-width: 350px) {
 
-    .best-performance-row {
-        min-height: 46px;
+    .best-performance-card {
+        gap: 5px;
+        padding: 5px;
 
-        padding:
-            8px
-            9px;
+        border-radius: 16px;
     }
 
-    .best-performance-label,
-    .best-performance-date {
+    .best-performance-card .best-performance-row {
+        min-height: 46px;
+
+        padding: 8px 9px;
+
+        border-radius: 11px;
+    }
+
+    .best-performance-title {
+        font-size: 11px;
+    }
+
+    .best-performance-card .best-performance-date {
         font-size: 8px;
     }
 
-    .best-performance-value {
+    .best-performance-card .best-performance-value {
         font-size: 11px;
     }
 }
-
 /* =========================================================
    ALL-TIME
    ========================================================= */
