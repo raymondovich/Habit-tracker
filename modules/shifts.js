@@ -19,11 +19,16 @@
        ===================================================== */
 
     let addButton = null;
-    let shiftsList = null;
-    let emptyState = null;
+let shiftsList = null;
+let emptyState = null;
 
+let allShiftsButton = null;
+let allShiftsScreen = null;
+let allShiftsBackButton = null;
+let allShiftsList = null;
+let allShiftsEmpty = null;
 
-    let editingShiftId = null;
+let editingShiftId = null;
 
 
     /* =====================================================
