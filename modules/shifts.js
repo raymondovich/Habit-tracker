@@ -65,30 +65,6 @@ let editingShiftId = null;
                 "emptyShifts"
             );
 
-allShiftsButton =
-    document.getElementById(
-        "allShiftsButton"
-    );
-
-allShiftsScreen =
-    document.getElementById(
-        "allShiftsScreen"
-    );
-
-allShiftsBackButton =
-    document.getElementById(
-        "allShiftsBackButton"
-    );
-
-allShiftsList =
-    document.getElementById(
-        "allShiftsList"
-    );
-
-allShiftsEmpty =
-    document.getElementById(
-        "allShiftsEmpty"
-    );
 
         if (!addButton) {
 
@@ -693,159 +669,6 @@ allShiftsEmpty =
                 transform: scale(.98);
             }
 
-    /* =====================================================
-       RENDER ALL SHIFTS
-       ===================================================== */
-
-    function renderAllShifts() {
-
-        if (
-            !allShiftsList ||
-            !allShiftsEmpty
-        ) {
-            return;
-        }
-
-
-        if (shifts.length === 0) {
-
-            allShiftsList.innerHTML = "";
-
-            allShiftsEmpty.hidden = false;
-
-            return;
-        }
-
-
-        allShiftsEmpty.hidden = true;
-
-
-        allShiftsList.innerHTML =
-            shifts
-                .map(
-                    function (shift) {
-
-                        return `
-                            <div
-                                class="shift-item all-shift-item"
-                                data-shift-id="${shift.id}"
-                            >
-
-                                <div class="shift-date">
-
-                                    ${formatDate(
-                                        shift.date
-                                    )}
-
-                                </div>
-
-
-                                <div class="shift-time">
-
-                                    ${shift.start}
-                                    –
-                                    ${shift.end}
-
-                                </div>
-
-
-                                <div class="shift-hours">
-
-                                    ${Number(
-                                        shift.hours
-                                    ).toFixed(2)}
-                                    ч.
-
-                                </div>
-
-
-                                <div class="shift-earnings">
-
-                                    ${formatMoney(
-                                        shift.earnings
-                                    )}
-
-                                </div>
-
-
-                                <div class="jc-shift-actions">
-
-                                    <button
-                                        type="button"
-                                        class="jc-shift-action jc-shift-action-edit"
-                                        data-action="edit"
-                                        data-id="${shift.id}"
-                                        aria-label="Редактировать смену"
-                                        title="Редактировать"
-                                    >
-                                        ✎
-                                    </button>
-
-
-                                    <button
-                                        type="button"
-                                        class="jc-shift-action jc-shift-action-delete"
-                                        data-action="delete"
-                                        data-id="${shift.id}"
-                                        aria-label="Удалить смену"
-                                        title="Удалить"
-                                    >
-                                        ×
-                                    </button>
-
-                                </div>
-
-                            </div>
-                        `;
-
-                    }
-                )
-                .join("");
-
-    }
-
-
-    /* =====================================================
-       OPEN ALL SHIFTS
-       ===================================================== */
-
-    function openAllShifts() {
-
-        if (!allShiftsScreen) {
-            return;
-        }
-
-
-        renderAllShifts();
-
-
-        allShiftsScreen.hidden = false;
-
-        document.body.classList.add(
-            "all-shifts-open"
-        );
-
-    }
-
-
-    /* =====================================================
-       CLOSE ALL SHIFTS
-       ===================================================== */
-
-    function closeAllShifts() {
-
-        if (!allShiftsScreen) {
-            return;
-        }
-
-
-        allShiftsScreen.hidden = true;
-
-        document.body.classList.remove(
-            "all-shifts-open"
-        );
-
-    }
 
             /* ================================
                SHIFT ACTIONS
@@ -1525,7 +1348,6 @@ allShiftsEmpty =
 
             render();
 
-renderAllShifts();
 
             closeModal();
 
@@ -1580,7 +1402,6 @@ renderAllShifts();
 
         render();
 
-renderAllShifts();
 
         closeModal();
 
@@ -2145,47 +1966,6 @@ renderAllShifts();
         }
 
     }
-    
-    if (allShiftsButton) {
-
-    allShiftsButton.addEventListener(
-        "click",
-        function (event) {
-
-            event.preventDefault();
-
-            openAllShifts();
-
-        }
-    );
-
-}
-
-
-if (allShiftsBackButton) {
-
-    allShiftsBackButton.addEventListener(
-        "click",
-        function (event) {
-
-            event.preventDefault();
-
-            closeAllShifts();
-
-        }
-    );
-
-}
-
-
-if (allShiftsList) {
-
-    allShiftsList.addEventListener(
-        "click",
-        handleShiftAction
-    );
-
-}
 
 
     /* =====================================================
