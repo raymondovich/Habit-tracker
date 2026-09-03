@@ -19,16 +19,16 @@
        ===================================================== */
 
     let addButton = null;
-let shiftsList = null;
-let emptyState = null;
+    let shiftsList = null;
+    let emptyState = null;
 
-let allShiftsButton = null;
-let allShiftsScreen = null;
-let allShiftsBackButton = null;
-let allShiftsList = null;
-let allShiftsEmpty = null;
+    let allShiftsButton = null;
+    let allShiftsScreen = null;
+    let allShiftsBackButton = null;
+    let allShiftsList = null;
+    let allShiftsEmpty = null;
 
-let editingShiftId = null;
+    let editingShiftId = null;
 
 
     /* =====================================================
@@ -55,14 +55,50 @@ let editingShiftId = null;
                 "addShiftButton"
             );
 
+
         shiftsList =
             document.getElementById(
                 "shiftsList"
             );
 
+
         emptyState =
             document.getElementById(
                 "emptyShifts"
+            );
+
+
+        /*
+         ALL SHIFTS SCREEN
+         */
+
+        allShiftsButton =
+            document.getElementById(
+                "allShiftsButton"
+            );
+
+
+        allShiftsScreen =
+            document.getElementById(
+                "allShiftsScreen"
+            );
+
+
+        allShiftsBackButton =
+            document.getElementById(
+                "allShiftsBackButton"
+            );
+
+
+        allShiftsList =
+            document.getElementById(
+                "allShiftsList"
+            );
+
+
+        allShiftsEmpty =
+            document.getElementById(
+                "allShiftsEmpty"
             );
 
 
@@ -166,13 +202,19 @@ let editingShiftId = null;
         const month =
             String(
                 date.getMonth() + 1
-            ).padStart(2, "0");
+            ).padStart(
+                2,
+                "0"
+            );
 
 
         const day =
             String(
                 date.getDate()
-            ).padStart(2, "0");
+            ).padStart(
+                2,
+                "0"
+            );
 
 
         return (
@@ -216,13 +258,15 @@ let editingShiftId = null;
 
         /*
          Overnight shift.
+
          Example:
          22:00 → 06:00
         */
 
         if (difference < 0) {
 
-            difference += 24 * 60;
+            difference +=
+                24 * 60;
 
         }
 
@@ -244,6 +288,13 @@ let editingShiftId = null;
 
 
     function formatDate(dateString) {
+
+        if (!dateString) {
+
+            return "";
+
+        }
+
 
         const parts =
             dateString.split("-");
@@ -280,6 +331,7 @@ let editingShiftId = null;
             ) || 0;
 
         }
+
 
         return 0;
 
@@ -324,7 +376,9 @@ let editingShiftId = null;
 
 
         const modal =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         modal.id =
@@ -520,7 +574,9 @@ let editingShiftId = null;
 
 
         const style =
-            document.createElement("style");
+            document.createElement(
+                "style"
+            );
 
 
         style.id =
@@ -1349,6 +1405,9 @@ let editingShiftId = null;
             render();
 
 
+            renderAllShifts();
+
+
             closeModal();
 
 
@@ -1401,6 +1460,9 @@ let editingShiftId = null;
 
 
         render();
+
+
+        renderAllShifts();
 
 
         closeModal();
@@ -1468,6 +1530,9 @@ let editingShiftId = null;
         render();
 
 
+        renderAllShifts();
+
+
         notifyShiftsChange(
             shift
         );
@@ -1475,241 +1540,263 @@ let editingShiftId = null;
     }
 
 
-        /* =====================================================
+    /* =====================================================
        SWIPE TO DELETE
        ===================================================== */
 
     function initSwipe() {
 
-    if (!shiftsList) {
-        return;
-    }
+        if (!shiftsList) {
+
+            return;
+
+        }
 
 
-    let activeItem = null;
-    let startX = 0;
-    let currentX = 0;
+        let activeItem = null;
+        let startX = 0;
+        let currentX = 0;
 
 
-    shiftsList.addEventListener(
-        "touchstart",
-        function (event) {
+        shiftsList.addEventListener(
+            "touchstart",
+            function (event) {
 
-            const item =
-                event.target.closest(
-                    ".shift-item"
+                const item =
+                    event.target.closest(
+                        ".shift-item"
+                    );
+
+
+                if (!item) {
+
+                    return;
+
+                }
+
+
+                /*
+                 Не запускаем свайп,
+                 если нажали на кнопку.
+                */
+
+                if (
+                    event.target.closest(
+                        ".jc-shift-action"
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                activeItem =
+                    item;
+
+
+                startX =
+                    event.touches[0].clientX;
+
+
+                currentX =
+                    startX;
+
+
+                activeItem.classList.add(
+                    "is-swiping"
+                );
+
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        shiftsList.addEventListener(
+            "touchmove",
+            function (event) {
+
+                if (!activeItem) {
+
+                    return;
+
+                }
+
+
+                currentX =
+                    event.touches[0].clientX;
+
+
+                /*
+                 При свайпе справа налево
+                 distance будет положительным.
+                */
+
+                const distance =
+                    startX -
+                    currentX;
+
+
+                /*
+                 Только движение влево.
+                */
+
+                if (distance <= 0) {
+
+                    return;
+
+                }
+
+
+                /*
+                 Максимальное смещение строки.
+                */
+
+                const translateX =
+                    Math.min(
+                        distance,
+                        100
+                    );
+
+
+                /*
+                 Двигаем строку влево.
+                */
+
+                activeItem.style.setProperty(
+                    "--swipe-x",
+                    "-" +
+                    translateX +
+                    "px"
+                );
+
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        shiftsList.addEventListener(
+            "touchend",
+            function () {
+
+                if (!activeItem) {
+
+                    return;
+
+                }
+
+
+                const item =
+                    activeItem;
+
+
+                const distance =
+                    startX -
+                    currentX;
+
+
+                activeItem = null;
+
+
+                item.classList.remove(
+                    "is-swiping"
                 );
 
 
-            if (!item) {
-                return;
-            }
+                /*
+                 Достаточный свайп —
+                 запускаем существующее
+                 удаление.
+                */
+
+                if (
+                    distance >=
+                    SWIPE_DELETE_DISTANCE
+                ) {
+
+                    const shiftId =
+                        item.dataset.shiftId;
 
 
-            /*
-             Не запускаем свайп,
-             если нажали на кнопку.
-            */
-
-            if (
-                event.target.closest(
-                    ".jc-shift-action"
-                )
-            ) {
-                return;
-            }
+                    item.style.setProperty(
+                        "--swipe-x",
+                        "-100px"
+                    );
 
 
-            activeItem = item;
+                    window.setTimeout(
+                        function () {
 
-            startX =
-                event.touches[0].clientX;
+                            deleteShift(
+                                shiftId
+                            );
 
-            currentX =
-                startX;
-
-
-            activeItem.classList.add(
-                "is-swiping"
-            );
-
-        },
-        {
-            passive: true
-        }
-    );
+                        },
+                        100
+                    );
 
 
-    shiftsList.addEventListener(
-        "touchmove",
-        function (event) {
+                    return;
 
-            if (!activeItem) {
-                return;
-            }
+                }
 
 
-            currentX =
-                event.touches[0].clientX;
-
-
-            /*
-             При свайпе справа налево
-             distance будет отрицательным.
-            */
-
-            const distance =
-                startX - currentX;
-
-
-            /*
-             Только движение влево.
-            */
-
-            if (distance <= 0) {
-                return;
-            }
-
-
-            /*
-             Максимальное смещение строки.
-            */
-
-            const translateX =
-                Math.min(
-                    distance,
-                    100
-                );
-
-
-            /*
-             Двигаем строку влево.
-            */
-
-            activeItem.style.setProperty(
-                "--swipe-x",
-                "-" + translateX + "px"
-            );
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    shiftsList.addEventListener(
-        "touchend",
-        function () {
-
-            if (!activeItem) {
-                return;
-            }
-
-
-            const item =
-                activeItem;
-
-
-            const distance =
-                startX - currentX;
-
-
-            activeItem = null;
-
-
-            item.classList.remove(
-                "is-swiping"
-            );
-
-
-            /*
-             Достаточный свайп —
-             запускаем существующее
-             удаление.
-            */
-
-            if (
-                distance >=
-                SWIPE_DELETE_DISTANCE
-            ) {
-
-                const shiftId =
-                    item.dataset.shiftId;
-
+                /*
+                 Недостаточный свайп —
+                 возвращаем строку.
+                */
 
                 item.style.setProperty(
                     "--swipe-x",
-                    "-100px"
+                    "0px"
+                );
+
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        shiftsList.addEventListener(
+            "touchcancel",
+            function () {
+
+                if (!activeItem) {
+
+                    return;
+
+                }
+
+
+                activeItem.style.setProperty(
+                    "--swipe-x",
+                    "0px"
                 );
 
 
-                window.setTimeout(
-                    function () {
-
-                        deleteShift(
-                            shiftId
-                        );
-
-                    },
-                    100
+                activeItem.classList.remove(
+                    "is-swiping"
                 );
 
 
-                return;
+                activeItem = null;
 
+            },
+            {
+                passive: true
             }
+        );
 
+    }
 
-            /*
-             Недостаточный свайп —
-             возвращаем строку.
-            */
-
-            item.style.setProperty(
-                "--swipe-x",
-                "0px"
-            );
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    shiftsList.addEventListener(
-        "touchcancel",
-        function () {
-
-            if (!activeItem) {
-                return;
-            }
-
-
-            activeItem.style.setProperty(
-                "--swipe-x",
-                "0px"
-            );
-
-
-            activeItem.classList.remove(
-                "is-swiping"
-            );
-
-
-            activeItem = null;
-
-        },
-        {
-            passive: true
-        }
-    );
-
-}
 
     /* =====================================================
-       RENDER
+       RENDER — MAIN SCREEN
        ===================================================== */
 
     function render() {
@@ -1729,6 +1816,7 @@ let editingShiftId = null;
             shiftsList.innerHTML =
                 "";
 
+
             emptyState.style.display =
                 "";
 
@@ -1741,6 +1829,11 @@ let editingShiftId = null;
         emptyState.style.display =
             "none";
 
+
+        /*
+         Главное окно показывает
+         только 5 последних смен.
+        */
 
         const recent =
             shifts.slice(
@@ -1839,6 +1932,215 @@ let editingShiftId = null;
 
 
     /* =====================================================
+       RENDER — ALL SHIFTS
+       ===================================================== */
+
+    function renderAllShifts() {
+
+        /*
+         Если экран полного списка
+         ещё не добавлен в HTML —
+         просто ничего не делаем.
+        */
+
+        if (
+            !allShiftsList ||
+            !allShiftsEmpty
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+         Нет смен.
+        */
+
+        if (shifts.length === 0) {
+
+            allShiftsList.innerHTML =
+                "";
+
+
+            allShiftsEmpty.hidden =
+                false;
+
+
+            return;
+
+        }
+
+
+        /*
+         Есть смены.
+        */
+
+        allShiftsEmpty.hidden =
+            true;
+
+
+        /*
+         ВАЖНО:
+         здесь НЕТ slice(0, 5).
+
+         Показываем весь массив.
+        */
+
+        allShiftsList.innerHTML =
+            shifts
+                .map(
+                    function (shift) {
+
+                        return `
+
+                            <div
+                                class="shift-item all-shift-item"
+                                data-shift-id="${shift.id}"
+                            >
+
+                                <div class="shift-date">
+
+                                    ${formatDate(
+                                        shift.date
+                                    )}
+
+                                </div>
+
+
+                                <div class="shift-time">
+
+                                    ${shift.start}
+                                    –
+                                    ${shift.end}
+
+                                </div>
+
+
+                                <div class="shift-hours">
+
+                                    ${Number(
+                                        shift.hours
+                                    ).toFixed(2)}
+                                    ч.
+
+                                </div>
+
+
+                                <div class="shift-earnings">
+
+                                    ${formatMoney(
+                                        shift.earnings
+                                    )}
+
+                                </div>
+
+
+                                <div
+                                    class="jc-shift-actions"
+                                >
+
+                                    <button
+                                        type="button"
+                                        class="jc-shift-action jc-shift-action-edit"
+                                        data-action="edit"
+                                        data-id="${shift.id}"
+                                        aria-label="Редактировать смену"
+                                        title="Редактировать"
+                                    >
+                                        ✎
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        class="jc-shift-action jc-shift-action-delete"
+                                        data-action="delete"
+                                        data-id="${shift.id}"
+                                        aria-label="Удалить смену"
+                                        title="Удалить"
+                                    >
+                                        ×
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
+    }
+
+
+    /* =====================================================
+       OPEN ALL SHIFTS
+       ===================================================== */
+
+    function openAllShifts() {
+
+        if (!allShiftsScreen) {
+
+            return;
+
+        }
+
+
+        /*
+         Перед открытием всегда
+         обновляем список.
+        */
+
+        renderAllShifts();
+
+
+        allShiftsScreen.hidden =
+            false;
+
+
+        document.body.classList.add(
+            "all-shifts-open"
+        );
+
+
+        /*
+         Начинаем с верхней части списка.
+        */
+
+        allShiftsScreen.scrollTop =
+            0;
+
+    }
+
+
+    /* =====================================================
+       CLOSE ALL SHIFTS
+       ===================================================== */
+
+    function closeAllShifts() {
+
+        if (!allShiftsScreen) {
+
+            return;
+
+        }
+
+
+        allShiftsScreen.hidden =
+            true;
+
+
+        document.body.classList.remove(
+            "all-shifts-open"
+        );
+
+    }
+
+
+    /* =====================================================
        SHIFT ACTIONS
        ===================================================== */
 
@@ -1872,7 +2174,10 @@ let editingShiftId = null;
             "edit"
         ) {
 
-            openEditModal(id);
+            openEditModal(
+                id
+            );
+
 
             return;
 
@@ -1884,7 +2189,9 @@ let editingShiftId = null;
             "delete"
         ) {
 
-            deleteShift(id);
+            deleteShift(
+                id
+            );
 
         }
 
@@ -1910,7 +2217,11 @@ let editingShiftId = null;
 
                 loadShifts();
 
+
                 render();
+
+
+                renderAllShifts();
 
             }
 
@@ -1929,8 +2240,24 @@ let editingShiftId = null;
         loadShifts();
 
 
+        /*
+         Основной экран.
+        */
+
         render();
 
+
+        /*
+         Полный экран.
+        */
+
+        renderAllShifts();
+
+
+        /*
+         Действия на сменах
+         главного экрана.
+        */
 
         if (shiftsList) {
 
@@ -1943,12 +2270,30 @@ let editingShiftId = null;
 
 
         /*
-         Подключаем свайп после
-         инициализации списка.
+         Действия на сменах
+         полного списка.
+        */
+
+        if (allShiftsList) {
+
+            allShiftsList.addEventListener(
+                "click",
+                handleShiftAction
+            );
+
+        }
+
+
+        /*
+         Подключаем свайп.
         */
 
         initSwipe();
 
+
+        /* =================================================
+           ADD SHIFT
+           ================================================= */
 
         if (addButton) {
 
@@ -1958,7 +2303,50 @@ let editingShiftId = null;
 
                     event.preventDefault();
 
+
                     openModal();
+
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           ALL SHIFTS BUTTON
+           ================================================= */
+
+        if (allShiftsButton) {
+
+            allShiftsButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+
+                    openAllShifts();
+
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           ALL SHIFTS BACK BUTTON
+           ================================================= */
+
+        if (allShiftsBackButton) {
+
+            allShiftsBackButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+
+                    closeAllShifts();
 
                 }
             );
