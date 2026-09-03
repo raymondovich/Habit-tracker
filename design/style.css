@@ -2696,120 +2696,123 @@ a:focus-visible {
 }
 
 /* =========================================================
-   FINAL STATISTICS HEADER
-   PREMIUM CENTERED LAYOUT
+   FINAL STATISTICS LAYOUT
    ========================================================= */
+
+
+/* =========================================================
+   STATISTICS HEADER
+   ========================================================= */
+
 #statisticsScreen .statistics-header {
     position: relative !important;
+
     width: 100% !important;
     max-width: 560px !important;
+
     min-height: 68px !important;
+
     margin: 0 auto !important;
+
     padding:
         calc(14px + env(safe-area-inset-top))
         18px
         14px !important;
+
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+
     background:
         linear-gradient(
             180deg,
             rgba(255, 255, 255, 0.018),
             rgba(3, 3, 3, 0.82)
         ) !important;
+
     border-bottom:
         1px solid rgba(255, 255, 255, 0.055) !important;
+
     box-shadow:
         0 10px 30px rgba(0, 0, 0, 0.18) !important;
+
     backdrop-filter: blur(22px) !important;
     -webkit-backdrop-filter: blur(22px) !important;
 }
-/* =========================================================
+
+
+/* ---------------------------------------------------------
    BACK BUTTON
-   ========================================================= */
+   --------------------------------------------------------- */
+
 #statisticsScreen .statistics-back-button {
     position: absolute !important;
+
     left: 18px !important;
-    top: calc(
-        50% + (env(safe-area-inset-top) / 2)
-    ) !important;
+    top: 50% !important;
+
     width: 36px !important;
     height: 36px !important;
+
     margin: 0 !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+
     transform: translateY(-50%) !important;
-    color: var(--text-secondary) !important;
-    background:
-        rgba(255, 255, 255, 0.045) !important;
-    border:
-        1px solid var(--border) !important;
-    border-radius: 50% !important;
-    font-size: 20px !important;
-    line-height: 1 !important;
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.035),
-        0 4px 14px rgba(0, 0, 0, 0.22) !important;
-    transition:
-        background var(--transition),
-        border-color var(--transition),
-        color var(--transition),
-        transform var(--transition) !important;
+
     z-index: 3 !important;
 }
+
+
 /* ---------------------------------------------------------
-   BACK BUTTON — HOVER
+   MAIN TITLE
    --------------------------------------------------------- */
-#statisticsScreen .statistics-back-button:hover {
-    color: var(--text) !important;
-    background:
-        rgba(255, 255, 255, 0.075) !important;
-    border-color:
-        var(--border-strong) !important;
-}
-/* ---------------------------------------------------------
-   BACK BUTTON — ACTIVE
-   --------------------------------------------------------- */
-#statisticsScreen .statistics-back-button:active {
-    transform:
-        translateY(-50%)
-        scale(0.92) !important;
-}
-/* =========================================================
-   STATISTICS TITLE
-   ========================================================= */
+
 #statisticsScreen .statistics-header h1 {
     position: static !important;
+
     width: auto !important;
-    max-width: calc(100% - 100px) !important;
+
     margin: 0 !important;
     padding: 0 !important;
+
     transform: none !important;
+
     text-align: center !important;
+
     color: var(--text) !important;
+
     font-family: var(--font-ui) !important;
+
     font-size: 20px !important;
     line-height: 1.15 !important;
+
     font-weight: 600 !important;
+
     letter-spacing: -0.025em !important;
+
     white-space: nowrap !important;
+
     text-shadow:
         0 0 24px rgba(255, 255, 255, 0.045) !important;
+
     z-index: 2 !important;
 }
-/* =========================================================
-   SUBTLE GOLD ACCENT
-   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   SUBTLE GOLD ACCENT UNDER HEADER
+   --------------------------------------------------------- */
+
 #statisticsScreen .statistics-header::after {
     content: "";
+
     position: absolute;
+
     left: 22%;
     right: 22%;
     bottom: 0;
+
     height: 1px;
+
     background:
         linear-gradient(
             90deg,
@@ -2817,96 +2820,145 @@ a:focus-visible {
             rgba(216, 177, 90, 0.16),
             transparent
         );
+
     pointer-events: none;
 }
+
+
 /* =========================================================
    BEST PERFORMANCE — SECTION SPACING
    ========================================================= */
+
 #statisticsScreen .best-performance-section {
     position: relative !important;
+
     width: 100% !important;
+
     margin-top: 14px !important;
     margin-bottom: 14px !important;
+
     padding: 0 !important;
 }
+
+
 /* ---------------------------------------------------------
    BEST PERFORMANCE HEADER
    --------------------------------------------------------- */
+
 #statisticsScreen .best-performance-section
 .best-performance-header {
     display: flex !important;
+
     align-items: center !important;
+
     width: 100% !important;
+
     margin-top: 0 !important;
     margin-bottom: 11px !important;
+
     padding: 0 !important;
 }
+
+
 #statisticsScreen .best-performance-section
 .best-performance-header h2 {
     margin: 0 !important;
     padding: 0 !important;
+
     color: var(--text) !important;
+
     font-family: var(--font-ui) !important;
+
     font-size: 12px !important;
     line-height: 1.2 !important;
+
     font-weight: 600 !important;
+
     letter-spacing: 0 !important;
 }
+
+
 /* =========================================================
    MOBILE
    ========================================================= */
+
 @media (max-width: 420px) {
+
     #statisticsScreen .statistics-header {
         min-height: 64px !important;
+
         padding:
             calc(12px + env(safe-area-inset-top))
             15px
             12px !important;
     }
+
+
     #statisticsScreen .statistics-back-button {
         left: 15px !important;
     }
+
+
     #statisticsScreen .statistics-header h1 {
         font-size: 19px !important;
     }
+
+
     #statisticsScreen .best-performance-section {
         margin-top: 14px !important;
         margin-bottom: 14px !important;
     }
+
+
     #statisticsScreen .best-performance-section
     .best-performance-header {
         margin-bottom: 11px !important;
     }
+
+
     #statisticsScreen .best-performance-section
     .best-performance-header h2 {
         font-size: 12px !important;
     }
 }
+
+
 /* =========================================================
    VERY SMALL SCREENS
    ========================================================= */
+
 @media (max-width: 350px) {
+
     #statisticsScreen .statistics-header {
         min-height: 61px !important;
-        padding:
-            calc(10px + env(safe-area-inset-top))
-            14px
-            10px !important;
+
+        padding-left: 14px !important;
+        padding-right: 14px !important;
     }
+
+
     #statisticsScreen .statistics-back-button {
         left: 14px !important;
     }
+
+
     #statisticsScreen .statistics-header h1 {
         font-size: 18px !important;
     }
+
+
     #statisticsScreen .best-performance-section {
         margin-top: 14px !important;
         margin-bottom: 14px !important;
     }
+
+
     #statisticsScreen .best-performance-section
     .best-performance-header {
         margin-bottom: 10px !important;
     }
+
+
     #statisticsScreen .best-performance-section
     .best-performance-header h2 {
         font-size: 11px !important;
