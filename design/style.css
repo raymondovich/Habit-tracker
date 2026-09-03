@@ -2876,3 +2876,144 @@ a:focus-visible {
         font-size: 11px;
     }
 }
+
+/* =========================================================
+STATISTICS SCREEN HEADER — FINAL
+========================================================= */
+
+#statisticsScreen .statistics-screen-header {
+position: sticky;
+
+```
+top: 0;
+
+z-index: 10;
+
+width: 100%;
+max-width: 560px;
+
+min-height: 64px;
+
+margin: 0 auto;
+
+padding:
+    calc(14px + env(safe-area-inset-top))
+    18px
+    14px;
+
+display: flex;
+
+align-items: center;
+justify-content: center;
+
+background:
+    rgba(3, 3, 3, 0.86);
+
+border-bottom:
+    1px solid rgba(255, 255, 255, 0.055);
+
+backdrop-filter: blur(22px);
+-webkit-backdrop-filter: blur(22px);
+```
+
+}
+
+/* Заголовок строго по центру экрана */
+
+#statisticsScreen .statistics-screen-title {
+position: absolute;
+
+```
+left: 50%;
+top: 50%;
+
+transform: translate(-50%, -50%);
+
+margin: 0;
+
+white-space: nowrap;
+
+text-align: center;
+
+color: var(--text);
+
+font-family: var(--font-ui);
+
+font-size: 21px;
+
+font-weight: 500;
+
+line-height: 1.15;
+
+letter-spacing: -0.02em;
+```
+
+}
+
+/* Кнопка назад остаётся слева */
+
+#statisticsScreen .statistics-back-button {
+position: absolute;
+
+```
+left: 18px;
+
+top: 50%;
+
+transform: translateY(-50%);
+
+z-index: 2;
+```
+
+}
+
+/* Пустой spacer больше не влияет на центрирование */
+
+#statisticsScreen .statistics-screen-spacer {
+display: none;
+}
+
+/* ---------------------------------------------------------
+MOBILE
+--------------------------------------------------------- */
+
+@media (max-width: 420px) {
+
+```
+#statisticsScreen .statistics-screen-header {
+    min-height: 60px;
+
+    padding:
+        calc(12px + env(safe-area-inset-top))
+        15px
+        12px;
+}
+
+#statisticsScreen .statistics-screen-title {
+    font-size: 20px;
+}
+
+#statisticsScreen .statistics-back-button {
+    left: 15px;
+}
+```
+
+}
+
+@media (max-width: 350px) {
+
+```
+#statisticsScreen .statistics-screen-header {
+    min-height: 58px;
+}
+
+#statisticsScreen .statistics-screen-title {
+    font-size: 19px;
+}
+
+#statisticsScreen .statistics-back-button {
+    left: 13px;
+}
+```
+
+}
