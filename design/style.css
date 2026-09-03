@@ -2696,130 +2696,185 @@ a:focus-visible {
 }
 
 /* =========================================================
-   FINAL STATISTICS HEADER + SECTION SPACING
+   FINAL STATISTICS LAYOUT
    ========================================================= */
 
 
-/* ---------------------------------------------------------
-   1. STATISTICS — MAIN SCREEN TITLE
-   --------------------------------------------------------- */
-
-/*
-   Заголовок "Статистика" — полноценный центральный
-   заголовок экрана.
-*/
-
-#statisticsScreen h1 {
-    position: relative;
-
-    width: 100%;
-
-    margin: 0;
-
-    padding: 18px 0 18px;
-
-    text-align: center;
-
-    color: var(--text);
-
-    font-size: 21px;
-    font-weight: 500;
-
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-
-    /* Единая типографика сайта */
-    font-family: var(--font-ui);
-
-    /* Никакого смещения из старого правила */
-    left: auto;
-    top: auto;
-    transform: none;
-}
-
-
-/*
-   Сам header получает правильную композиционную высоту.
-   Кнопка "назад" остаётся слева, заголовок — строго по центру.
-*/
+/* =========================================================
+   STATISTICS HEADER
+   ========================================================= */
 
 #statisticsScreen .statistics-header {
-    position: relative;
+    position: relative !important;
 
-    min-height: 64px;
+    width: 100% !important;
+    max-width: 560px !important;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 68px !important;
 
-    padding: 0 56px;
+    margin: 0 auto !important;
 
-    margin-bottom: 8px;
-}
+    padding:
+        calc(14px + env(safe-area-inset-top))
+        18px
+        14px !important;
 
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 
-/*
-   Заголовок внутри header всегда геометрически центрирован
-   относительно самого экрана.
-*/
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.018),
+            rgba(3, 3, 3, 0.82)
+        ) !important;
 
-#statisticsScreen .statistics-header h1 {
-    position: absolute;
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.055) !important;
 
-    left: 50%;
-    top: 50%;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.18) !important;
 
-    width: auto;
-
-    margin: 0;
-    padding: 0;
-
-    transform: translate(-50%, -50%);
-
-    white-space: nowrap;
-
-    text-align: center;
+    backdrop-filter: blur(22px) !important;
+    -webkit-backdrop-filter: blur(22px) !important;
 }
 
 
 /* ---------------------------------------------------------
-   2. BEST PERFORMANCE — SECTION RHYTHM
+   BACK BUTTON
    --------------------------------------------------------- */
 
-/*
-   Заголовок должен иметь такой же воздух сверху,
-   как остальные секции.
-*/
+#statisticsScreen .statistics-back-button {
+    position: absolute !important;
 
-.best-performance-section {
-    margin-top: 14px;
-    margin-bottom: 14px;
+    left: 18px !important;
+    top: 50% !important;
+
+    width: 36px !important;
+    height: 36px !important;
+
+    margin: 0 !important;
+
+    transform: translateY(-50%) !important;
+
+    z-index: 3 !important;
 }
 
 
-/*
-   Сам текст "Best Performance".
-*/
+/* ---------------------------------------------------------
+   MAIN TITLE
+   --------------------------------------------------------- */
 
+#statisticsScreen .statistics-header h1 {
+    position: static !important;
+
+    width: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    transform: none !important;
+
+    text-align: center !important;
+
+    color: var(--text) !important;
+
+    font-family: var(--font-ui) !important;
+
+    font-size: 20px !important;
+    line-height: 1.15 !important;
+
+    font-weight: 600 !important;
+
+    letter-spacing: -0.025em !important;
+
+    white-space: nowrap !important;
+
+    text-shadow:
+        0 0 24px rgba(255, 255, 255, 0.045) !important;
+
+    z-index: 2 !important;
+}
+
+
+/* ---------------------------------------------------------
+   SUBTLE GOLD ACCENT UNDER HEADER
+   --------------------------------------------------------- */
+
+#statisticsScreen .statistics-header::after {
+    content: "";
+
+    position: absolute;
+
+    left: 22%;
+    right: 22%;
+    bottom: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(216, 177, 90, 0.16),
+            transparent
+        );
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   BEST PERFORMANCE — SECTION SPACING
+   ========================================================= */
+
+#statisticsScreen .best-performance-section {
+    position: relative !important;
+
+    width: 100% !important;
+
+    margin-top: 14px !important;
+    margin-bottom: 14px !important;
+
+    padding: 0 !important;
+}
+
+
+/* ---------------------------------------------------------
+   BEST PERFORMANCE HEADER
+   --------------------------------------------------------- */
+
+#statisticsScreen .best-performance-section
 .best-performance-header {
-    margin-top: 0;
-    margin-bottom: 11px;
+    display: flex !important;
+
+    align-items: center !important;
+
+    width: 100% !important;
+
+    margin-top: 0 !important;
+    margin-bottom: 11px !important;
+
+    padding: 0 !important;
 }
 
 
+#statisticsScreen .best-performance-section
 .best-performance-header h2 {
-    margin: 0;
+    margin: 0 !important;
+    padding: 0 !important;
 
-    color: var(--text);
+    color: var(--text) !important;
 
-    font-family: var(--font-ui);
+    font-family: var(--font-ui) !important;
 
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
 
-    line-height: 1.2;
+    font-weight: 600 !important;
 
-    letter-spacing: 0;
+    letter-spacing: 0 !important;
 }
 
 
@@ -2830,49 +2885,82 @@ a:focus-visible {
 @media (max-width: 420px) {
 
     #statisticsScreen .statistics-header {
-        min-height: 60px;
+        min-height: 64px !important;
 
-        padding: 0 52px;
-
-        margin-bottom: 8px;
+        padding:
+            calc(12px + env(safe-area-inset-top))
+            15px
+            12px !important;
     }
+
+
+    #statisticsScreen .statistics-back-button {
+        left: 15px !important;
+    }
+
 
     #statisticsScreen .statistics-header h1 {
-        font-size: 20px;
+        font-size: 19px !important;
     }
 
-    .best-performance-section {
-        margin-top: 14px;
-        margin-bottom: 14px;
+
+    #statisticsScreen .best-performance-section {
+        margin-top: 14px !important;
+        margin-bottom: 14px !important;
     }
 
+
+    #statisticsScreen .best-performance-section
     .best-performance-header {
-        margin-bottom: 11px;
+        margin-bottom: 11px !important;
     }
 
+
+    #statisticsScreen .best-performance-section
     .best-performance-header h2 {
-        font-size: 12px;
+        font-size: 12px !important;
     }
 }
 
 
+/* =========================================================
+   VERY SMALL SCREENS
+   ========================================================= */
+
 @media (max-width: 350px) {
 
     #statisticsScreen .statistics-header {
-        min-height: 58px;
+        min-height: 61px !important;
 
-        padding: 0 48px;
+        padding-left: 14px !important;
+        padding-right: 14px !important;
     }
+
+
+    #statisticsScreen .statistics-back-button {
+        left: 14px !important;
+    }
+
 
     #statisticsScreen .statistics-header h1 {
-        font-size: 19px;
+        font-size: 18px !important;
     }
 
+
+    #statisticsScreen .best-performance-section {
+        margin-top: 14px !important;
+        margin-bottom: 14px !important;
+    }
+
+
+    #statisticsScreen .best-performance-section
     .best-performance-header {
-        margin-bottom: 10px;
+        margin-bottom: 10px !important;
     }
 
+
+    #statisticsScreen .best-performance-section
     .best-performance-header h2 {
-        font-size: 11px;
+        font-size: 11px !important;
     }
 }
