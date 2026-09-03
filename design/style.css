@@ -2694,3 +2694,185 @@ a:focus-visible {
     }
 
 }
+
+/* =========================================================
+   FINAL STATISTICS HEADER + SECTION SPACING
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   1. STATISTICS — MAIN SCREEN TITLE
+   --------------------------------------------------------- */
+
+/*
+   Заголовок "Статистика" — полноценный центральный
+   заголовок экрана.
+*/
+
+#statisticsScreen h1 {
+    position: relative;
+
+    width: 100%;
+
+    margin: 0;
+
+    padding: 18px 0 18px;
+
+    text-align: center;
+
+    color: var(--text);
+
+    font-size: 21px;
+    font-weight: 500;
+
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+
+    /* Единая типографика сайта */
+    font-family: var(--font-ui);
+
+    /* Никакого смещения из старого правила */
+    left: auto;
+    top: auto;
+    transform: none;
+}
+
+
+/*
+   Сам header получает правильную композиционную высоту.
+   Кнопка "назад" остаётся слева, заголовок — строго по центру.
+*/
+
+#statisticsScreen .statistics-header {
+    position: relative;
+
+    min-height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 56px;
+
+    margin-bottom: 8px;
+}
+
+
+/*
+   Заголовок внутри header всегда геометрически центрирован
+   относительно самого экрана.
+*/
+
+#statisticsScreen .statistics-header h1 {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: auto;
+
+    margin: 0;
+    padding: 0;
+
+    transform: translate(-50%, -50%);
+
+    white-space: nowrap;
+
+    text-align: center;
+}
+
+
+/* ---------------------------------------------------------
+   2. BEST PERFORMANCE — SECTION RHYTHM
+   --------------------------------------------------------- */
+
+/*
+   Заголовок должен иметь такой же воздух сверху,
+   как остальные секции.
+*/
+
+.best-performance-section {
+    margin-top: 14px;
+    margin-bottom: 14px;
+}
+
+
+/*
+   Сам текст "Best Performance".
+*/
+
+.best-performance-header {
+    margin-top: 0;
+    margin-bottom: 11px;
+}
+
+
+.best-performance-header h2 {
+    margin: 0;
+
+    color: var(--text);
+
+    font-family: var(--font-ui);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    letter-spacing: 0;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    #statisticsScreen .statistics-header {
+        min-height: 60px;
+
+        padding: 0 52px;
+
+        margin-bottom: 8px;
+    }
+
+    #statisticsScreen .statistics-header h1 {
+        font-size: 20px;
+    }
+
+    .best-performance-section {
+        margin-top: 14px;
+        margin-bottom: 14px;
+    }
+
+    .best-performance-header {
+        margin-bottom: 11px;
+    }
+
+    .best-performance-header h2 {
+        font-size: 12px;
+    }
+}
+
+
+@media (max-width: 350px) {
+
+    #statisticsScreen .statistics-header {
+        min-height: 58px;
+
+        padding: 0 48px;
+    }
+
+    #statisticsScreen .statistics-header h1 {
+        font-size: 19px;
+    }
+
+    .best-performance-header {
+        margin-bottom: 10px;
+    }
+
+    .best-performance-header h2 {
+        font-size: 11px;
+    }
+}
