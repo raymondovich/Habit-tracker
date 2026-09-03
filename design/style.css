@@ -3014,3 +3014,425 @@ a:focus-visible {
         left: 13px;
     }
 }
+
+/* =========================================================
+   ALL SHIFTS SCREEN
+   ========================================================= */
+
+.all-shifts-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 110;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background:
+        radial-gradient(
+            ellipse 100% 38% at 50% -8%,
+            rgba(255,255,255,0.045),
+            transparent 65%
+        ),
+        radial-gradient(
+            ellipse 75% 35% at 100% 30%,
+            rgba(216,177,90,0.025),
+            transparent 70%
+        ),
+        #030303;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+
+.all-shifts-screen[hidden] {
+
+    display: none !important;
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.all-shifts-screen-header {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 20;
+
+    width: 100%;
+
+    min-height: 64px;
+
+    padding:
+        calc(14px + env(safe-area-inset-top))
+        18px
+        14px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(3,3,3,0.88);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,0.055);
+
+    backdrop-filter:
+        blur(22px);
+
+    -webkit-backdrop-filter:
+        blur(22px);
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.all-shifts-screen-title {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width: max-content;
+
+    margin: 0;
+
+    color: var(--text);
+
+    font-family: var(--font-ui);
+
+    font-size: 21px;
+
+    font-weight: 500;
+
+    line-height: 1.15;
+
+    letter-spacing: -0.02em;
+
+    white-space: nowrap;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.all-shifts-back-button {
+
+    position: absolute;
+
+    left: 18px;
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    z-index: 5;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    color: var(--text-secondary);
+
+    background:
+        rgba(255,255,255,0.045);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 50%;
+
+    font-size: 20px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background var(--transition),
+        color var(--transition),
+        transform var(--transition);
+}
+
+
+.all-shifts-back-button:hover {
+
+    color: var(--text);
+
+    background:
+        rgba(255,255,255,0.08);
+}
+
+
+.all-shifts-back-button:active {
+
+    transform:
+        translateY(-50%)
+        scale(0.92);
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.all-shifts-content {
+
+    width: 100%;
+
+    max-width: 560px;
+
+    margin: 0 auto;
+
+    padding:
+        20px
+        18px
+        calc(
+            42px +
+            env(safe-area-inset-bottom)
+        );
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   LIST
+   ========================================================= */
+
+.all-shifts-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+
+/* =========================================================
+   ALL SHIFT ITEM
+   ========================================================= */
+
+.all-shift-item {
+
+    min-height: 56px;
+
+    box-shadow:
+        0 8px 24px
+        rgba(0,0,0,0.18);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.all-shifts-empty {
+
+    min-height: 260px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 40px 24px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.018),
+            rgba(255,255,255,0.006)
+        );
+
+    border:
+        1px dashed
+        rgba(255,255,255,0.08);
+
+    border-radius:
+        var(--radius-lg);
+}
+
+
+.all-shifts-empty[hidden] {
+
+    display: none !important;
+
+}
+
+
+.all-shifts-empty-icon {
+
+    margin-bottom: 12px;
+
+    color: var(--accent-soft);
+
+    font-size: 26px;
+
+    line-height: 1;
+}
+
+
+.all-shifts-empty-title {
+
+    margin-bottom: 7px;
+
+    color: var(--text);
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+.all-shifts-empty-description {
+
+    max-width: 270px;
+
+    color: var(--text-tertiary);
+
+    font-size: 11px;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    .all-shifts-screen-header {
+
+        min-height: 60px;
+
+        padding:
+            calc(12px + env(safe-area-inset-top))
+            15px
+            12px;
+    }
+
+
+    .all-shifts-screen-title {
+
+        font-size: 20px;
+    }
+
+
+    .all-shifts-back-button {
+
+        left: 15px;
+    }
+
+
+    .all-shifts-content {
+
+        padding:
+            16px
+            14px
+            calc(
+                36px +
+                env(safe-area-inset-bottom)
+            );
+    }
+
+
+    .all-shift-item {
+
+        min-height: 54px;
+
+        grid-template-columns:
+            minmax(70px, 1fr)
+            minmax(78px, 1fr)
+            auto
+            auto;
+
+        gap: 5px;
+
+        padding: 0 9px;
+    }
+
+
+    .all-shift-item
+    .shift-date,
+    .all-shift-item
+    .shift-time,
+    .all-shift-item
+    .shift-hours {
+
+        font-size: 10px;
+    }
+
+
+    .all-shift-item
+    .shift-earnings {
+
+        font-size: 11px;
+    }
+
+}
+
+
+@media (max-width: 350px) {
+
+    .all-shifts-screen-header {
+
+        min-height: 58px;
+    }
+
+
+    .all-shifts-screen-title {
+
+        font-size: 19px;
+    }
+
+
+    .all-shifts-back-button {
+
+        left: 13px;
+    }
+
+
+    .all-shift-item {
+
+        grid-template-columns:
+            1fr
+            1fr
+            auto
+            auto;
+    }
+
+}
